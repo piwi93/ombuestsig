@@ -35,13 +35,15 @@ and open the template in the editor.
         <script type="text/javascript">
             var bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
             var map = new ol.Map({ 
-                layers: [ 
+                layers: [ new ol.layer.Tile({
+    source: new ol.source.OSM()
+  }),
                   new ol.layer.Tile({ 
                     source: new ol.source.TileWMS({
                         url: 'http://localhost:8084/geoserver/wms',
                         params: {srs: 'EPSG:32721', layers : 'ombues:Montevideo', version : '1.3.0', styles: '', format:'image/png'}
                     }) 
-                  }) 
+                  })
                 ], 
                 renderer: 'canvas',
                 target: 'map',
@@ -54,6 +56,7 @@ and open the template in the editor.
                   zoom: 15 
                 }) 
              });
+            
             map.addControl(new ol.control.ZoomSlider());
         </script>
     </body>
