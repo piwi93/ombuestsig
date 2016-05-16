@@ -11,28 +11,69 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="media/css/bootstrap.css">
         <link rel="stylesheet" href="media/OpenLayers-3.15.1/ol.css" type="text/css">
-        <script src="media/OpenLayers-3.15.1/ol.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="media/css/main.css">
+        
     </head>
     <body>
-        <h2>Ombues TSIG</h2>
-        <div style="width: 100%; height: 574px" id="map"></div>
-        <br/>
-        <button onclick="actualInfo()">Actual Info</button>
-        <br/>
-        <br/>
-        <h4>Copyright Grupo 13</h4>
+        <!-- Wrap all page content here -->
+        <div id="wrap">
         
-        <script>
-            function actualInfo() {
-                alert("F12 y mira el console log papá");
-                var extent = map.getView().calculateExtent(map.getSize());
-                console.log("extent actual: " + extent);
-                var center = map.getView().getCenter();
-                console.log("center actual: " + center);
-            }
-        </script>
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                      <a class="navbar-brand" href="#">Ombues TSIG</a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                      <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="col-lg-3">
+                <button onclick="actualInfo()">Actual Info</button>
+                <div>
+                    <label>Interaction type:  &nbsp;</label>
+                    <label>draw</label>
+                    <input type="radio" id="interaction_type_draw" name="interaction_type" value="draw" checked>
+                    <label>modify</label>
+                    <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
+                </div>
+                <div>
+                  <label>Geometry type</label>
+                  <select id="geom_type">
+                    <option value="Point" selected>Point</option>
+                    <option value="Polygon">Polygon</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Data type</label>
+                  <select id="data_type">
+                    <option value="GeoJSON" selected>GeoJSON</option>
+                    <option value="KML">KML</option>
+                    <option value="GPX">GPX</option>
+                  </select>
+                </div>
+                <div id="delete" style="text-decoration:underline;cursor:pointer">
+                  Delete all features
+                </div>
+                <label>Data:</label>
+                <textarea id="data" rows="12" style="width:100%"></textarea>
+            </div>
+            <div class="col-lg-9">
+                <div style="width: 100%; height: 150%" id="map"></div>
+            </div>
         
-        <script type="text/javascript">
+        </div><!-- Wrap Div end -->
+        
+        <div id="footer">
+            <div class="container">
+              <p class="text-muted credit">Copyright Grupo 13</p>
+            </div>
+        </div>
+        
+        
+        
+        <!--<script type="text/javascript">
             var bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
             var map = new ol.Map({ 
                 layers: [ new ol.layer.Tile({
@@ -58,6 +99,11 @@ and open the template in the editor.
              });
             
             map.addControl(new ol.control.ZoomSlider());
-        </script>
+        </script>-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+        <script src="media/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="media/OpenLayers-3.15.1/ol.js" type="text/javascript"></script>
+        <script src="media/js/mapa.js" type="text/javascript"></script>
+
     </body>
 </html>
