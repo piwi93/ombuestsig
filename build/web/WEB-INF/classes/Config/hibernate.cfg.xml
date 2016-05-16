@@ -8,5 +8,10 @@
     <property name="hibernate.connection.username">postgres</property>
     <property name="hibernate.connection.password">admin</property>
     <mapping resource="Entities/Usuarios.hbm.xml"/>
+    <mapping resource="Entities/PuntoOmbu.hbm.xml"/>
+    <mapping resource="Entities/Categoria.hbm.xml"/>
+    <mapping resource="Entities/Ombues.hbm.xml"/>
+    <mapping resource="Entities/ReferenciaOmbu.hbm.xml"/>
+    <mapping resource="Entities/ZonaOmbu.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

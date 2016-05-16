@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated May 1, 2016 1:23:18 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 16/05/2016 07:45:32 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="Entities.Usuarios" table="usuarios" schema="public" optimistic-lock="version">
+    <class name="Entities.Usuarios" table="usuarios" schema="public">
         <id name="id" type="int">
             <column name="id" />
-            <generator class="sequence" ><param name="sequence">usuarios_id_seq</param></generator>
+            <generator class="sequence">
+                <param name="sequence">usuarios_id_seq</param>
+            </generator>
         </id>
         <property name="nickname" type="string">
             <column name="nickname" length="60" />
