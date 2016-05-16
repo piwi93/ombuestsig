@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16/05/2016 07:45:32 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="Entities.Categoria" table="categoria" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="40" />
+        </property>
+        <property name="icono" type="string">
+            <column name="icono" length="1000" />
+        </property>
+        <set name="referenciaOmbus" table="referencia_ombu" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_categoria" />
+            </key>
+            <one-to-many class="Entities.ReferenciaOmbu" />
+        </set>
+    </class>
+</hibernate-mapping>

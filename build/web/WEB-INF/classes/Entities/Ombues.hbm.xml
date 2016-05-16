@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16/05/2016 07:45:32 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="Entities.Ombues" table="ombues" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="50" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="200" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="30" />
+        </property>
+        <property name="ubicacion" type="string">
+            <column name="ubicacion" length="200" />
+        </property>
+        <property name="externalRef" type="string">
+            <column name="external_ref" length="100" />
+        </property>
+        <one-to-one name="zonaOmbu" class="Entities.ZonaOmbu"></one-to-one>
+        <one-to-one name="referenciaOmbu" class="Entities.ReferenciaOmbu"></one-to-one>
+        <one-to-one name="puntoOmbu" class="Entities.PuntoOmbu"></one-to-one>
+    </class>
+</hibernate-mapping>
