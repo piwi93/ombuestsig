@@ -42,8 +42,14 @@ function loadMap(){
         layers: [ 
             new ol.layer.Tile({
                 source: new ol.source.OSM()
-                }),
-                vector_layer
+                }),new ol.layer.Tile({ 
+                    source: new ol.source.TileWMS({
+                        url: 'http://localhost:8084/geoserver/wfs',
+                        params: {srs: 'EPSG:32721', layers : 'ombues:punto_ombu', version : '1.3.0', styles: '', format:'image/png'}
+                    }) 
+                  })
+                , 
+                vector_layer,
                 /*,
                 new ol.layer.Tile({ 
                     source: new ol.source.TileWMS({
@@ -59,7 +65,7 @@ function loadMap(){
         projection: "EPSG:32721",
         units: 'm',
         view: new ol.View({
-            center: [-6259122.498159943, -4137689.215133161],
+            center: [-6252047.295729297,-4147996.053508715],
             zoom: 15 
         }) 
     });
