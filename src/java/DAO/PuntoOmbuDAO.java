@@ -5,8 +5,10 @@
  */
 package DAO;
 
+import Entities.Ombues;
 import Entities.PuntoOmbu;
 import java.util.List;
+import org.hibernate.HibernateException;
 
 /**
  *
@@ -23,6 +25,24 @@ public class PuntoOmbuDAO extends AbstractDAO{
      */
     public void save(PuntoOmbu usuario) throws DataAccessLayerException {
         super.save(usuario);
+    }
+    
+    public void saveWithFather(Ombues ombu, PuntoOmbu punto){
+         try {
+            startOperation();
+            session.persist(ombu);
+            session.flush();
+             System.out.println(ombu);
+            punto.setId(ombu.getId());
+            punto.setOmbues(ombu);
+            System.out.println(punto);
+            session.persist(punto);
+            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+        } finally {
+            HibernateFactory.close(session);
+        }
     }
 
     /**

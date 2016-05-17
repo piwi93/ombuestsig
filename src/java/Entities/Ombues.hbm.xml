@@ -6,7 +6,9 @@
     <class name="Entities.Ombues" table="ombues" schema="public" optimistic-lock="version">
         <id name="id" type="int">
             <column name="id" />
-            <generator class="assigned" />
+            <generator class="sequence">
+                <param name="sequence">ombues_id_seq</param>
+            </generator>
         </id>
         <property name="nombre" type="string">
             <column name="nombre" length="50" />

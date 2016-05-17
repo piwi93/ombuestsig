@@ -35,6 +35,21 @@ public abstract class AbstractDAO {
         }
     }
     
+    protected Object saveWithId(Object obj) {
+        try {
+            startOperation();
+            session.persist(obj);
+            session.flush();
+            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+        } finally {
+            
+            HibernateFactory.close(session);
+            return obj;
+        }
+    }
+    
     protected void update(Object obj) {
         try {
             startOperation();

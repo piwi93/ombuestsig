@@ -19,12 +19,10 @@ public class PuntoOmbuController {
     private final OmbuesDAO oDAO=new OmbuesDAO();
     
     
-    public void crearPuntoOmbu(Ombues ombu, PuntoOmbu punto){
-        oDAO.save(ombu);
-        
-        punto.setOmbues(ombu);
-        poDAO.save(punto);
+    public int crearPuntoOmbu(Ombues ombu){
+        return oDAO.saveAndGetId(ombu).getId();
     }
+    
     
     
 }
