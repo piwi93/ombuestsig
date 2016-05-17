@@ -12,7 +12,6 @@ and open the template in the editor.
         <link rel="stylesheet" href="media/css/bootstrap.css">
         <link rel="stylesheet" href="media/OpenLayers-3.15.1/ol.css" type="text/css">
         <link rel="stylesheet" href="media/css/main.css">
-        
     </head>
     <body>
         <!-- Wrap all page content here -->
@@ -64,7 +63,6 @@ and open the template in the editor.
             </div>
         
         </div><!-- Wrap Div end -->
-        
         <div id="footer">
             <div class="container">
               <p class="text-muted credit">Copyright Grupo 13</p>
@@ -72,38 +70,11 @@ and open the template in the editor.
         </div>
         
         
-        
-        <!--<script type="text/javascript">
-            var bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
-            var map = new ol.Map({ 
-                layers: [ new ol.layer.Tile({
-    source: new ol.source.OSM()
-  }),
-                  new ol.layer.Tile({ 
-                    source: new ol.source.TileWMS({
-                        url: 'http://localhost:8084/geoserver/wms',
-                        params: {srs: 'EPSG:32721', layers : 'ombues:Montevideo', version : '1.3.0', styles: '', format:'image/png'}
-                    }) 
-                  })
-                ], 
-                renderer: 'canvas',
-                target: 'map',
-                maxExtent: bounds,
-                maxResolution:0.703125,
-                projection: "EPSG:32721",
-                units: 'm',
-                view: new ol.View({
-                  center: [-6259122.498159943, -4137689.215133161],
-                  zoom: 15 
-                }) 
-             });
-            
-            map.addControl(new ol.control.ZoomSlider());
-        </script>-->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+               <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="media/OpenLayers-3.15.1/ol.js" type="text/javascript"></script>
+         <script src="media/js/wellknown.js" type="text/javascript"></script>
         <script src="media/js/mapa.js" type="text/javascript"></script>
-
+       
     </body>
 </html>

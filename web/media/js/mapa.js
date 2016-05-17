@@ -216,6 +216,7 @@ function saveData() {
   if ($('#data_type').val() === 'GeoJSON') {
     // format is JSON
     $('#data').val(JSON.stringify(data, null, 4));
+    
   } else {
     // format is XML (GPX or KML)
     var serializer = new XMLSerializer();

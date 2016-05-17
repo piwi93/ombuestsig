@@ -2,6 +2,7 @@ package Entities;
 // Generated 16/05/2016 07:45:32 PM by Hibernate Tools 4.3.1
 
 
+import com.vividsolutions.jts.geom.Point;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ public class PuntoOmbu  implements java.io.Serializable {
 
      private int id;
      private Ombues ombues;
-     private Serializable geom;
+     private Point geom;
 
     public PuntoOmbu() {
     }
@@ -35,7 +36,7 @@ public class PuntoOmbu  implements java.io.Serializable {
     public PuntoOmbu(Ombues ombues) {
         this.ombues = ombues;
     }
-    public PuntoOmbu(Ombues ombues, Serializable geom) {
+    public PuntoOmbu(Ombues ombues, Point geom) {
        this.ombues = ombues;
        this.geom = geom;
     }
@@ -63,11 +64,11 @@ public class PuntoOmbu  implements java.io.Serializable {
 
     
     @Column(name="geom")
-    public Serializable getGeom() {
+    public Point getGeom() {
         return this.geom;
     }
     
-    public void setGeom(Serializable geom) {
+    public void setGeom(Point geom) {
         this.geom = geom;
     }
 
