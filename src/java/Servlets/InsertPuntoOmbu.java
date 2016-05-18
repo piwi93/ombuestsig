@@ -88,10 +88,6 @@ public class InsertPuntoOmbu extends HttpServlet {
         ombu.setDescripcion(descripcion);
         ombu.setDireccion(direccion);
         ombu.setUbicacion(ubicacion);
-        String coordenada= "POINT (" + ubicacion + ")";
-        coordenada=coordenada.replace(",", " ");
-        PuntoOmbu punto=new PuntoOmbu();
-        punto.setGeom((Point) createGeomFromWKT(coordenada));
         ControladoresDAO.PuntoOmbuController PuC=new ControladoresDAO.PuntoOmbuController();
         try(PrintWriter out = response.getWriter()) {
             out.println( PuC.crearPuntoOmbu(ombu));
@@ -109,22 +105,5 @@ public class InsertPuntoOmbu extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Geometry createGeomFromWKT(String wkt){
-        Geometry geom = wktToGeometry(wkt);
-
-        if (!geom.getGeometryType().equals("Point")) {
-            throw new RuntimeException("Geometry must be a point. Got a " + geom.getGeometryType());
-        }
-        return geom;
-    }
-    private Geometry wktToGeometry(String wktPoint) {
-        WKTReader fromText = new WKTReader();
-        Geometry geom = null;
-        try {
-            geom = fromText.read(wktPoint);
-        } catch (ParseException e) {
-            throw new RuntimeException("Not a WKT string:" + wktPoint);
-        }
-        return geom;
-    }
+    
 }
