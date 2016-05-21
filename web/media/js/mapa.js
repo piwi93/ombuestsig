@@ -18,12 +18,26 @@ $(document).ready(function () {
 
 });
 
+
+
+
+
 function loadMap() {
     // create a vector layer used for editing
     vector_layer = new ol.layer.Vector({
+        
         name: 'my_vectorlayer',
         source: new ol.source.Vector({
-            params: {srs: 'EPSG:32721'}
+            format: new ol.format.GeoJSON(),
+            url: function(extent) {
+          return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
+              'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
+              'outputFormat=application/json&srsname=EPSG:3857&' +
+              'bbox=' + extent.join(',') + ',EPSG:3857';
+        },
+        strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
+          maxZoom: 19
+        }))
         }),
         style: new ol.style.Style({
             fill: new ol.style.Fill({
@@ -46,11 +60,6 @@ function loadMap() {
         layers: [
             new ol.layer.Tile({
                 source: new ol.source.OSM()
-            }), new ol.layer.Tile({
-                source: new ol.source.TileWMS({
-                    url: 'http://localhost:8084/geoserver/wfs',
-                    params: {srs: 'EPSG:32721', layers: 'ombues:punto_ombu', version: '1.3.0', styles: '', format: 'image/png'}
-                })
             })
                     ,
             vector_layer,
@@ -66,7 +75,7 @@ function loadMap() {
         target: 'map',
         maxExtent: bounds,
         maxResolution: 0.703125,
-        projection: "EPSG:32721",
+        projection: "EPSG:3857",
         units: 'm',
         view: new ol.View({
             center: [-6252047.295729297, -4147996.053508715],
@@ -199,7 +208,8 @@ function addDrawInteraction() {
         // save the changed datatry
         event.feature.set("geom", event.feature.getGeometry());
         feature=event.feature;
-        console.log(feature);
+
+        console.log(event.feature.getGeometry().getCoordinates());
         saveData();
     });
 }
@@ -289,7 +299,7 @@ var formatWFS = new ol.format.WFS();
 var formatGML = new ol.format.GML({
     featureNS: 'ombues',
     featureType: 'punto_ombu',
-    srsName: 'EPSG:32721'
+    srsName: 'EPSG:3857'
 });
 var transactWFS = function (p, f) {
     switch (p) {
