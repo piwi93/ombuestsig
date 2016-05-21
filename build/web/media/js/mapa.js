@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 var bounds,
-        map,
+        map, view,
         vector_layer,
         // make interactions global so they can later be removed
         select_interaction,
@@ -18,6 +18,8 @@ $(document).ready(function () {
 
 });
 
+var content = document.getElementById('popup-content');
+
 
 
 
@@ -25,19 +27,18 @@ $(document).ready(function () {
 function loadMap() {
     // create a vector layer used for editing
     vector_layer = new ol.layer.Vector({
-        
         name: 'my_vectorlayer',
         source: new ol.source.Vector({
             format: new ol.format.GeoJSON(),
-            url: function(extent) {
-          return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
-              'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
-              'outputFormat=application/json&srsname=EPSG:3857&' +
-              'bbox=' + extent.join(',') + ',EPSG:3857';
-        },
-        strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
-          maxZoom: 19
-        }))
+            url: function (extent) {
+                return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
+                        'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
+                        'outputFormat=application/json&srsname=EPSG:3857&' +
+                        'bbox=' + extent.join(',') + ',EPSG:3857';
+            },
+            strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
+                maxZoom: 19
+            }))
         }),
         style: new ol.style.Style({
             fill: new ol.style.Fill({
@@ -54,6 +55,10 @@ function loadMap() {
                 })
             })
         })
+    });
+    view = new ol.View({
+        center: [-6252047.295729297, -4147996.053508715],
+        zoom: 15
     });
     bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
     map = new ol.Map({
@@ -77,17 +82,29 @@ function loadMap() {
         maxResolution: 0.703125,
         projection: "EPSG:3857",
         units: 'm',
-        view: new ol.View({
-            center: [-6252047.295729297, -4147996.053508715],
-            zoom: 15
-        })
+        view: view
     });
-
+    var wmsSource = new ol.source.TileWMS({
+        url: 'http://localhost:8084/geoserver/wms',
+        params: {'LAYERS': 'ombues:punto_ombu'},
+        serverType: 'geoserver',
+        crossOrigin: 'anonymous'
+    });
     // add the draw interaction when the page is first shown
     addDrawInteraction();
     var feature;
     map.addControl(new ol.control.ZoomSlider());
-
+    map.on('singleclick', function (evt) {
+        document.getElementById('popup').innerHTML = '';
+        var viewResolution = /** @type {number} */ (view.getResolution());
+        var url = wmsSource.getGetFeatureInfoUrl(
+                evt.coordinate, viewResolution, 'EPSG:3857',
+                {'INFO_FORMAT': 'text/html'});
+        if (url) {
+            document.getElementById('popup').innerHTML =
+                    '<iframe seamless src="' + url + '"></iframe>';
+        }
+    });
 }
 
 function actualInfo() {
@@ -207,7 +224,7 @@ function addDrawInteraction() {
         //      event.feature.setId(20);
         // save the changed datatry
         event.feature.set("geom", event.feature.getGeometry());
-        feature=event.feature;
+        feature = event.feature;
 
         console.log(event.feature.getGeometry().getCoordinates());
         saveData();
@@ -288,7 +305,7 @@ function registrarOmbu() {
     $.post("Puntos/InsertPuntoOmbu", {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
-        feature.set("ombu_id",responseText);
+        feature.set("ombu_id", responseText);
         transactWFS('insert', feature);
         alert("Realizado correctamente");
         location.reload();
