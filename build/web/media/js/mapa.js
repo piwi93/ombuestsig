@@ -3,33 +3,33 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+/*
+ * 
+ * Se definen las variables globales a utilizar en el sistema
+ */
 var bounds,
         map, view,
-        vector_layer,
         // make interactions global so they can later be removed
         select_interaction,
         draw_interaction,
         modify_interaction;
-
-$(document).ready(function () {
-    loadMap();
-    console.log("Listo!!");
-    convert();
-
-});
-
 var content = document.getElementById('popup-content');
 
+/*
+ * 
+ * Se carga el mapa cuando termine de cargar la p'agina
+ */
+$(document).ready(function () {
+    loadMap();
+});
 
-
-
-
-function loadMap() {
-    // create a vector layer used for editing
-    vector_layer = new ol.layer.Vector({
-        name: 'my_vectorlayer',
+ // Crea una capa vectorial donde se modificaran los datos
+var vector_layer = new ol.layer.Vector({
+        name: 'Puntos ombu',
         source: new ol.source.Vector({
-            format: new ol.format.GeoJSON(),
+            params: {srs: 'EPSG:3857'}
+            /*format: new ol.format.GeoJSON(),
             url: function (extent) {
                 return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
                         'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
@@ -38,8 +38,12 @@ function loadMap() {
             },
             strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
                 maxZoom: 19
-            }))
+            }))*/
         }),
+        /*
+         * Se define el estilo que tendra esta capa, en caso de cargar la capa por este medio
+         * acá abría que definir la logica de estilos pra cada categoria
+         */
         style: new ol.style.Style({
             fill: new ol.style.Fill({
                 color: 'rgba(0, 0, 0, 0.8)'
@@ -56,15 +60,36 @@ function loadMap() {
             })
         })
     });
-    view = new ol.View({
+
+view = new ol.View({
         center: [-6252047.295729297, -4147996.053508715],
         zoom: 15
     });
+    
+    /*
+     * 
+     * Capa wms con los puntos ombus para poder consuiltar los datos de la misma
+     */
+    var wms_punto = new ol.source.TileWMS({
+        url: 'http://localhost:8084/geoserver/wms',
+        params: {'LAYERS': 'ombues:punto_ombu'},
+        serverType: 'geoserver',
+        crossOrigin: 'anonymous'
+    });
+/*
+ * 
+ * funcion que carga el mapa, lo define, le carga el srs resolucion, y el target
+ */
+
+function loadMap() {
+   
     bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
     map = new ol.Map({
         layers: [
             new ol.layer.Tile({
                 source: new ol.source.OSM()
+            }), new ol.layer.Tile({
+                source: wms_punto
             })
                     ,
             vector_layer,
@@ -84,36 +109,48 @@ function loadMap() {
         units: 'm',
         view: view
     });
-    var wmsSource = new ol.source.TileWMS({
-        url: 'http://localhost:8084/geoserver/wms',
-        params: {'LAYERS': 'ombues:punto_ombu'},
-        serverType: 'geoserver',
-        crossOrigin: 'anonymous'
-    });
+    
     // add the draw interaction when the page is first shown
     addDrawInteraction();
     var feature;
     map.addControl(new ol.control.ZoomSlider());
+    /*
+     * Define la accion de al hacer click en el mapa muestra la informacion de la capa de puntos
+     * vamos a tener que ver como diferenciar esto con zonas, que podria ser cargando todo junto en el layer
+     */
     map.on('singleclick', function (evt) {
         document.getElementById('popup').innerHTML = '';
         var viewResolution = /** @type {number} */ (view.getResolution());
-        var url = wmsSource.getGetFeatureInfoUrl(
+        var url = wms_punto.getGetFeatureInfoUrl(
                 evt.coordinate, viewResolution, 'EPSG:3857',
                 {'INFO_FORMAT': 'text/html'});
         if (url) {
+            /*
+             * Si encuentra datos en el elemento id Popup carga lo devuelto, 
+             * para conseguir la informacion de los ombues va a haber que hacer una llamada ajax sql
+             * para levantar el resto de los datos y parsear la salida
+             */
             document.getElementById('popup').innerHTML =
                     '<iframe seamless src="' + url + '"></iframe>';
         }
     });
 }
 
+/*
+ * 
+ * @returns los datos de centro y borde del mapa mostrado
+ */
 function actualInfo() {
-    alert("F12 y mira el console log papá");
     var extent = map.getView().calculateExtent(map.getSize());
     console.log("extent actual: " + extent);
     var center = map.getView().getCenter();
     console.log("center actual: " + center);
 }
+
+/*
+ * Empiezan las funciones de dibujar, modificar y eliminar features,
+ * 
+ */
 
 // rebuild interaction when changed
 $('[name="interaction_type"]').on('click', function (e) {
@@ -204,6 +241,7 @@ function addModifyInteraction() {
 
 function addDrawInteraction() {
     // remove other interactions
+    
     map.removeInteraction(select_interaction);
     map.removeInteraction(modify_interaction);
 
@@ -219,20 +257,23 @@ function addDrawInteraction() {
     draw_interaction.on('drawend', function (event) {
         // create a unique id
         // it is later needed to delete features
-        var id = uid();
-        // give the feature this id
-        //      event.feature.setId(20);
-        // save the changed datatry
+        /*
+         * Se agrega el clearMap para que solo quede un punto extra agregado en el mapa
+         */
+        clearMap();
+        /*
+         * Setea la geometria del feature y lo carga en una variable global para usar al confirmar ingresar
+         */
         event.feature.set("geom", event.feature.getGeometry());
         feature = event.feature;
-
-        console.log(event.feature.getGeometry().getCoordinates());
+         $('#ubicacion').val(event.feature.getGeometry().getCoordinates());
         saveData();
     });
 }
 
 // shows data in textarea
 // replace this function by what you need
+// habria que borrar ya que no se usa mas el textarea
 function saveData() {
     // get the format the user has chosen
     var data_type = $('#data_type').val(),
@@ -275,27 +316,11 @@ function clearMap() {
     $('#data').val('');
 }
 
-// creates unique id's
-function uid() {
-    var id = 0;
-    return function () {
-        if (arguments[0] === 0) {
-            id = 0;
-        }
-        return id++;
-    }
-}
-
-function convert() {
-    console.log('hey')
-    //initialize json-textarea-input
-    var input = map.getView().getCenter();
-    //get the input as json-object
-    console.log(input);
-
-    $('#ubicacion').val(input);
-}
-
+/*
+ * Registra el ombu mandando una llamada ayax al servidor ingresando la base del mismo
+ * una vez hay respuesta manda un wfs al servidor con los datos necesarios e ingresa el punto
+ * recarga la pagina al terminar
+ */
 function registrarOmbu() {
     var nombre = $("#nombre").val();
     var descripcion = $("#descripcion").val();
