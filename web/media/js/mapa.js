@@ -57,7 +57,16 @@ var vector_layer = new ol.layer.Vector({
                 fill: new ol.style.Fill({
                     color: '#ffcc33'
                 })
-            })
+            })/*
+         Asi es como se definiria el icono si se cargara aca la capa de puntos
+        lo complicado seria ver la logica por cada tipo de punto
+                image: new ol.style.Icon( ({
+          anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: 'data/icon.png'
+        }))
+             */
         })
     });
 
@@ -118,6 +127,19 @@ function loadMap() {
      * Define la accion de al hacer click en el mapa muestra la informacion de la capa de puntos
      * vamos a tener que ver como diferenciar esto con zonas, que podria ser cargando todo junto en el layer
      */
+    /*
+     *Este es el codigo necesario para poder utilizar lo del icono una vez se defina como vector layer
+     */
+    /*
+          var element = document.getElementById('popup');
+
+      var popup = new ol.Overlay({
+        element: element,
+        positioning: 'bottom-center',
+        stopEvent: false
+      });
+      map.addOverlay(popup);
+ */
     map.on('singleclick', function (evt) {
         document.getElementById('popup').innerHTML = '';
         var viewResolution = /** @type {number} */ (view.getResolution());
@@ -132,7 +154,29 @@ function loadMap() {
              */
             document.getElementById('popup').innerHTML =
                     '<iframe seamless src="' + url + '"></iframe>';
+        }/*
+             * 
+             * Con este codigo se puede colocar los datos por encima del punto al tocar, 
+             * unico inconveniente es que hay que poner la capa de vectores como capa de wfs 
+             * ya que lo cargaría desde ahí los datos, se agrega el código relacionado que habilitaria poner icono
+             */ 
+        /* 
+           var feature = map.forEachFeatureAtPixel(evt.pixel,
+            function(feature) {
+              return feature;
+            });
+        if (feature) {
+          popup.setPosition(evt.coordinate);
+          $(element).popover({
+            'placement': 'top',
+            'html': true,
+            'content': feature.get('name')
+          });
+          $(element).popover('show');
+        } else {
+          $(element).popover('destroy');
         }
+         */
     });
 }
 
