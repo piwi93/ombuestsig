@@ -119,6 +119,20 @@ and open the template in the editor.
                 <p class="text-muted credit">Copyright Grupo 13</p>
             </div>
         </footer>
+        
+        <div style="display:none">
+            <%@page import="Utils.ConfigManager"%>
+            <%@page import="java.util.Properties;" %>
+            <% ConfigManager configuracion = new ConfigManager();
+                   Properties propiedades = configuracion.getConfigFile("Config.properties");
+            %>
+            <div id="url">
+                <%=propiedades.getProperty("urlGeoserver")%>
+            </div>
+            <div id="srs">
+                <%=propiedades.getProperty("srs")%>
+            </div>
+        </div>
 
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>

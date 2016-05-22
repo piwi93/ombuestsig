@@ -8,27 +8,45 @@
  * 
  * Se definen las variables globales a utilizar en el sistema
  */
-var bounds,
-        map, view,
+var   bounds,
+        map, 
+        view,
         // make interactions global so they can later be removed
         select_interaction,
         draw_interaction,
-        modify_interaction;
-var content = document.getElementById('popup-content');
+        modify_interaction,
+        urlGeoserver,
+        SRS,
+        wms_punto,
+        vector_layer,
+        content = document.getElementById('popup-content');
 
 /*
  * 
  * Se carga el mapa cuando termine de cargar la p'agina
  */
 $(document).ready(function () {
+    loadVariables();
     loadMap();
 });
 
- // Crea una capa vectorial donde se modificaran los datos
-var vector_layer = new ol.layer.Vector({
+function loadVariables(){
+    
+    urlGeoserver = $("#url").val();
+    SRS = $("#srs").val();
+    
+    wms_punto = new ol.source.TileWMS({
+        url: urlGeoserver + '/wms',
+        params: {'LAYERS': 'ombues:punto_ombu'},
+        serverType: 'geoserver',
+        crossOrigin: 'anonymous'
+    });
+    
+    // Crea una capa vectorial donde se modificaran los datos
+    vector_layer = new ol.layer.Vector({
         name: 'Puntos ombu',
         source: new ol.source.Vector({
-            params: {srs: 'EPSG:3857'}
+            params: {srs: SRS}
             /*format: new ol.format.GeoJSON(),
             url: function (extent) {
                 return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
@@ -69,6 +87,9 @@ var vector_layer = new ol.layer.Vector({
              */
         })
     });
+}
+
+ 
 
 view = new ol.View({
         center: [-6252047.295729297, -4147996.053508715],
@@ -79,12 +100,7 @@ view = new ol.View({
      * 
      * Capa wms con los puntos ombus para poder consuiltar los datos de la misma
      */
-    var wms_punto = new ol.source.TileWMS({
-        url: 'http://localhost:8084/geoserver/wms',
-        params: {'LAYERS': 'ombues:punto_ombu'},
-        serverType: 'geoserver',
-        crossOrigin: 'anonymous'
-    });
+
 /*
  * 
  * funcion que carga el mapa, lo define, le carga el srs resolucion, y el target
@@ -114,7 +130,7 @@ function loadMap() {
         target: 'map',
         maxExtent: bounds,
         maxResolution: 0.703125,
-        projection: "EPSG:3857",
+        projection: SRS,
         units: 'm',
         view: view
     });
@@ -144,7 +160,7 @@ function loadMap() {
         document.getElementById('popup').innerHTML = '';
         var viewResolution = /** @type {number} */ (view.getResolution());
         var url = wms_punto.getGetFeatureInfoUrl(
-                evt.coordinate, viewResolution, 'EPSG:3857',
+                evt.coordinate, viewResolution, SRS,
                 {'INFO_FORMAT': 'text/html'});
         if (url) {
             /*
@@ -385,7 +401,7 @@ var formatWFS = new ol.format.WFS();
 var formatGML = new ol.format.GML({
     featureNS: 'ombues',
     featureType: 'punto_ombu',
-    srsName: 'EPSG:3857'
+    srsName: SRS
 });
 var transactWFS = function (p, f) {
     switch (p) {
@@ -403,7 +419,7 @@ var transactWFS = function (p, f) {
     s = new XMLSerializer();
     str = s.serializeToString(node);
     console.log(str);
-    $.ajax('http://localhost:8084/geoserver/wfs', {
+    $.ajax( urlGeoserver + '/wfs', {
         type: 'POST',
         dataType: 'xml',
         processData: false,

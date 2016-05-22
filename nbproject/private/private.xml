@@ -3,12 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Galvadion/Documents/NetBeansProjects/TSIG/ombuestsig/web/index.html</file>
-            <file>file:/C:/Users/Galvadion/Documents/NetBeansProjects/TSIG/ombuestsig/src/java/Entities/Ombues.java</file>
-            <file>file:/C:/Users/Galvadion/Documents/NetBeansProjects/TSIG/ombuestsig/web/media/js/mapa.js</file>
-            <file>file:/C:/Users/Galvadion/Documents/NetBeansProjects/TSIG/ombuestsig/src/java/DAO/AbstractDAO.java</file>
-            <file>file:/C:/Users/Galvadion/Documents/NetBeansProjects/TSIG/ombuestsig/src/java/Entities/PuntoOmbu.java</file>
-            <file>file:/C:/Users/Galvadion/Documents/NetBeansProjects/TSIG/ombuestsig/src/java/DAO/HibernateFactory.java</file>
+            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/web/media/js/mapa.js</file>
+            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/src/java/DAO/OmbuesDAO.java</file>
+            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/web/index.jsp</file>
         </group>
     </open-files>
 </project-private>
