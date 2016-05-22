@@ -137,6 +137,11 @@ public class Ombues  implements java.io.Serializable {
         this.puntoOmbu = puntoOmbu;
     }
 
+    @Override
+    public String toString() {
+        return "Ombues{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", direccion=" + direccion + ", ubicacion=" + ubicacion + '}';
+    }
+    
 
 
 

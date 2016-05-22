@@ -5,6 +5,12 @@
  */
 package Servlets;
 
+import Entities.Ombues;
+import Entities.PuntoOmbu;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -72,7 +78,21 @@ public class InsertPuntoOmbu extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String nombre=request.getParameter("nombre");
+        String descripcion = request.getParameter("descripcion");
+        String direccion= request.getParameter("direccion");
+        String ubicacion=request.getParameter("ubicacion");
+        String quees=request.getParameter("quees");
+        Ombues ombu=new Ombues();
+        ombu.setNombre(nombre);
+        ombu.setDescripcion(descripcion);
+        ombu.setDireccion(direccion);
+        ombu.setUbicacion(ubicacion);
+        ControladoresDAO.PuntoOmbuController PuC=new ControladoresDAO.PuntoOmbuController();
+        try(PrintWriter out = response.getWriter()) {
+            out.println( PuC.crearPuntoOmbu(ombu));
+        }
+       
     }
 
     /**
@@ -85,4 +105,5 @@ public class InsertPuntoOmbu extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    
 }

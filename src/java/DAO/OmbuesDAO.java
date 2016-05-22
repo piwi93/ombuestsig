@@ -24,6 +24,10 @@ public class OmbuesDAO extends AbstractDAO{
     public void save(Ombues usuario) throws DataAccessLayerException {
         super.save(usuario);
     }
+    
+    public Ombues saveAndGetId(Ombues ombu) throws DataAccessLayerException {
+        return (Ombues) super.saveWithId(ombu);
+    }
 
     /**
      * Actualiza un usuario de la base
