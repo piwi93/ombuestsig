@@ -81,7 +81,7 @@ view = new ol.View({
      */
     var wms_punto = new ol.source.TileWMS({
         url: 'http://localhost:8084/geoserver/wms',
-        params: {'LAYERS': 'ombues:punto_ombu'},
+        params: {'LAYERS': 'ombues:punto_ombu,ombues:zona_ombu'},
         serverType: 'geoserver',
         crossOrigin: 'anonymous'
     });
@@ -375,29 +375,49 @@ function registrarOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
-        transactWFS('insert', feature);
+        transactWFS('insert', feature,formatGMLPunto);
         alert("Realizado correctamente");
         location.reload();
     });
 }
-
+function registrarZonaOmbu() {
+    var nombre = $("#nombre").val();
+    var descripcion = $("#descripcion").val();
+    var direccion = $("#direccion").val();
+    var ubicacion = $("#ubicacion").val();
+    var quees = zona;
+    $.post("Puntos/InsertPuntoOmbu", {
+        nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
+    }, function (responseText) {
+        feature.set("ombu_id", responseText);
+        transactWFS('insert', feature,formatGMLZona);
+        alert("Realizado correctamente");
+        location.reload();
+    });
+}
 var formatWFS = new ol.format.WFS();
-var formatGML = new ol.format.GML({
+var formatGMLPunto = new ol.format.GML({
     featureNS: 'ombues',
     featureType: 'punto_ombu',
     srsName: 'EPSG:3857'
 });
-var transactWFS = function (p, f) {
+
+var formatGMLZona = new ol.format.GML({
+    featureNS: 'ombues',
+    featureType: 'zona_ombu',
+    srsName: 'EPSG:3857'
+})
+var transactWFS = function (p, f,feature) {
     switch (p) {
         case 'insert':
-            node = formatWFS.writeTransaction([f], null, null, formatGML);
+            node = formatWFS.writeTransaction([f], null, null, feature);
             removeLowerCaseGeometryNodeForInsert(node);
             break;
         case 'update':
-            node = formatWFS.writeTransaction(null, [f], null, formatGML);
+            node = formatWFS.writeTransaction(null, [f], null, feature);
             break;
         case 'delete':
-            node = formatWFS.writeTransaction(null, null, [f], formatGML);
+            node = formatWFS.writeTransaction(null, null, [f], feature);
             break;
     }
     s = new XMLSerializer();

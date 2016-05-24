@@ -14,3 +14,7 @@ hs_err_pid*
 nbproject/private/private.properties
 nbproject/
 build/
+build/web/index.html
+build/web/media/css/main.css
+nbproject/project.properties
+build/web/media/js/mapa.js
