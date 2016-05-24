@@ -24,74 +24,74 @@ $(document).ready(function () {
     loadMap();
 });
 
- // Crea una capa vectorial donde se modificaran los datos
+// Crea una capa vectorial donde se modificaran los datos
 var vector_layer = new ol.layer.Vector({
-        name: 'Puntos ombu',
-        source: new ol.source.Vector({
-            params: {srs: 'EPSG:3857'}
-            /*format: new ol.format.GeoJSON(),
-            url: function (extent) {
-                return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
-                        'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
-                        'outputFormat=application/json&srsname=EPSG:3857&' +
-                        'bbox=' + extent.join(',') + ',EPSG:3857';
-            },
-            strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
-                maxZoom: 19
-            }))*/
+    name: 'Puntos ombu',
+    source: new ol.source.Vector({
+        params: {srs: 'EPSG:3857'}
+        /*format: new ol.format.GeoJSON(),
+         url: function (extent) {
+         return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
+         'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
+         'outputFormat=application/json&srsname=EPSG:3857&' +
+         'bbox=' + extent.join(',') + ',EPSG:3857';
+         },
+         strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
+         maxZoom: 19
+         }))*/
+    }),
+    /*
+     * Se define el estilo que tendra esta capa, en caso de cargar la capa por este medio
+     * acá abría que definir la logica de estilos pra cada categoria
+     */
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: 'rgba(0, 0, 0, 0.8)'
         }),
-        /*
-         * Se define el estilo que tendra esta capa, en caso de cargar la capa por este medio
-         * acá abría que definir la logica de estilos pra cada categoria
-         */
-        style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: '#ffcc33',
+            width: 2
+        }),
+        image: new ol.style.Circle({
+            radius: 7,
             fill: new ol.style.Fill({
-                color: 'rgba(0, 0, 0, 0.8)'
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#ffcc33',
-                width: 2
-            }),
-            image: new ol.style.Circle({
-                radius: 7,
-                fill: new ol.style.Fill({
-                    color: '#ffcc33'
-                })
-            })/*
+                color: '#ffcc33'
+            })
+        })/*
          Asi es como se definiria el icono si se cargara aca la capa de puntos
-        lo complicado seria ver la logica por cada tipo de punto
-                image: new ol.style.Icon( ({
-          anchor: [0.5, 46],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-          src: 'data/icon.png'
-        }))
-             */
-        })
-    });
+         lo complicado seria ver la logica por cada tipo de punto
+         image: new ol.style.Icon( ({
+         anchor: [0.5, 46],
+         anchorXUnits: 'fraction',
+         anchorYUnits: 'pixels',
+         src: 'data/icon.png'
+         }))
+         */
+    })
+});
 
 view = new ol.View({
-        center: [-6252047.295729297, -4147996.053508715],
-        zoom: 15
-    });
-    
-    /*
-     * 
-     * Capa wms con los puntos ombus para poder consuiltar los datos de la misma
-     */
-    var wms_punto = new ol.source.TileWMS({
-        url: 'http://localhost:8084/geoserver/wms',
-        params: {'LAYERS': 'ombues:punto_ombu,ombues:zona_ombu'},
-        serverType: 'geoserver',
-        crossOrigin: 'anonymous'
-    });
+    center: [-6252047.295729297, -4147996.053508715],
+    zoom: 15
+});
+
+/*
+ * 
+ * Capa wms con los puntos ombus para poder consuiltar los datos de la misma
+ */
+var wms_punto = new ol.source.TileWMS({
+    url: 'http://localhost:8084/geoserver/wms',
+    params: {'LAYERS': 'ombues:punto_ombu,ombues:zona_ombu'},
+    serverType: 'geoserver',
+    crossOrigin: 'anonymous'
+});
 /*
  * 
  * funcion que carga el mapa, lo define, le carga el srs resolucion, y el target
  */
 
 function loadMap() {
-   
+
     bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
     map = new ol.Map({
         layers: [
@@ -118,7 +118,7 @@ function loadMap() {
         units: 'm',
         view: view
     });
-    
+
     // add the draw interaction when the page is first shown
     addDrawInteraction();
     var feature;
@@ -131,51 +131,66 @@ function loadMap() {
      *Este es el codigo necesario para poder utilizar lo del icono una vez se defina como vector layer
      */
     /*
-          var element = document.getElementById('popup');
-
-      var popup = new ol.Overlay({
-        element: element,
-        positioning: 'bottom-center',
-        stopEvent: false
-      });
-      map.addOverlay(popup);
- */
+     var element = document.getElementById('popup');
+     
+     var popup = new ol.Overlay({
+     element: element,
+     positioning: 'bottom-center',
+     stopEvent: false
+     });
+     map.addOverlay(popup);
+     */
     map.on('singleclick', function (evt) {
         document.getElementById('popup').innerHTML = '';
         var viewResolution = /** @type {number} */ (view.getResolution());
         var url = wms_punto.getGetFeatureInfoUrl(
                 evt.coordinate, viewResolution, 'EPSG:3857',
-                {'INFO_FORMAT': 'text/html'});
+                {'INFO_FORMAT': 'application/json',
+                    'propertyName': 'ombu_id'});
+
         if (url) {
+            var parser = new ol.format.GeoJSON();
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                jsonpCallback: 'parseResponse'
+            }).then(function (response) {
+                var result = parser.readFeatures(response);
+                if (result.length) {
+                    var info = result[0].get('ombu_id');
+                    console.log(getOmbu(info));
+                    document.getElementById('popup').innerHTML =
+                   info;
+                }
+            })
             /*
              * Si encuentra datos en el elemento id Popup carga lo devuelto, 
              * para conseguir la informacion de los ombues va a haber que hacer una llamada ajax sql
              * para levantar el resto de los datos y parsear la salida
              */
-            document.getElementById('popup').innerHTML =
-                    '<iframe seamless src="' + url + '"></iframe>';
+            
         }/*
-             * 
-             * Con este codigo se puede colocar los datos por encima del punto al tocar, 
-             * unico inconveniente es que hay que poner la capa de vectores como capa de wfs 
-             * ya que lo cargaría desde ahí los datos, se agrega el código relacionado que habilitaria poner icono
-             */ 
+         * 
+         * Con este codigo se puede colocar los datos por encima del punto al tocar, 
+         * unico inconveniente es que hay que poner la capa de vectores como capa de wfs 
+         * ya que lo cargaría desde ahí los datos, se agrega el código relacionado que habilitaria poner icono
+         */
         /* 
-           var feature = map.forEachFeatureAtPixel(evt.pixel,
-            function(feature) {
-              return feature;
-            });
-        if (feature) {
-          popup.setPosition(evt.coordinate);
-          $(element).popover({
-            'placement': 'top',
-            'html': true,
-            'content': feature.get('name')
-          });
-          $(element).popover('show');
-        } else {
-          $(element).popover('destroy');
-        }
+         var feature = map.forEachFeatureAtPixel(evt.pixel,
+         function(feature) {
+         return feature;
+         });
+         if (feature) {
+         popup.setPosition(evt.coordinate);
+         $(element).popover({
+         'placement': 'top',
+         'html': true,
+         'content': feature.get('name')
+         });
+         $(element).popover('show');
+         } else {
+         $(element).popover('destroy');
+         }
          */
     });
 }
@@ -285,7 +300,7 @@ function addModifyInteraction() {
 
 function addDrawInteraction() {
     // remove other interactions
-    
+
     map.removeInteraction(select_interaction);
     map.removeInteraction(modify_interaction);
 
@@ -310,7 +325,7 @@ function addDrawInteraction() {
          */
         event.feature.set("geom", event.feature.getGeometry());
         feature = event.feature;
-         $('#ubicacion').val(event.feature.getGeometry().getCoordinates());
+        $('#ubicacion').val(event.feature.getGeometry().getCoordinates());
         saveData();
     });
 }
@@ -375,11 +390,14 @@ function registrarOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
-        transactWFS('insert', feature,formatGMLPunto);
+        transactWFS('insert', feature, formatGMLPunto);
         alert("Realizado correctamente");
         location.reload();
     });
 }
+/*
+ * Funcion que registrauna zona de ombues y dsps hace el transaction insert
+ */
 function registrarZonaOmbu() {
     var nombre = $("#nombre").val();
     var descripcion = $("#descripcion").val();
@@ -390,11 +408,24 @@ function registrarZonaOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
-        transactWFS('insert', feature,formatGMLZona);
+        transactWFS('insert', feature, formatGMLZona);
         alert("Realizado correctamente");
         location.reload();
     });
 }
+
+/*
+ * Funcion que devuelve el html con los datos del ombu padre
+ */
+function getOmbu(ombu_id) {
+    var id = ombu_id;
+    $.post("getombu", {
+        id: id
+    }, function (responseText) {
+        return responseText;
+    });
+}
+
 var formatWFS = new ol.format.WFS();
 var formatGMLPunto = new ol.format.GML({
     featureNS: 'ombues',
@@ -407,7 +438,7 @@ var formatGMLZona = new ol.format.GML({
     featureType: 'zona_ombu',
     srsName: 'EPSG:3857'
 })
-var transactWFS = function (p, f,feature) {
+var transactWFS = function (p, f, feature) {
     switch (p) {
         case 'insert':
             node = formatWFS.writeTransaction([f], null, null, feature);
