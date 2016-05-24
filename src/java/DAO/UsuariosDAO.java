@@ -46,7 +46,7 @@ public class UsuariosDAO extends AbstractDAO{
      * @param id Long correspondinete al ID del usuario
      * @return Usuario si encuentra alguno
      */
-    public Usuarios find(Long id) throws DataAccessLayerException {
+    public Usuarios find(Integer id) throws DataAccessLayerException {
         return (Usuarios) super.find(Usuarios.class, id);
     }
 

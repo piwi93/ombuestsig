@@ -139,7 +139,7 @@ public class Ombues  implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "Ombues{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", direccion=" + direccion + ", ubicacion=" + ubicacion + '}';
+        return nombre;
     }
     
 

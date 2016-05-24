@@ -50,7 +50,7 @@ public class OmbuesDAO extends AbstractDAO{
      * @param id Long correspondinete al ID del usuario
      * @return Usuario si encuentra alguno
      */
-    public Ombues find(Long id) throws DataAccessLayerException {
+    public Ombues find(Integer id) throws DataAccessLayerException {
         return (Ombues) super.find(Ombues.class, id);
     }
 

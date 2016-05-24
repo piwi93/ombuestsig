@@ -21,6 +21,7 @@ var content = document.getElementById('popup-content');
  * Se carga el mapa cuando termine de cargar la p'agina
  */
 $(document).ready(function () {
+    
     loadMap();
 });
 
@@ -120,7 +121,7 @@ function loadMap() {
     });
 
     // add the draw interaction when the page is first shown
-    addDrawInteraction();
+    addDrawInteraction('Point');
     var feature;
     map.addControl(new ol.control.ZoomSlider());
     /*
@@ -158,9 +159,7 @@ function loadMap() {
                 var result = parser.readFeatures(response);
                 if (result.length) {
                     var info = result[0].get('ombu_id');
-                    console.log(getOmbu(info));
-                    document.getElementById('popup').innerHTML =
-                   info;
+                    getOmbu(info);
                 }
             })
             /*
@@ -223,18 +222,17 @@ $('[name="interaction_type"]').on('click', function (e) {
 
 
 // rebuild interaction when the geometry type is changed
-$('#geom_type').on('change', function (e) {
+$('#regzona').on('click', function (e) {
     map.removeInteraction(draw_interaction);
-    addDrawInteraction();
+    addDrawInteraction('Polygon');
+});
+// rebuild interaction when the geometry type is changed
+$('#regpunto').on('click', function (e) {
+    map.removeInteraction(draw_interaction);
+    addDrawInteraction('Point');
 });
 
 
-// clear map and rebuild interaction when changed
-$('#data_type').onchange = function () {
-    clearMap();
-    map.removeInteraction(draw_interaction);
-    addDrawInteraction();
-};
 
 // build up modify interaction
 // needs a select and a modify interaction working together
@@ -245,7 +243,7 @@ function addModifyInteraction() {
     select_interaction = new ol.interaction.Select({
         // make sure only the desired layer can be selected
         layers: function (vector_layer) {
-            return vector_layer.get('name') === 'my_vectorlayer';
+            return vector_layer.get('name') === 'Puntos ombu';
         }
     });
     map.addInteraction(select_interaction);
@@ -298,7 +296,7 @@ function addModifyInteraction() {
 
 // creates a draw interaction
 
-function addDrawInteraction() {
+function addDrawInteraction(geom) {
     // remove other interactions
 
     map.removeInteraction(select_interaction);
@@ -307,7 +305,7 @@ function addDrawInteraction() {
     // create the interaction
     draw_interaction = new ol.interaction.Draw({
         source: vector_layer.getSource(),
-        type: /** @type {ol.geom.GeometryType} */ ($('#geom_type').val())
+        type: /** @type {ol.geom.GeometryType} */ (geom)
     });
     // add it to the map
     map.addInteraction(draw_interaction);
@@ -326,40 +324,10 @@ function addDrawInteraction() {
         event.feature.set("geom", event.feature.getGeometry());
         feature = event.feature;
         $('#ubicacion').val(event.feature.getGeometry().getCoordinates());
-        saveData();
     });
 }
 
-// shows data in textarea
-// replace this function by what you need
-// habria que borrar ya que no se usa mas el textarea
-function saveData() {
-    // get the format the user has chosen
-    var data_type = $('#data_type').val(),
-            // define a format the data shall be converted to
-            format = new ol.format[data_type](),
-            // this will be the data in the chosen format
-            data;
 
-    try {
-        // convert the data of the vector_layer into the chosen format
-        data = format.writeFeatures(vector_layer.getSource().getFeatures());
-
-    } catch (e) {
-        // at time of creation there is an error in the GPX format (18.7.2014)
-        $('#data').val(e.name + ": " + e.message);
-        return;
-    }
-    if ($('#data_type').val() === 'GeoJSON') {
-        // format is JSON
-        $('#data').val(JSON.stringify(data, null, 4));
-
-    } else {
-        // format is XML (GPX or KML)
-        var serializer = new XMLSerializer();
-        $('#data').val(serializer.serializeToString(data));
-    }
-}
 
 // clear map when user clicks on 'Delete all features'
 $("#delete").click(function () {
@@ -422,7 +390,9 @@ function getOmbu(ombu_id) {
     $.post("getombu", {
         id: id
     }, function (responseText) {
-        return responseText;
+        
+                    document.getElementById('popup').innerHTML =
+                   responseText;
     });
 }
 

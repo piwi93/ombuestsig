@@ -33,7 +33,7 @@ public class GetOmbu extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -63,16 +63,14 @@ public class GetOmbu extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        OmbuesDAO oDAO=new OmbuesDAO();
+        OmbuesDAO oDAO = new OmbuesDAO();
         System.out.println("wtf");
-        Ombues ombu=oDAO.find(Long.parseLong(request.getParameter("id")));
+        Ombues ombu = oDAO.find(Integer.parseInt(request.getParameter("id")));
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            out.println("<table>");
-            out.println("<tr><td>Nombre</td><td>"+ombu.getNombre()+"</td></tr>");
-            out.println("<tr><td>Descripcion</td><td>"+ombu.getDescripcion()+"</td></tr>");
-            out.println("<tr><td>Direccion</td><td>"+ombu.getDireccion()+"</td></tr>");           
-            out.println("</table>");
+            System.out.println(ombu.getDescripcion());
+            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr><td>Direccion</td><td>" + ombu.getDireccion() + "</td></tr></table>");
+
         }
     }
 
