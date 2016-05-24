@@ -5,10 +5,11 @@
  */
 package Servlets;
 
-import DAO.OmbuesDAO;
+import DAO.OmbuesJpaController;
 import Entities.Ombues;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -63,9 +64,9 @@ public class GetOmbu extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        OmbuesDAO oDAO = new OmbuesDAO();
+        OmbuesJpaController oDAO = new OmbuesJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
         System.out.println("wtf");
-        Ombues ombu = oDAO.find(Integer.parseInt(request.getParameter("id")));
+        Ombues ombu = oDAO.findOmbues(Integer.parseInt(request.getParameter("id")));
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             System.out.println(ombu.getDescripcion());

@@ -5,22 +5,20 @@
  */
 package ControladoresDAO;
 
-import DAO.OmbuesDAO;
-import DAO.PuntoOmbuDAO;
+import DAO.OmbuesJpaController;
 import Entities.Ombues;
-import Entities.PuntoOmbu;
+import javax.persistence.Persistence;
 
 /**
  *
  * @author Galvadion
  */
 public class PuntoOmbuController {
-    private final PuntoOmbuDAO poDAO=new PuntoOmbuDAO();
-    private final OmbuesDAO oDAO=new OmbuesDAO();
+    OmbuesJpaController oJPA=new OmbuesJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
     
     
     public int crearPuntoOmbu(Ombues ombu){
-        return oDAO.saveAndGetId(ombu).getId();
+        return oJPA.saveAndGetId(ombu).getId();
     }
     
     

@@ -6,8 +6,6 @@
 package Servlets;
 
 import Entities.Ombues;
-import Entities.PuntoOmbu;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;

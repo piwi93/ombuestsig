@@ -371,7 +371,7 @@ function registrarZonaOmbu() {
     var descripcion = $("#descripcion").val();
     var direccion = $("#direccion").val();
     var ubicacion = $("#ubicacion").val();
-    var quees = zona;
+    var quees = 'zona';
     $.post("Puntos/InsertPuntoOmbu", {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
