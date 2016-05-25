@@ -167,8 +167,10 @@ public class OmbuesJpaController implements Serializable {
 
     public Ombues saveAndGetId(Ombues ombu) {
         EntityManager em=getEntityManager();
+         em.getTransaction().begin();
         em.persist(ombu);
         em.flush();
+        em.getTransaction().commit();
         em.close();
         return ombu;
     }
