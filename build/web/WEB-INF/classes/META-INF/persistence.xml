@@ -3,12 +3,19 @@
   <persistence-unit name="TSIGPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>Entidades.Usuarios</class>
+    <class>Entities.Categoria</class>
+    <class>Entities.Ombues</class>
+    <class>Entities.PuntoOmbu</class>
+    <class>Entities.ReferenciaOmbu</class>
+    <class>Entities.ZonaOmbu</class>
+    <class>Entities.Usuarios</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/tsig"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="javax.persistence.jdbc.password" value="admin"/>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
     </properties>
   </persistence-unit>
 </persistence>

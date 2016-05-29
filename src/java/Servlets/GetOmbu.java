@@ -5,9 +5,11 @@
  */
 package Servlets;
 
+import DAO.OmbuesJpaController;
 import Entities.Ombues;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,10 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Galvadion
+ * @author Diego
  */
-@WebServlet(name = "InsertPuntoOmbu", urlPatterns = {"/Puntos/InsertPuntoOmbu"})
-public class InsertPuntoOmbu extends HttpServlet {
+@WebServlet(name = "GetOmbu", urlPatterns = {"/getombu"})
+public class GetOmbu extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,19 +34,7 @@ public class InsertPuntoOmbu extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet InsertPuntoOmbu</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet InsertPuntoOmbu at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -73,21 +63,16 @@ public class InsertPuntoOmbu extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String nombre=request.getParameter("nombre");
-        String descripcion = request.getParameter("descripcion");
-        String direccion= request.getParameter("direccion");
-        String ubicacion=request.getParameter("ubicacion");
-        String quees=request.getParameter("quees");
-        Ombues ombu=new Ombues();
-        ombu.setNombre(nombre);
-        ombu.setDescripcion(descripcion);
-        ombu.setDireccion(direccion);
-        ombu.setUbicacion(ubicacion);
-        ControladoresDAO.PuntoOmbuController PuC=new ControladoresDAO.PuntoOmbuController();
-        try(PrintWriter out = response.getWriter()) {
-            out.println( PuC.crearPuntoOmbu(ombu));
+        response.setContentType("text/html;charset=UTF-8");
+        OmbuesJpaController oDAO = new OmbuesJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
+        System.out.println("wtf");
+        Ombues ombu = oDAO.findOmbues(Integer.parseInt(request.getParameter("id")));
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            System.out.println(ombu.getDescripcion());
+            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr><td>Direccion</td><td>" + ombu.getDireccion() + "</td></tr></table>");
+
         }
-       
     }
 
     /**
@@ -100,5 +85,4 @@ public class InsertPuntoOmbu extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    
 }

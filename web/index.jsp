@@ -33,8 +33,8 @@ and open the template in the editor.
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
-                        <li><a href="#pane2" data-toggle="tab">Registrar ombu</a></li>
-                        <li><a href="#pane3" data-toggle="tab">Registrar zona de ombues</a></li>
+                        <li><a href="#pane2" data-toggle="tab" id="regpunto">Registrar ombu</a></li>
+                        <li><a href="#pane3" data-toggle="tab" id="regzona">Registrar zona de ombues</a></li>
                     </ul>
                     <div class="tab-content">
                         <!-- Informacion de punto -->
@@ -47,28 +47,7 @@ and open the template in the editor.
                                 <label>modify</label>
                                 <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
                             </div>
-                            <div>
-                                <label>Geometry type</label>
-                                <select id="geom_type">
-                                    <option value="Point" selected>Point</option>
-                                    <option value="Polygon">Polygon</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Data type</label>
-                                <select id="data_type">
-                                    <option value="GeoJSON" selected>GeoJSON</option>
-                                    <option value="KML">KML</option>
-                                    <option value="GPX">GPX</option>
-                                </select>
-                            </div>
-                            <div id="delete" style="text-decoration:underline;cursor:pointer">
-                                Delete all features
-                            </div>
-                            <label>Data:</label>
-                            <textarea id="data" rows="12" style="width:100%"></textarea>
-                            <textarea id="geojson-output" placeholder="Resulting WKT will be displayed here"></textarea>
-                            <button onclick="convert()">calcular</button>
+                            
                         </div>
                         <!-- Registrar ombu -->
                         <div id="pane2" class="tab-pane">
@@ -100,6 +79,29 @@ and open the template in the editor.
                             </div>
                             <div id="myResult"></div>
                         </div>
+                        <!-- Registrar zona ombu -->
+                        <div id="pane3" class="tab-pane">
+                            <div class="form-vertical" role="form">
+                                <div class="form-group">
+                                    <label  for="text">Nombre:</label>
+                                    <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
+                                </div>
+                                <div class="form-group">
+                                    <label  for="text">Descripcion:</label>
+                                    <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
+                                </div>
+                                <div class="form-group">
+                                    <label  for="text">Dirección:</label>
+                                    <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
+                                </div>
+                                <div class="form-group">
+                                    <label  for="text">Ubicación:</label>
+                                    <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
+                                </div>
+                                <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
+                            </div>
+                            <div id="myResult"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,7 +122,7 @@ and open the template in the editor.
             </div>
         </footer>
         
-        <div >
+        <div style="display: none">
             <%@page import="Utils.ConfigManager"%>
             <%@page import="java.util.Properties" %>
             <% 

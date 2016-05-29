@@ -97,10 +97,6 @@ view = new ol.View({
         zoom: 15
     });
     
-    /*
-     * 
-     * Capa wms con los puntos ombus para poder consuiltar los datos de la misma
-     */
 
 /*
  * 
@@ -135,9 +131,9 @@ function loadMap() {
         units: 'm',
         view: view
     });
-    
+
     // add the draw interaction when the page is first shown
-    addDrawInteraction();
+    addDrawInteraction('Point');
     var feature;
     map.addControl(new ol.control.ZoomSlider());
     /*
@@ -148,7 +144,7 @@ function loadMap() {
      *Este es el codigo necesario para poder utilizar lo del icono una vez se defina como vector layer
      */
     /*
-          var element = document.getElementById('popup');
+    var element = document.getElementById('popup');
 
       var popup = new ol.Overlay({
         element: element,
@@ -162,21 +158,34 @@ function loadMap() {
         var viewResolution = /** @type {number} */ (view.getResolution());
         var url = wms_punto.getGetFeatureInfoUrl(
                 evt.coordinate, viewResolution, SRS,
-                {'INFO_FORMAT': 'text/html'});
+                {'INFO_FORMAT': 'application/json',
+                    'propertyName': 'ombu_id'});
+
         if (url) {
+            var parser = new ol.format.GeoJSON();
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                jsonpCallback: 'parseResponse'
+            }).then(function (response) {
+                var result = parser.readFeatures(response);
+                if (result.length) {
+                    var info = result[0].get('ombu_id');
+                    getOmbu(info);
+                }
+            })
             /*
              * Si encuentra datos en el elemento id Popup carga lo devuelto, 
              * para conseguir la informacion de los ombues va a haber que hacer una llamada ajax sql
              * para levantar el resto de los datos y parsear la salida
              */
-            document.getElementById('popup').innerHTML =
-                    '<iframe seamless src="' + url + '"></iframe>';
+            
         }/*
-             * 
-             * Con este codigo se puede colocar los datos por encima del punto al tocar, 
-             * unico inconveniente es que hay que poner la capa de vectores como capa de wfs 
-             * ya que lo cargaría desde ahí los datos, se agrega el código relacionado que habilitaria poner icono
-             */ 
+         * 
+         * Con este codigo se puede colocar los datos por encima del punto al tocar, 
+         * unico inconveniente es que hay que poner la capa de vectores como capa de wfs 
+         * ya que lo cargaría desde ahí los datos, se agrega el código relacionado que habilitaria poner icono
+         */
         /* 
            var feature = map.forEachFeatureAtPixel(evt.pixel,
             function(feature) {
@@ -225,18 +234,17 @@ $('[name="interaction_type"]').on('click', function (e) {
 
 
 // rebuild interaction when the geometry type is changed
-$('#geom_type').on('change', function (e) {
+$('#regzona').on('click', function (e) {
     map.removeInteraction(draw_interaction);
-    addDrawInteraction();
+    addDrawInteraction('Polygon');
+});
+// rebuild interaction when the geometry type is changed
+$('#regpunto').on('click', function (e) {
+    map.removeInteraction(draw_interaction);
+    addDrawInteraction('Point');
 });
 
 
-// clear map and rebuild interaction when changed
-$('#data_type').onchange = function () {
-    clearMap();
-    map.removeInteraction(draw_interaction);
-    addDrawInteraction();
-};
 
 // build up modify interaction
 // needs a select and a modify interaction working together
@@ -247,7 +255,7 @@ function addModifyInteraction() {
     select_interaction = new ol.interaction.Select({
         // make sure only the desired layer can be selected
         layers: function (vector_layer) {
-            return vector_layer.get('name') === 'my_vectorlayer';
+            return vector_layer.get('name') === 'Puntos ombu';
         }
     });
     map.addInteraction(select_interaction);
@@ -300,16 +308,16 @@ function addModifyInteraction() {
 
 // creates a draw interaction
 
-function addDrawInteraction() {
+function addDrawInteraction(geom) {
     // remove other interactions
-    
+
     map.removeInteraction(select_interaction);
     map.removeInteraction(modify_interaction);
 
     // create the interaction
     draw_interaction = new ol.interaction.Draw({
         source: vector_layer.getSource(),
-        type: /** @type {ol.geom.GeometryType} */ ($('#geom_type').val())
+        type: /** @type {ol.geom.GeometryType} */ (geom)
     });
     // add it to the map
     map.addInteraction(draw_interaction);
@@ -327,41 +335,11 @@ function addDrawInteraction() {
          */
         event.feature.set("geom", event.feature.getGeometry());
         feature = event.feature;
-         $('#ubicacion').val(event.feature.getGeometry().getCoordinates());
-        saveData();
+        $('#ubicacion').val(event.feature.getGeometry().getCoordinates());
     });
 }
 
-// shows data in textarea
-// replace this function by what you need
-// habria que borrar ya que no se usa mas el textarea
-function saveData() {
-    // get the format the user has chosen
-    var data_type = $('#data_type').val(),
-            // define a format the data shall be converted to
-            format = new ol.format[data_type](),
-            // this will be the data in the chosen format
-            data;
 
-    try {
-        // convert the data of the vector_layer into the chosen format
-        data = format.writeFeatures(vector_layer.getSource().getFeatures());
-
-    } catch (e) {
-        // at time of creation there is an error in the GPX format (18.7.2014)
-        $('#data').val(e.name + ": " + e.message);
-        return;
-    }
-    if ($('#data_type').val() === 'GeoJSON') {
-        // format is JSON
-        $('#data').val(JSON.stringify(data, null, 4));
-
-    } else {
-        // format is XML (GPX or KML)
-        var serializer = new XMLSerializer();
-        $('#data').val(serializer.serializeToString(data));
-    }
-}
 
 // clear map when user clicks on 'Delete all features'
 $("#delete").click(function () {
@@ -392,29 +370,67 @@ function registrarOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
-        transactWFS('insert', feature);
+        transactWFS('insert', feature, formatGMLPunto);
+        alert("Realizado correctamente");
+        location.reload();
+    });
+}
+/*
+ * Funcion que registrauna zona de ombues y dsps hace el transaction insert
+ */
+function registrarZonaOmbu() {
+    var nombre = $("#nombre").val();
+    var descripcion = $("#descripcion").val();
+    var direccion = $("#direccion").val();
+    var ubicacion = $("#ubicacion").val();
+    var quees = 'zona';
+    $.post("Puntos/InsertPuntoOmbu", {
+        nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
+    }, function (responseText) {
+        feature.set("ombu_id", responseText);
+        transactWFS('insert', feature, formatGMLZona);
         alert("Realizado correctamente");
         location.reload();
     });
 }
 
+/*
+ * Funcion que devuelve el html con los datos del ombu padre
+ */
+function getOmbu(ombu_id) {
+    var id = ombu_id;
+    $.post("getombu", {
+        id: id
+    }, function (responseText) {
+        
+                    document.getElementById('popup').innerHTML =
+                   responseText;
+    });
+}
+
 var formatWFS = new ol.format.WFS();
-var formatGML = new ol.format.GML({
+var formatGMLPunto = new ol.format.GML({
     featureNS: 'ombues',
     featureType: 'punto_ombu',
     srsName: SRS
 });
-var transactWFS = function (p, f) {
+
+var formatGMLZona = new ol.format.GML({
+    featureNS: 'ombues',
+    featureType: 'zona_ombu',
+    srsName: SRS
+})
+var transactWFS = function (p, f, feature) {
     switch (p) {
         case 'insert':
-            node = formatWFS.writeTransaction([f], null, null, formatGML);
+            node = formatWFS.writeTransaction([f], null, null, feature);
             removeLowerCaseGeometryNodeForInsert(node);
             break;
         case 'update':
-            node = formatWFS.writeTransaction(null, [f], null, formatGML);
+            node = formatWFS.writeTransaction(null, [f], null, feature);
             break;
         case 'delete':
-            node = formatWFS.writeTransaction(null, null, [f], formatGML);
+            node = formatWFS.writeTransaction(null, null, [f], feature);
             break;
     }
     s = new XMLSerializer();
