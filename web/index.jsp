@@ -82,11 +82,11 @@ and open the template in the editor.
                                     <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
-                                    <label  for="text">DirecciÃ³n:</label>
+                                    <label  for="text">Dirección:</label>
                                     <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
-                                    <label  for="text">UbicaciÃ³n:</label>
+                                    <label  for="text">Ubicación:</label>
                                     <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
@@ -120,20 +120,24 @@ and open the template in the editor.
             </div>
         </footer>
         
-        <div style="display:none">
+        <div >
             <%@page import="Utils.ConfigManager"%>
-            <%@page import="java.util.Properties;" %>
-            <% ConfigManager configuracion = new ConfigManager();
-                   Properties propiedades = configuracion.getConfigFile("Config.properties");
+            <%@page import="java.util.Properties" %>
+            <% 
+                ConfigManager configuracion = new ConfigManager();
+                Properties propiedades = configuracion.getConfigFile("Config.properties");
             %>
-            <div id="url">
-                <%=propiedades.getProperty("urlGeoserver")%>
+            <div id="url_wfs">
+                <%=propiedades.getProperty("urlGeoserverWFS")%>
+            </div>
+            <div id="url_wms">
+                <%=propiedades.getProperty("urlGeoserverWMS")%>
             </div>
             <div id="srs">
                 <%=propiedades.getProperty("srs")%>
             </div>
         </div>
-
+        
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>

@@ -15,7 +15,8 @@ var   bounds,
         select_interaction,
         draw_interaction,
         modify_interaction,
-        urlGeoserver,
+        urlGeoserverWFS,
+        urlGeoserverWMS,
         SRS,
         wms_punto,
         vector_layer,
@@ -32,11 +33,11 @@ $(document).ready(function () {
 
 function loadVariables(){
     
-    urlGeoserver = $("#url").val();
-    SRS = $("#srs").val();
-    
+    urlGeoserverWFS = $("#url_wfs").text().trim();
+    SRS = $("#srs").text().trim();
+    urlGeoserverWMS = $("#url_wms").text().trim();
     wms_punto = new ol.source.TileWMS({
-        url: urlGeoserver + '/wms',
+        url: urlGeoserverWMS,// + '/wms',
         params: {'LAYERS': 'ombues:punto_ombu'},
         serverType: 'geoserver',
         crossOrigin: 'anonymous'
@@ -419,7 +420,7 @@ var transactWFS = function (p, f) {
     s = new XMLSerializer();
     str = s.serializeToString(node);
     console.log(str);
-    $.ajax( urlGeoserver + '/wfs', {
+    $.ajax( urlGeoserverWFS,{ // + '/wfs', {
         type: 'POST',
         dataType: 'xml',
         processData: false,

@@ -25,7 +25,6 @@ public class PuntoOmbu implements java.io.Serializable {
     private Integer id;
     private Ombues ombues;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
     private Serializable geom;
 
     public PuntoOmbu() {
