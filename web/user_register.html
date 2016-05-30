@@ -14,24 +14,37 @@ and open the template in the editor.
         <link rel="stylesheet" href="media/css/main.css">
         <link rel="stylesheet" href="media/font-awesome-4.6.3/css/font-awesome.min.css">
     </head>
-    <body>
-        <section id="content" style="width:70%; margin:auto;">
+    <body  style="background-image: url('media/images/wallpaper.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center; background-attachment: fixed;">
+        
+        <nav class="navbar navbar-inverse custom_bar">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Ombues TSIG</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span><span class="nav_hide"> Sign Up</span></a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"> Login</span></a></li>
+                </ul>
+            </div>
+        </nav>
+        
+        <section id="content" class="section_user_register">
 
                 <div class="page page-forms-common">
 
-                    <div class="pageheader">
+                    <!--div class="pageheader">
 
                         <h2>Ombues <span> Tsig</span></h2>
 
                         <a href="#" class="btn btn-orange btn-rounded mb-10 right">Ombues</a>
 
-                    </div>
+                    </div-->
                      <!-- row -->
                     <div class="row">
                         <!-- col -->
                         <div class="col-md-12">
                         <!-- tile -->
-                            <section class="tile">
+                            <section class="tile tile_user_register">
                               <!-- tile header -->
                                 <div class="tile-header dvd dvd-btm">
                                     <h1 class="custom-font"><strong>Nuevo </strong> Usuario</h1>
@@ -40,14 +53,14 @@ and open the template in the editor.
                                 <!-- tile body -->
                                 <div class="tile-body">
 
-                                    <form name='form' class="form-horizontal" role="form">
+                                    <form name='form' class="form-horizontal" role="form" action="UserRegister" method="post">
 
                                         <div class="form-group col-md-12 legend"> <h4><strong>Informacion</strong> Basica</h4> <p></p> </div><br><br><br>
 
                                         <div class="form-group">
-                                            <label for="advertiserName" class="col-sm-2 control-label">* Nombre</label>
+                                            <label for="userName" class="col-sm-2 control-label">* Nombre</label>
                                             <div class="col-sm-10">
-                                                <input type="text" name="advertiserName" id="advertiserName" class="form-control" id="advertiserName" required>
+                                                <input type="text" name="userName" class="form-control" id="userName" required>
                                                 <span class="help-block">Nombre de usuario es requerido</span>
                                             </div>
                                         </div>
@@ -57,7 +70,7 @@ and open the template in the editor.
                                         <div class="form-group">
                                             <label for="contactName" class="col-sm-2 control-label">* Contacto</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="contactName" id="contactName" class="form-control" id="contactName" required>
+                                                <input type="text" class="form-control" name="contactName" id="contactName" required>
                                                 <span class="help-block">Nombre de Contacto es requerido</span>
                                             </div>
                                         </div>
@@ -68,7 +81,7 @@ and open the template in the editor.
                                         
                                           <label for="emailAddress" class="col-sm-2 control-label">* Email</label>
                                             <div class="col-sm-10">
-                                                <input type="email" class="form-control" name="emailAddress" id="emailAddress" class="form-control" required>
+                                                <input type="email" class="form-control" name="emailAddress" id="emailAddress" required>
                                                 <span class="help-block">Email es requerido</span>
                                                 <!--<span class="help-block">Not valid Email</span>-->
                                             </div>
@@ -78,17 +91,17 @@ and open the template in the editor.
                                         <div class="form-group col-md-12 legend"> <h4><strong>Seguridad </strong> Contraseña</h4> <p></p> </div><br><br><br>
 
                                         <div class="form-group">
-                                            <label for="contactName" class="col-sm-2 control-label">* Contraseña</label>
+                                            <label for="password" class="col-sm-2 control-label">* Contraseña</label>
                                             <div class="col-sm-10">
-                                                <input type="password" class="form-control" name="password" id="password" class="form-control" id="password" required>
+                                                <input type="password" class="form-control" name="password" id="password" required>
                                                 <span class="help-block">Contraseña es requerida</span>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="contactName" class="col-sm-2 control-label">* Confirmacion</label>
+                                            <label for="passwordConfirm" class="col-sm-2 control-label">* Confirmacion</label>
                                             <div class="col-sm-10">
-                                                <input type="password" class="form-control" name="re-password" id="re-password" class="form-control" id="re-password" required>
+                                                <input type="password" class="form-control" name="passwordConfirm" id="passwordConfirm" required>
                                                 <span class="help-block">Requerido</span>
                                             </div>
                                         </div>
@@ -102,7 +115,7 @@ and open the template in the editor.
 
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input type="checkbox" value="">
+                                                        <input type="checkbox" value="" name="allowLocation" id="allowLocation" >
                                                         Permitir conocer mi ubicacion
                                                     </label>
                                                 </div>
@@ -133,7 +146,7 @@ and open the template in the editor.
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <a href="#" class="btn btn-lightred">Cancelar</a>
-                                                <button class="btn btn-default">Alla Vamos!</button>
+                                                <input type="submit" class="btn btn-default" value="Alla Vamos!" />
                                             </div>
                                         </div>
                                     </form>

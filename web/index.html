@@ -6,127 +6,149 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>OMBUES</title>
+        <title>Ombues - Registro de usuario</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="media/css/bootstrap.css">
         <link rel="stylesheet" href="media/OpenLayers-3.15.1/ol.css" type="text/css">
         <link rel="stylesheet" href="media/css/main.css">
+        <link rel="stylesheet" href="media/font-awesome-4.6.3/css/font-awesome.min.css">
     </head>
     <body>
-        <!-- Wrap all page content here -->
-        <div id="wrap">
-            <header>
-                <nav class="navbar navbar-inverse">
-                    <div class="container-fluid">
-                        <div class="navbar-header">
-                            <a class="navbar-brand" href="#">Ombues TSIG</a>
-                        </div>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                        </ul>
+        <section id="content" style="width:70%; margin:auto;">
+
+                <div class="page page-forms-common">
+
+                    <div class="pageheader">
+
+                        <h2>Ombues <span> Tsig</span></h2>
+
+                        <a href="#" class="btn btn-orange btn-rounded mb-10 right">Ombues</a>
+
                     </div>
-                </nav>
-            </header>
-            <div class="col-lg-3">
-                <div class="tabbable">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
-                        <li><a href="#pane2" data-toggle="tab" id="regpunto">Registrar ombu</a></li>
-                        <li><a href="#pane3" data-toggle="tab" id="regzona">Registrar zona de ombues</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <!-- Informacion de punto -->
-                        <div id="pane1" class="tab-pane active">
-                            <!-- <button onclick="actualInfo()">Actual Info</button> -->
-                            <div>
-                                <label>Interaction type:  &nbsp;</label>
-                                <label>draw</label>
-                                <input type="radio" id="interaction_type_draw" name="interaction_type" value="draw" checked>
-                                <label>modify</label>
-                                <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
-                            </div>
-                            
+                     <!-- row -->
+                    <div class="row">
+                        <!-- col -->
+                        <div class="col-md-12">
+                        <!-- tile -->
+                            <section class="tile">
+                              <!-- tile header -->
+                                <div class="tile-header dvd dvd-btm">
+                                    <h1 class="custom-font"><strong>Nuevo </strong> Usuario</h1>
+                                </div>
+                                <!-- /tile header -->
+                                <!-- tile body -->
+                                <div class="tile-body">
+
+                                    <form name='form' class="form-horizontal" role="form">
+
+                                        <div class="form-group col-md-12 legend"> <h4><strong>Informacion</strong> Basica</h4> <p></p> </div><br><br><br>
+
+                                        <div class="form-group">
+                                            <label for="advertiserName" class="col-sm-2 control-label">* Nombre</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="advertiserName" id="advertiserName" class="form-control" id="advertiserName" required>
+                                                <span class="help-block">Nombre de usuario es requerido</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr class="line-dashed line-full"/>
+
+                                        <div class="form-group">
+                                            <label for="contactName" class="col-sm-2 control-label">* Contacto</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="contactName" id="contactName" class="form-control" id="contactName" required>
+                                                <span class="help-block">Nombre de Contacto es requerido</span>
+                                            </div>
+                                        </div>
+
+                                        <hr class="line-dashed line-full"/>
+
+                                        <div class="form-group">
+                                        
+                                          <label for="emailAddress" class="col-sm-2 control-label">* Email</label>
+                                            <div class="col-sm-10">
+                                                <input type="email" class="form-control" name="emailAddress" id="emailAddress" class="form-control" required>
+                                                <span class="help-block">Email es requerido</span>
+                                                <!--<span class="help-block">Not valid Email</span>-->
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        <div class="form-group col-md-12 legend"> <h4><strong>Seguridad </strong> Contraseña</h4> <p></p> </div><br><br><br>
+
+                                        <div class="form-group">
+                                            <label for="contactName" class="col-sm-2 control-label">* Contraseña</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" name="password" id="password" class="form-control" id="password" required>
+                                                <span class="help-block">Contraseña es requerida</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="contactName" class="col-sm-2 control-label">* Confirmacion</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" name="re-password" id="re-password" class="form-control" id="re-password" required>
+                                                <span class="help-block">Requerido</span>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group col-md-12 legend"> <h4><strong>Extra</strong></h4> <p></p> </div><br><br><br>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-10">
+
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="">
+                                                        Permitir conocer mi ubicacion
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--<hr class="line-dashed line-full"/>
+
+
+                                        <div class="form-group">
+                                            <label for="message" class="col-sm-2 control-label"> Comments </label>
+                                            <div class="col-sm-10">
+                                                <textarea class="form-control" rows="5" name="message" id="message" placeholder="Write your comments..."></textarea>
+                                            </div>
+                                        </div>
+
+                                        <hr class="line-dashed line-full"/>
+
+                                        <div class="form-group">
+                                            <label for="input04" class="col-sm-2 control-label">External Reference</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="input04" ng-model="vm.adv.externalref">
+                                            </div>
+                                        </div>-->
+
+                                        <hr class="line-dashed line-full"/>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <a href="#" class="btn btn-lightred">Cancelar</a>
+                                                <button class="btn btn-default">Alla Vamos!</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /tile body -->
+                            </section>
+                            <!-- /tile -->
                         </div>
-                        <!-- Registrar ombu -->
-                        <div id="pane2" class="tab-pane">
-                            <div class="form-vertical" role="form">
-                                <div class="form-group">
-                                    <label  for="text">Nombre:</label>
-                                    <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Descripcion:</label>
-                                    <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Dirección:</label>
-                                    <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Ubicación:</label>
-                                    <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Que es?</label>
-                                    <select class="form-control" id="categoria">
-                                        <option>Ombu</option>
-                                        <option>Referencia</option>
-                                    </select>
-                                </div>
-                                <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
-                            </div>
-                            <div id="myResult"></div>
-                        </div>
-                        <!-- Registrar zona ombu -->
-                        <div id="pane3" class="tab-pane">
-                            <div class="form-vertical" role="form">
-                                <div class="form-group">
-                                    <label  for="text">Nombre:</label>
-                                    <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Descripcion:</label>
-                                    <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Dirección:</label>
-                                    <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Ubicación:</label>
-                                    <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
-                            </div>
-                            <div id="myResult"></div>
-                        </div>
+                        <!-- /col -->
                     </div>
-                </div>
-            </div>
-
-            <div class="col-lg-9">
-                <div style="width: 100%; height: 150%" id="map">
-                    <div id="popup" class="ol-popup">
-                        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                        <div id="popup"></div>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- Wrap Div end -->
-        <footer id="footer">
-            <div class="container">
-                <p class="text-muted credit">Copyright Grupo 13</p>
-            </div>
-        </footer>
-
-
+                    <!-- /row -->
+               </div>
+        </section>
+<!--/ CONTENT -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="media/OpenLayers-3.15.1/ol.js" type="text/javascript"></script>
-        <script src="media/js/mapa.js" type="text/javascript"></script>
-
     </body>
 </html>

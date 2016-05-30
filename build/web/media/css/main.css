@@ -41,8 +41,8 @@ body {
   margin: 20px 0;
 }
 
-@charset "UTF-8";
-@import url(http://fonts.googleapis.com/css?family=Dosis:300,700|Ubuntu+Mono|Lato:300,400,700,300italic,400italic&subset=latin,latin-ext);
+/*@charset "UTF-8";
+@import url(http://fonts.googleapis.com/css?family=Dosis:300,700|Ubuntu+Mono|Lato:300,400,700,300italic,400italic&subset=latin,latin-ext);*/
 .page {
   padding: 20px;
 }
@@ -4939,7 +4939,7 @@ color: #939CA2;
 }
 
 .form-group.legend h1, .form-group.legend h2, .form-group.legend h3, .form-group.legend h4, .form-group.legend h5, .form-group.legend h6 {
-  color: #428bca;
+  color: green;
   margin-bottom: 3px;
   margin-top: 20px;
 }
@@ -17790,4 +17790,32 @@ table .delete a, table .delete small{
 .export{
   margin: 0px 0px !important;
   padding: 9px !important;
+}
+
+.section_user_register{
+    width:85% !important;
+    margin:auto;
+    margin-top:-2%;
+}
+
+.tile_user_register{
+    padding: 5px;
+    border-radius: 3px;
+    padding: 8px;
+}
+
+.custom_bar{
+    max-height: 30px;
+}
+
+@media screen and (max-width: 770px) {
+    .nav_hide{
+        display:none;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .section_user_register{
+        width:100% !important;
+    }
 }
