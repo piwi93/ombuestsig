@@ -1,3 +1,5 @@
+<%@page import="ControladoresDAO.PuntoOmbuController"%>
+<%@page import="Entities.Categoria"%>
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -12,19 +14,20 @@ and open the template in the editor.
         <link rel="stylesheet" href="media/css/bootstrap.css">
         <link rel="stylesheet" href="media/OpenLayers-3.15.1/ol.css" type="text/css">
         <link rel="stylesheet" href="media/css/main.css">
+        <link rel="stylesheet" href="media/font-awesome-4.6.3/css/font-awesome.min.css">
     </head>
     <body>
         <!-- Wrap all page content here -->
         <div id="wrap">
             <header>
-                <nav class="navbar navbar-inverse">
+                <nav class="navbar navbar-inverse custom_bar">
                     <div class="container-fluid">
                         <div class="navbar-header">
                             <a class="navbar-brand" href="#">Ombues TSIG</a>
                         </div>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-user"></span><span class="nav_hide"> Sign Up</span></a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"> Login</span></a></li>
                         </ul>
                     </div>
                 </nav>
@@ -47,7 +50,7 @@ and open the template in the editor.
                                 <label>modify</label>
                                 <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
                             </div>
-                            
+
                         </div>
                         <!-- Registrar ombu -->
                         <div id="pane2" class="tab-pane">
@@ -61,18 +64,22 @@ and open the template in the editor.
                                     <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
-                                    <label  for="text">Direcci贸n:</label>
+                                    <label  for="text">Direcci髇:</label>
                                     <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
-                                    <label  for="text">Ubicaci贸n:</label>
+                                    <label  for="text">Ubicaci髇:</label>
                                     <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
                                     <label  for="text">Que es?</label>
                                     <select class="form-control" id="categoria">
-                                        <option>Ombu</option>
-                                        <option>Referencia</option>
+                                        <%
+                                            PuntoOmbuController PoC = new PuntoOmbuController();
+                                            for (Categoria cat : PoC.categoriasList()) {
+                                        %>
+                                        <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
+                                        <% } %>
                                     </select>
                                 </div>
                                 <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
@@ -91,11 +98,11 @@ and open the template in the editor.
                                     <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
-                                    <label  for="text">Direcci贸n:</label>
+                                    <label  for="text">Direcci髇:</label>
                                     <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
-                                    <label  for="text">Ubicaci贸n:</label>
+                                    <label  for="text">Ubicaci髇:</label>
                                     <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
@@ -121,6 +128,24 @@ and open the template in the editor.
                 <p class="text-muted credit">Copyright Grupo 13</p>
             </div>
         </footer>
+
+        <div style="display: none">
+            <%@page import="Utils.ConfigManager"%>
+            <%@page import="java.util.Properties" %>
+            <%
+                ConfigManager configuracion = new ConfigManager();
+                Properties propiedades = configuracion.getConfigFile("Config.properties");
+            %>
+            <div id="url_wfs">
+                <%=propiedades.getProperty("urlGeoserverWFS")%>
+            </div>
+            <div id="url_wms">
+                <%=propiedades.getProperty("urlGeoserverWMS")%>
+            </div>
+            <div id="srs">
+                <%=propiedades.getProperty("srs")%>
+            </div>
+        </div>
 
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>

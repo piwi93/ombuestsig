@@ -134,5 +134,16 @@ public class UsuariosJpaController implements Serializable {
             em.close();
         }
     }
+
+    public Usuarios findUsuariosxNick(String nick) {
+        EntityManager em=getEntityManager();
+        try{
+            Query qry=em.createQuery("SELECT a FROM Usuarios a WHERE a.nickname = :nick ");
+            qry.setParameter("nick",nick);
+            return (Usuarios) qry.getSingleResult();
+        }catch(Exception e){
+            throw e;
+        }
+    }
     
 }

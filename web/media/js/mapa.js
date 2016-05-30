@@ -8,91 +8,103 @@
  * 
  * Se definen las variables globales a utilizar en el sistema
  */
-var bounds,
-        map, view,
+var   bounds,
+        map, 
+        view,
         // make interactions global so they can later be removed
         select_interaction,
         draw_interaction,
-        modify_interaction;
-var content = document.getElementById('popup-content');
+        modify_interaction,
+        urlGeoserverWFS,
+        urlGeoserverWMS,
+        SRS,
+        wms_punto,
+        vector_layer,
+        content = document.getElementById('popup-content');
 
 /*
  * 
  * Se carga el mapa cuando termine de cargar la p'agina
  */
 $(document).ready(function () {
-    
+    loadVariables();
     loadMap();
 });
 
-// Crea una capa vectorial donde se modificaran los datos
-var vector_layer = new ol.layer.Vector({
-    name: 'Puntos ombu',
-    source: new ol.source.Vector({
-        params: {srs: 'EPSG:3857'}
-        /*format: new ol.format.GeoJSON(),
-         url: function (extent) {
-         return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
-         'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
-         'outputFormat=application/json&srsname=EPSG:3857&' +
-         'bbox=' + extent.join(',') + ',EPSG:3857';
-         },
-         strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
-         maxZoom: 19
-         }))*/
-    }),
-    /*
-     * Se define el estilo que tendra esta capa, en caso de cargar la capa por este medio
-     * acá abría que definir la logica de estilos pra cada categoria
-     */
-    style: new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(0, 0, 0, 0.8)'
+function loadVariables(){
+    
+    urlGeoserverWFS = $("#url_wfs").text().trim();
+    SRS = $("#srs").text().trim();
+    urlGeoserverWMS = $("#url_wms").text().trim();
+    wms_punto = new ol.source.TileWMS({
+        url: urlGeoserverWMS,// + '/wms',
+        params: {'LAYERS': 'ombues:punto_ombu'},
+        serverType: 'geoserver',
+        crossOrigin: 'anonymous'
+    });
+    
+    // Crea una capa vectorial donde se modificaran los datos
+    vector_layer = new ol.layer.Vector({
+        name: 'Puntos ombu',
+        source: new ol.source.Vector({
+            params: {srs: SRS}
+            /*format: new ol.format.GeoJSON(),
+            url: function (extent) {
+                return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
+                        'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
+                        'outputFormat=application/json&srsname=EPSG:3857&' +
+                        'bbox=' + extent.join(',') + ',EPSG:3857';
+            },
+            strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
+                maxZoom: 19
+            }))*/
         }),
-        stroke: new ol.style.Stroke({
-            color: '#ffcc33',
-            width: 2
-        }),
-        image: new ol.style.Circle({
-            radius: 7,
-            fill: new ol.style.Fill({
-                color: '#ffcc33'
-            })
-        })/*
-         Asi es como se definiria el icono si se cargara aca la capa de puntos
-         lo complicado seria ver la logica por cada tipo de punto
-         image: new ol.style.Icon( ({
-         anchor: [0.5, 46],
-         anchorXUnits: 'fraction',
-         anchorYUnits: 'pixels',
-         src: 'data/icon.png'
-         }))
+        /*
+         * Se define el estilo que tendra esta capa, en caso de cargar la capa por este medio
+         * acá abría que definir la logica de estilos pra cada categoria
          */
-    })
-});
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: 'rgba(0, 0, 0, 0.8)'
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#ffcc33',
+                width: 2
+            }),
+            image: new ol.style.Circle({
+                radius: 7,
+                fill: new ol.style.Fill({
+                    color: '#ffcc33'
+                })
+            })/*
+         Asi es como se definiria el icono si se cargara aca la capa de puntos
+        lo complicado seria ver la logica por cada tipo de punto
+                image: new ol.style.Icon( ({
+          anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: 'data/icon.png'
+        }))
+             */
+        })
+    });
+}
+
+ 
 
 view = new ol.View({
-    center: [-6252047.295729297, -4147996.053508715],
-    zoom: 15
-});
+        center: [-6252047.295729297, -4147996.053508715],
+        zoom: 15
+    });
+    
 
-/*
- * 
- * Capa wms con los puntos ombus para poder consuiltar los datos de la misma
- */
-var wms_punto = new ol.source.TileWMS({
-    url: 'http://localhost:8084/geoserver/wms',
-    params: {'LAYERS': 'ombues:punto_ombu,ombues:zona_ombu'},
-    serverType: 'geoserver',
-    crossOrigin: 'anonymous'
-});
 /*
  * 
  * funcion que carga el mapa, lo define, le carga el srs resolucion, y el target
  */
 
 function loadMap() {
-
+   
     bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
     map = new ol.Map({
         layers: [
@@ -115,7 +127,7 @@ function loadMap() {
         target: 'map',
         maxExtent: bounds,
         maxResolution: 0.703125,
-        projection: "EPSG:3857",
+        projection: SRS,
         units: 'm',
         view: view
     });
@@ -132,20 +144,20 @@ function loadMap() {
      *Este es el codigo necesario para poder utilizar lo del icono una vez se defina como vector layer
      */
     /*
-     var element = document.getElementById('popup');
-     
-     var popup = new ol.Overlay({
-     element: element,
-     positioning: 'bottom-center',
-     stopEvent: false
-     });
-     map.addOverlay(popup);
-     */
+    var element = document.getElementById('popup');
+
+      var popup = new ol.Overlay({
+        element: element,
+        positioning: 'bottom-center',
+        stopEvent: false
+      });
+      map.addOverlay(popup);
+ */
     map.on('singleclick', function (evt) {
         document.getElementById('popup').innerHTML = '';
         var viewResolution = /** @type {number} */ (view.getResolution());
         var url = wms_punto.getGetFeatureInfoUrl(
-                evt.coordinate, viewResolution, 'EPSG:3857',
+                evt.coordinate, viewResolution, SRS,
                 {'INFO_FORMAT': 'application/json',
                     'propertyName': 'ombu_id'});
 
@@ -175,21 +187,21 @@ function loadMap() {
          * ya que lo cargaría desde ahí los datos, se agrega el código relacionado que habilitaria poner icono
          */
         /* 
-         var feature = map.forEachFeatureAtPixel(evt.pixel,
-         function(feature) {
-         return feature;
-         });
-         if (feature) {
-         popup.setPosition(evt.coordinate);
-         $(element).popover({
-         'placement': 'top',
-         'html': true,
-         'content': feature.get('name')
-         });
-         $(element).popover('show');
-         } else {
-         $(element).popover('destroy');
-         }
+           var feature = map.forEachFeatureAtPixel(evt.pixel,
+            function(feature) {
+              return feature;
+            });
+        if (feature) {
+          popup.setPosition(evt.coordinate);
+          $(element).popover({
+            'placement': 'top',
+            'html': true,
+            'content': feature.get('name')
+          });
+          $(element).popover('show');
+        } else {
+          $(element).popover('destroy');
+        }
          */
     });
 }
@@ -400,13 +412,13 @@ var formatWFS = new ol.format.WFS();
 var formatGMLPunto = new ol.format.GML({
     featureNS: 'ombues',
     featureType: 'punto_ombu',
-    srsName: 'EPSG:3857'
+    srsName: SRS
 });
 
 var formatGMLZona = new ol.format.GML({
     featureNS: 'ombues',
     featureType: 'zona_ombu',
-    srsName: 'EPSG:3857'
+    srsName: SRS
 })
 var transactWFS = function (p, f, feature) {
     switch (p) {
@@ -424,7 +436,7 @@ var transactWFS = function (p, f, feature) {
     s = new XMLSerializer();
     str = s.serializeToString(node);
     console.log(str);
-    $.ajax('http://localhost:8084/geoserver/wfs', {
+    $.ajax( urlGeoserverWFS,{ // + '/wfs', {
         type: 'POST',
         dataType: 'xml',
         processData: false,
