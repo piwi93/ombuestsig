@@ -1,3 +1,5 @@
+<%@page import="ControladoresDAO.PuntoOmbuController"%>
+<%@page import="Entities.Categoria"%>
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -47,7 +49,7 @@ and open the template in the editor.
                                 <label>modify</label>
                                 <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
                             </div>
-                            
+
                         </div>
                         <!-- Registrar ombu -->
                         <div id="pane2" class="tab-pane">
@@ -71,8 +73,12 @@ and open the template in the editor.
                                 <div class="form-group">
                                     <label  for="text">Que es?</label>
                                     <select class="form-control" id="categoria">
-                                        <option>Ombu</option>
-                                        <option>Referencia</option>
+                                        <%
+                                            PuntoOmbuController PoC = new PuntoOmbuController();
+                                            for (Categoria cat : PoC.categoriasList()) {
+                                        %>
+                                        <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
+                                        <% } %>
                                     </select>
                                 </div>
                                 <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
@@ -121,11 +127,11 @@ and open the template in the editor.
                 <p class="text-muted credit">Copyright Grupo 13</p>
             </div>
         </footer>
-        
+
         <div style="display: none">
             <%@page import="Utils.ConfigManager"%>
             <%@page import="java.util.Properties" %>
-            <% 
+            <%
                 ConfigManager configuracion = new ConfigManager();
                 Properties propiedades = configuracion.getConfigFile("Config.properties");
             %>
@@ -139,7 +145,7 @@ and open the template in the editor.
                 <%=propiedades.getProperty("srs")%>
             </div>
         </div>
-        
+
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>

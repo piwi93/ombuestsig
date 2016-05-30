@@ -5,21 +5,22 @@
  */
 package Servlets;
 
-import Entities.Ombues;
+import Utils.EstadoSesion;
 import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Galvadion
+ * @author nico
  */
-@WebServlet(name = "InsertPuntoOmbu", urlPatterns = {"/Puntos/InsertPuntoOmbu"})
-public class InsertPuntoOmbu extends HttpServlet {
+@WebServlet(name = "LogOut", urlPatterns = {"/salir"})
+public class LogOut extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,19 +33,12 @@ public class InsertPuntoOmbu extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet InsertPuntoOmbu</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet InsertPuntoOmbu at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        request.getSession().setAttribute("estado_sesion", EstadoSesion.NO_LOGIN);
+        request.getSession().setAttribute("usuario_logueado", "");
+        request.setAttribute("usuario", null);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/inicio.jsp");
+        dispatcher.forward(request, response);
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -73,23 +67,7 @@ public class InsertPuntoOmbu extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String nombre=request.getParameter("nombre");
-        String descripcion = request.getParameter("descripcion");
-        String direccion= request.getParameter("direccion");
-        String ubicacion=request.getParameter("ubicacion");
-        Integer quees=Integer.parseInt(request.getParameter("quees"));
-        Ombues ombu=new Ombues();
-        ombu.setNombre(nombre);
-        ombu.setDescripcion(descripcion);
-        ombu.setDireccion(direccion);
-        ombu.setUbicacion(ubicacion);
-        
-        ControladoresDAO.PuntoOmbuController PuC=new ControladoresDAO.PuntoOmbuController();
-        ombu.setIdCategoria(PuC.getCategoriaxId(quees));
-        try(PrintWriter out = response.getWriter()) {
-            out.println( PuC.crearPuntoOmbu(ombu));
-        }
-       
+        processRequest(request, response);
     }
 
     /**
@@ -102,5 +80,4 @@ public class InsertPuntoOmbu extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    
 }
