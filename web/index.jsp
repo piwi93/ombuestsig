@@ -1,3 +1,6 @@
+<%@page import="Entities.Usuarios"%>
+<%@page import="ControladoresDAO.UsuarioController"%>
+<%@page import="Utils.EstadoSesion"%>
 <%@page import="ControladoresDAO.PuntoOmbuController"%>
 <%@page import="Entities.Categoria"%>
 <!DOCTYPE html>
@@ -18,6 +21,18 @@ and open the template in the editor.
     </head>
     <body>
         <!-- Wrap all page content here -->
+        <%
+            session = request.getSession();
+            Usuarios user=null;
+            boolean logeado=false;
+            try {
+                if (session.getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
+                    UsuarioController UC = new UsuarioController();
+                    user=UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
+                    logeado=true;
+                }
+            } catch (Exception e) {
+            }%>
         <div id="wrap">
             <header>
                 <nav class="navbar navbar-inverse custom_bar">
@@ -25,9 +40,14 @@ and open the template in the editor.
                         <div class="navbar-header">
                             <a class="navbar-brand" href="#">Ombues TSIG</a>
                         </div>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span><span class="nav_hide"> Sign Up</span></a></li>
+                        <ul class="nav navbar-nav navbar-right"> 
+                            <% if(logeado){ %>
+                                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"><%=user.getNickname()%> </span></a></li>
+                                <li><a href="salir"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide">Salir</span></a></li>
+                         <%   }else{ %>
+                            <li><a href="userRegister"><span class="glyphicon glyphicon-user"></span><span class="nav_hide"> Sign Up</span></a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"> Login</span></a></li>
+                            <% }%>
                         </ul>
                     </div>
                 </nav>
@@ -36,8 +56,10 @@ and open the template in the editor.
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
+                         <% if(logeado){ %>
                         <li><a href="#pane2" data-toggle="tab" id="regpunto">Registrar ombu</a></li>
                         <li><a href="#pane3" data-toggle="tab" id="regzona">Registrar zona de ombues</a></li>
+                        <% } %>
                     </ul>
                     <div class="tab-content">
                         <!-- Informacion de punto -->

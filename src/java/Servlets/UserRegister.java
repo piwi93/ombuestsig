@@ -5,18 +5,24 @@
  */
 package Servlets;
 
+import ControladoresDAO.UsuarioController;
 import Entities.Usuarios;
+import Utils.Crypto;
+import Utils.EstadoSesion;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author RedMasPc
  */
+@WebServlet(urlPatterns = {"/userRegister"})
 public class UserRegister extends HttpServlet {
 
     /**
@@ -36,7 +42,7 @@ public class UserRegister extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UserRegister</title>");            
+            out.println("<title>Servlet UserRegister</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet UserRegister at " + request.getContextPath() + "</h1>");
@@ -57,7 +63,7 @@ public class UserRegister extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("/WEB-INF/user_register.html").forward(request, response);
     }
 
     /**
@@ -74,10 +80,16 @@ public class UserRegister extends HttpServlet {
         //processRequest(request, response);
         String userName = request.getParameter("userName");
         String userPassword = request.getParameter("password");
-        
-        Usuarios user =new Usuarios();
+        Crypto encript = new Crypto();
+        Usuarios user = new Usuarios();
         user.setNickname(userName);
-        user.setPassword(userPassword);
+        user.setPassword(encript.generatePwd(userPassword));
+        UsuarioController UC = new UsuarioController();
+        UC.createUser(user);
+        HttpSession objSesion = request.getSession();
+        objSesion.setAttribute("usuario_logueado", user.getNickname());
+        objSesion.setAttribute("estado_sesion", EstadoSesion.LOGIN_CORRECTO);
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 
     /**
