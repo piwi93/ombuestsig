@@ -6,8 +6,10 @@
 package Entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,6 +41,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ombues.findByUbicacion", query = "SELECT o FROM Ombues o WHERE o.ubicacion = :ubicacion"),
     @NamedQuery(name = "Ombues.findByExternalRef", query = "SELECT o FROM Ombues o WHERE o.externalRef = :externalRef")})
 public class Ombues implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idOmbu")
+    private Collection<Imagenes> imagenesCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -149,6 +154,15 @@ public class Ombues implements Serializable {
     @Override
     public String toString() {
         return "Entities.Ombues[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Imagenes> getImagenesCollection() {
+        return imagenesCollection;
+    }
+
+    public void setImagenesCollection(Collection<Imagenes> imagenesCollection) {
+        this.imagenesCollection = imagenesCollection;
     }
     
 }
