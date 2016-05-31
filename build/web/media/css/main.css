@@ -17804,16 +17804,6 @@ table .delete a, table .delete small{
     padding: 8px;
 }
 
-.custom_bar{
-    max-height: 30px;
-}
-
-@media screen and (max-width: 770px) {
-    .nav_hide{
-        display:none;
-    }
-}
-
 @media screen and (max-width: 500px) {
     .section_user_register{
         width:100% !important;

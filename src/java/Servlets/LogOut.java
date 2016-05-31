@@ -36,9 +36,9 @@ public class LogOut extends HttpServlet {
         request.getSession().setAttribute("estado_sesion", EstadoSesion.NO_LOGIN);
         request.getSession().setAttribute("usuario_logueado", "");
         request.setAttribute("usuario", null);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-        dispatcher.forward(request, response);
-        
+        response.sendRedirect("/TSIG");
+        //RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+        //dispatcher.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

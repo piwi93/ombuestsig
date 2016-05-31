@@ -1,9 +1,13 @@
+<%-- 
+    Document   : user_register
+    Created on : 31/05/2016, 06:10:28 PM
+    Author     : RedMasPc
+--%>
+<%@page import="Entities.Usuarios"%>
+<%@page import="ControladoresDAO.UsuarioController"%>
+<%@page import="Utils.EstadoSesion"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <title>Ombues - Registro de usuario</title>
@@ -15,19 +19,42 @@ and open the template in the editor.
         <link rel="stylesheet" href="media/font-awesome-4.6.3/css/font-awesome.min.css">
     </head>
     <body  style="background-image: url('media/images/wallpaper.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center; background-attachment: fixed;">
-        
-        <nav class="navbar navbar-inverse custom_bar">
+        <%
+            session = request.getSession();
+            Usuarios user = null;
+            boolean logeado = false;
+            try {
+                if (session.getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
+                    UsuarioController UC = new UsuarioController();
+                    user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
+                    logeado = true;
+                }
+            } catch (Exception e) {
+            }
+        %>
+        <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Ombues TSIG</a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>                        
+                    </button>
+                    <a class="navbar-brand" href="/TSIG">Ombues TSIG</a>
                 </div>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span><span class="nav_hide"> Sign Up</span></a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"> Login</span></a></li>
-                </ul>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right"> 
+                      <% if (logeado) {%>
+                        <li><a href=""><span class="glyphicon glyphicon-user"></span> <%=user.getNickname()%></a></li>
+                        <li><a href="salir"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
+                      <%   } else { %>
+                        <li><a href="/TSIG"><span class="glyphicon glyphicon-tree-deciduous"></span> Ombues</span></a></li>
+                      <% }%>
+                    </ul>
+                </div>
             </div>
         </nav>
-        
+
         <section id="content" class="section_user_register">
 
                 <div class="page page-forms-common">
@@ -145,7 +172,7 @@ and open the template in the editor.
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
-                                                <a href="#" class="btn btn-lightred">Cancelar</a>
+                                                <a href="/TSIG" class="btn btn-lightred">Cancelar</a>
                                                 <input type="submit" class="btn btn-default" value="Alla Vamos!" />
                                             </div>
                                         </div>
