@@ -23,13 +23,13 @@ and open the template in the editor.
         <!-- Wrap all page content here -->
         <%
             session = request.getSession();
-            Usuarios user=null;
-            boolean logeado=false;
+            Usuarios user = null;
+            boolean logeado = false;
             try {
                 if (session.getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
                     UsuarioController UC = new UsuarioController();
-                    user=UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
-                    logeado=true;
+                    user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
+                    logeado = true;
                 }
             } catch (Exception e) {
             }%>
@@ -41,13 +41,13 @@ and open the template in the editor.
                             <a class="navbar-brand" href="#">Ombues TSIG</a>
                         </div>
                         <ul class="nav navbar-nav navbar-right"> 
-                            <% if(logeado){ %>
-                                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"><%=user.getNickname()%> </span></a></li>
-                                <li><a href="salir"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide">Salir</span></a></li>
-                         <%   }else{ %>
+                            <% if (logeado) {%>
+                            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"><%=user.getNickname()%> </span></a></li>
+                            <li><a href="salir"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide">Salir</span></a></li>
+                                        <%   } else { %>
                             <li><a href="userRegister"><span class="glyphicon glyphicon-user"></span><span class="nav_hide"> Sign Up</span></a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"> Login</span></a></li>
-                            <% }%>
+                            <li><a href="#modalLogIn" data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"> Login</span></a></li>
+                                        <% }%>
                         </ul>
                     </div>
                 </nav>
@@ -56,15 +56,15 @@ and open the template in the editor.
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
-                         <% if(logeado){ %>
+                            <% if (logeado) { %>
                         <li><a href="#pane2" data-toggle="tab" id="regpunto">Registrar ombu</a></li>
                         <li><a href="#pane3" data-toggle="tab" id="regzona">Registrar zona de ombues</a></li>
-                        <% } %>
+                            <% } %>
                     </ul>
                     <div class="tab-content">
                         <!-- Informacion de punto -->
                         <div id="pane1" class="tab-pane active">
-                            <!-- <button onclick="actualInfo()">Actual Info</button> -->
+                            <button onclick="getLocation()">Actual Info</button> 
                             <div>
                                 <label>Interaction type:  &nbsp;</label>
                                 <label>draw</label>
@@ -174,6 +174,59 @@ and open the template in the editor.
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="media/OpenLayers-3.15.1/ol.js" type="text/javascript"></script>
         <script src="media/js/mapa.js" type="text/javascript"></script>
-
-    </body>
+        <div class="modal fade" id="modalInfo" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Informacion del ombu</h4>
+                    </div>
+                    <div class="modal-body" id="info-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>  
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->    
+            <div class="modal fade" id="modalLogIn" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Log In</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form"  action="iniciar-sesion" method="POST">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="text">Usuario:</label>
+                        <div class="col-sm-8">
+                            <INPUT type="text" class="form-control" id="cuadroTxtLogin" name="txtNick" value="" size="50"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="text">Contraseña:</label>
+                        <div class="col-sm-8">
+                            <INPUT type="password" class="form-control" id="cuadroTxtLogin" name="txtPwd" value="" size="50"/>
+                        </div>
+                    </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10"><INPUT type='submit' id='btnLogin' class='btn btn-primary' name='btnLogIn' Value='Iniciar sesión' onclick='Submit()'/></div>
+                        </div>
+                    
+                    <%
+                        session =request.getSession();
+                        if(session.getAttribute("estado_sesion") == EstadoSesion.LOGIN_INCORRECTO){
+                            session.setAttribute("estado_sesion",EstadoSesion.NO_LOGIN);
+                            %><p style='font-size:11px; display:inline-block'>Usuario o contraseña incorrecta.</p>
+                           <%  
+                        }%>
+                </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>  
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</body>
 </html>

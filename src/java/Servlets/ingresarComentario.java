@@ -6,14 +6,13 @@
 package Servlets;
 
 import ControladoresDAO.PuntoOmbuController;
-import DAO.OmbuesJpaController;
-import Entities.Comentario;
+import ControladoresDAO.UsuarioController;
 import Entities.Ombues;
-import Utils.EstadoSesion;
+import Entities.Usuarios;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import javax.persistence.Persistence;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Diego
  */
-@WebServlet(name = "GetOmbu", urlPatterns = {"/getombu"})
-public class GetOmbu extends HttpServlet {
+@WebServlet(name = "ingresarComentario", urlPatterns = {"/ingresarComentario"})
+public class ingresarComentario extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,7 +37,19 @@ public class GetOmbu extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ingresarComentario</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ingresarComentario at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -67,33 +78,17 @@ public class GetOmbu extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PuntoOmbuController oDAO = new PuntoOmbuController();
-        Ombues ombu = oDAO.getOmbuxId(Integer.parseInt(request.getParameter("id")));
-        SimpleDateFormat formatoFecha=new SimpleDateFormat("dd/MM/yyyy");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            System.out.println(ombu.getDescripcion());
-            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr><td>Direccion</td><td>" + ombu.getDireccion() + "</td></tr></table><hr>");
-            for(Comentario coment:ombu.getComentarioList()){
-                StringBuffer textBuffer=new StringBuffer(coment.getComentario());
-                int loc = (new String(textBuffer).indexOf('\n'));
-                while(loc>0){
-                    textBuffer.replace(loc, loc+1, "<br>");
-                    loc = (new String(textBuffer).indexOf('\n'));
-                }
-                out.println("<p>"+formatoFecha.format(coment.getFecha())+" "+coment.getIdUser().getNickname()+ "</p><p>"+textBuffer+"</p><br>");
-            }
-            try {
-                if (request.getSession().getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
-                    out.println("<div class=\"form-horizontal\" role=\"form\">\n" +
-"                <label>Comentario</label>\n" +
-"                <textarea rows=\"10\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n" +
-"            </div><button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");                    
-                }
-            }catch(Exception e){}
-            
-
+        try {
+            String comentario=request.getParameter("comentario");
+            String ombu_id=request.getParameter("id");
+            Integer id=Integer.parseInt(ombu_id);
+            PuntoOmbuController oDAO = new PuntoOmbuController();
+            Ombues ombu = oDAO.getOmbuxId(id);
+            UsuarioController UC = new UsuarioController();
+            Usuarios user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
+            oDAO.crearComentario(ombu,user,comentario);
+        } catch (Exception ex) {
+            Logger.getLogger(ingresarComentario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
