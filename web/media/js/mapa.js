@@ -31,7 +31,7 @@ var bounds,
  */
 $(document).ready(function () {
     loadVariables();
-    loadMap();
+
 });
 
 function loadVariables() {
@@ -42,10 +42,7 @@ function loadVariables() {
     }
     else
     {
-        view = new ol.View({
-            center: [-6252047.295729297, -4147996.053508715],
-            zoom: 15
-        });
+        loadMap(null);
     }
     urlGeoserverWFS = $("#url_wfs").text().trim();
     SRS = $("#srs").text().trim();
@@ -107,14 +104,7 @@ function loadVariables() {
 
 }
 function posicion(posicion) {
-
-    latitud = posicion.coords.latitude;
-
-    longitud = posicion.coords.longitude;
-    view = new ol.View({
-        center: ol.proj.fromLonLat([posicion.coords.latitude, posicion.coords.longitude]),
-        zoom: 15
-    });
+    loadMap(ol.proj.fromLonLat([posicion.coords.longitude, posicion.coords.latitude]));
 }
 function errorGPS(error) {
 
@@ -128,11 +118,18 @@ function errorGPS(error) {
  * funcion que carga el mapa, lo define, le carga el srs resolucion, y el target
  */
 
-function loadMap() {
-    view = new ol.View({
-        center: [-6252047.295729297, -4147996.053508715],
-        zoom: 15
-    });
+function loadMap(point) {
+    if (point === null) {
+        view = new ol.View({
+            center: [-6252047.295729297, -4147996.053508715],
+            zoom: 15
+        });
+    } else {
+        view = new ol.View({
+            center: point,
+            zoom: 15
+        });
+    }
     bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
     map = new ol.Map({
         layers: [
@@ -503,6 +500,6 @@ function getLocation() {
     }
 }
 function showPosition(position) {
-    console.log(ol.proj.fromLonLat([position.coords.latitude, position.coords.longitude]));
+    console.log(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]));
 
 }
