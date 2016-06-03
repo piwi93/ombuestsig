@@ -26,14 +26,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Galvadion
  */
 @Entity
-@Table(name = "categoria")
+@Table(name = "categoria_referencias")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Categoria.findAll", query = "SELECT c FROM Categoria c"),
-    @NamedQuery(name = "Categoria.findById", query = "SELECT c FROM Categoria c WHERE c.id = :id"),
-    @NamedQuery(name = "Categoria.findByNombre", query = "SELECT c FROM Categoria c WHERE c.nombre = :nombre"),
-    @NamedQuery(name = "Categoria.findByIcono", query = "SELECT c FROM Categoria c WHERE c.icono = :icono")})
-public class Categoria implements Serializable {
+    @NamedQuery(name = "CategoriaReferencias.findAll", query = "SELECT c FROM CategoriaReferencias c"),
+    @NamedQuery(name = "CategoriaReferencias.findById", query = "SELECT c FROM CategoriaReferencias c WHERE c.id = :id"),
+    @NamedQuery(name = "CategoriaReferencias.findByDetalle", query = "SELECT c FROM CategoriaReferencias c WHERE c.detalle = :detalle")})
+public class CategoriaReferencias implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,15 +40,15 @@ public class Categoria implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "nombre")
-    private String nombre;
-    @Column(name = "icono")
-    private String icono;
+    @Column(name = "detalle")
+    private String detalle;
+    @OneToMany(mappedBy = "categoriaId", fetch = FetchType.EAGER)
+    private List<ReferenciaOmbu> referenciaOmbuList;
 
-    public Categoria() {
+    public CategoriaReferencias() {
     }
 
-    public Categoria(Integer id) {
+    public CategoriaReferencias(Integer id) {
         this.id = id;
     }
 
@@ -61,20 +60,21 @@ public class Categoria implements Serializable {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getDetalle() {
+        return detalle;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setDetalle(String detalle) {
+        this.detalle = detalle;
     }
 
-    public String getIcono() {
-        return icono;
+    @XmlTransient
+    public List<ReferenciaOmbu> getReferenciaOmbuList() {
+        return referenciaOmbuList;
     }
 
-    public void setIcono(String icono) {
-        this.icono = icono;
+    public void setReferenciaOmbuList(List<ReferenciaOmbu> referenciaOmbuList) {
+        this.referenciaOmbuList = referenciaOmbuList;
     }
 
     @Override
@@ -87,10 +87,10 @@ public class Categoria implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Categoria)) {
+        if (!(object instanceof CategoriaReferencias)) {
             return false;
         }
-        Categoria other = (Categoria) object;
+        CategoriaReferencias other = (CategoriaReferencias) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -99,7 +99,7 @@ public class Categoria implements Serializable {
 
     @Override
     public String toString() {
-        return "Entities.Categoria[ id=" + id + " ]";
+        return "Entities.CategoriaReferencias[ id=" + id + " ]";
     }
     
 }

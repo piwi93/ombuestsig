@@ -6,7 +6,6 @@
 package Entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,26 +13,25 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Galvadion
  */
 @Entity
-@Table(name = "categoria")
+@Table(name = "referencia_ombu")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Categoria.findAll", query = "SELECT c FROM Categoria c"),
-    @NamedQuery(name = "Categoria.findById", query = "SELECT c FROM Categoria c WHERE c.id = :id"),
-    @NamedQuery(name = "Categoria.findByNombre", query = "SELECT c FROM Categoria c WHERE c.nombre = :nombre"),
-    @NamedQuery(name = "Categoria.findByIcono", query = "SELECT c FROM Categoria c WHERE c.icono = :icono")})
-public class Categoria implements Serializable {
+    @NamedQuery(name = "ReferenciaOmbu.findAll", query = "SELECT r FROM ReferenciaOmbu r"),
+    @NamedQuery(name = "ReferenciaOmbu.findById", query = "SELECT r FROM ReferenciaOmbu r WHERE r.id = :id")})
+public class ReferenciaOmbu implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,15 +39,17 @@ public class Categoria implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "nombre")
-    private String nombre;
-    @Column(name = "icono")
-    private String icono;
+    @JoinColumn(name = "categoria_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private CategoriaReferencias categoriaId;
+    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(optional = false, fetch = FetchType.EAGER)
+    private Ombues ombues;
 
-    public Categoria() {
+    public ReferenciaOmbu() {
     }
 
-    public Categoria(Integer id) {
+    public ReferenciaOmbu(Integer id) {
         this.id = id;
     }
 
@@ -61,20 +61,20 @@ public class Categoria implements Serializable {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public CategoriaReferencias getCategoriaReferenciasId() {
+        return categoriaId;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setCategoriaReferenciasId(CategoriaReferencias categoriaId) {
+        this.categoriaId = categoriaId;
     }
 
-    public String getIcono() {
-        return icono;
+    public Ombues getOmbues() {
+        return ombues;
     }
 
-    public void setIcono(String icono) {
-        this.icono = icono;
+    public void setOmbues(Ombues ombues) {
+        this.ombues = ombues;
     }
 
     @Override
@@ -87,10 +87,10 @@ public class Categoria implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Categoria)) {
+        if (!(object instanceof ReferenciaOmbu)) {
             return false;
         }
-        Categoria other = (Categoria) object;
+        ReferenciaOmbu other = (ReferenciaOmbu) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -99,7 +99,7 @@ public class Categoria implements Serializable {
 
     @Override
     public String toString() {
-        return "Entities.Categoria[ id=" + id + " ]";
+        return "Entities.ReferenciaOmbu[ id=" + id + " ]";
     }
     
 }

@@ -9,6 +9,7 @@
     <class>Entities.ReferenciaOmbu</class>
     <class>Entities.ZonaOmbu</class>
     <class>Entities.Usuarios</class>
+    <class>Entities.CategoriaReferencias</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/tsig"/>

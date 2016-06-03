@@ -7,9 +7,12 @@ package Servlets;
 
 import ControladoresDAO.UsuarioController;
 import Entities.Ombues;
+import Entities.ReferenciaOmbu;
 import Entities.Usuarios;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Galvadion
  */
-@WebServlet(name = "InsertPuntoOmbu", urlPatterns = {"/Puntos/InsertPuntoOmbu"})
-public class InsertPuntoOmbu extends HttpServlet {
+@WebServlet(name = "InsertRefOmbu", urlPatterns = {"/Puntos/InsertRefOmbu"})
+public class InsertRefOmbu extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -75,24 +78,30 @@ public class InsertPuntoOmbu extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UsuarioController UC = new UsuarioController();
-        Usuarios user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
-        ControladoresDAO.PuntoOmbuController PuC = new ControladoresDAO.PuntoOmbuController();
-        String nombre = request.getParameter("nombre");
-        String descripcion = request.getParameter("descripcion");
-        String direccion = request.getParameter("direccion");
-        String ubicacion = request.getParameter("ubicacion");
-        String quees = request.getParameter("quees");
-        Ombues ombu = new Ombues();
-        ombu.setNombre(nombre);
-        ombu.setDescripcion(descripcion);
-        ombu.setDireccion(direccion);
-        ombu.setUbicacion(ubicacion);
-        ombu.setIdUsuario(user);
-        try (PrintWriter out = response.getWriter()) {
-            out.println(PuC.crearPuntoOmbu(ombu));
+        try {
+            UsuarioController UC = new UsuarioController();
+            Usuarios user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
+            ControladoresDAO.PuntoOmbuController PuC = new ControladoresDAO.PuntoOmbuController();
+            String nombre = request.getParameter("nombre");
+            String descripcion = request.getParameter("descripcion");
+            String direccion = request.getParameter("referencia");
+            String quees = request.getParameter("quees");
+            Ombues ombu = new Ombues();
+            ombu.setNombre(nombre);
+            ombu.setDescripcion(descripcion);
+            ombu.setExternalRef(direccion);
+            ombu.setIdUsuario(user);
+            Integer categoriaRefId=Integer.parseInt(quees);
+            Integer ombuId=PuC.crearPuntoOmbu(ombu);
+            ReferenciaOmbu ref=new ReferenciaOmbu();
+            ref.setOmbues(PuC.getOmbuxId(ombuId));
+            ref.setCategoriaReferenciasId(PuC.getCategoriaRefxId(categoriaRefId));
+            PuC.crearReferenciaOmbu(ref);
+            System.out.println("Falla algo aca");
+        } catch (Exception ex) {
+            System.out.println("Falla algo en excepcion");
+            Logger.getLogger(InsertRefOmbu.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     /**

@@ -111,6 +111,7 @@ function loadMap(point) {
             zoom: 15
         });
     }
+    
     bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
     map = new ol.Map({
         layers: [
@@ -380,11 +381,25 @@ function registrarOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
+        feature.set("id_categoria",quees);
         transactWFS('insert', feature, formatGMLPunto);
         alert("Realizado correctamente");
         location.reload();
     });
 }
+function registrarRefOmbu() {
+    var nombre = $("#refnombre").val();
+    var descripcion = $("#refdescripcion").val();
+    var referencia = $("#refRef").val();
+    var quees = $("#refcategoria").val();
+    $.post("Puntos/InsertRefOmbu", {
+        nombre: nombre, descripcion: descripcion, referencia: referencia, quees: quees
+    }, function (responseText) {
+        alert("Realizado correctamente");
+        location.reload();
+    });
+}
+
 /*
  * Funcion que registrauna zona de ombues y dsps hace el transaction insert
  */
