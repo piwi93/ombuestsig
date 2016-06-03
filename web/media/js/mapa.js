@@ -39,8 +39,7 @@ function loadVariables() {
     {
         navigator.geolocation.getCurrentPosition(posicion, errorGPS);
 
-    }
-    else
+    } else
     {
         loadMap(null);
     }
@@ -59,16 +58,7 @@ function loadVariables() {
         name: 'Puntos ombu',
         source: new ol.source.Vector({
             params: {srs: SRS}
-            /*format: new ol.format.GeoJSON(),
-             url: function (extent) {
-             return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
-             'version=1.1.0&request=GetFeature&typename=ombues:punto_ombu&' +
-             'outputFormat=application/json&srsname=EPSG:3857&' +
-             'bbox=' + extent.join(',') + ',EPSG:3857';
-             },
-             strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
-             maxZoom: 19
-             }))*/
+
         }),
         /*
          * Se define el estilo que tendra esta capa, en caso de cargar la capa por este medio
@@ -87,16 +77,7 @@ function loadVariables() {
                 fill: new ol.style.Fill({
                     color: '#ffcc33'
                 })
-            })/*
-             Asi es como se definiria el icono si se cargara aca la capa de puntos
-             lo complicado seria ver la logica por cada tipo de punto
-             image: new ol.style.Icon( ({
-             anchor: [0.5, 46],
-             anchorXUnits: 'fraction',
-             anchorYUnits: 'pixels',
-             src: 'data/icon.png'
-             }))
-             */
+            })
         })
     });
 
@@ -185,7 +166,6 @@ function loadMap(point) {
                 evt.coordinate, viewResolution, SRS,
                 {'INFO_FORMAT': 'application/json',
                     'propertyName': 'ombu_id'});
-
         if (url) {
             var parser = new ol.format.GeoJSON();
             $.ajax({
@@ -199,35 +179,40 @@ function loadMap(point) {
                     getOmbu(info);
                 }
             })
-            /*
-             * Si encuentra datos en el elemento id Popup carga lo devuelto, 
-             * para conseguir la informacion de los ombues va a haber que hacer una llamada ajax sql
-             * para levantar el resto de los datos y parsear la salida
-             */
 
-        }/*
-         * 
-         * Con este codigo se puede colocar los datos por encima del punto al tocar, 
-         * unico inconveniente es que hay que poner la capa de vectores como capa de wfs 
-         * ya que lo cargaría desde ahí los datos, se agrega el código relacionado que habilitaria poner icono
-         */
-        /* 
-         var feature = map.forEachFeatureAtPixel(evt.pixel,
-         function(feature) {
-         return feature;
-         });
-         if (feature) {
-         popup.setPosition(evt.coordinate);
-         $(element).popover({
-         'placement': 'top',
-         'html': true,
-         'content': feature.get('name')
-         });
-         $(element).popover('show');
-         } else {
-         $(element).popover('destroy');
-         }
-         */
+        }
+ 
+        var wms_numPuerta = new ol.source.TileWMS({
+            url: urlGeoserverWMS, // + '/wms',
+            params: {'LAYERS': 'ombues:getNumPuerta',
+                'VIEWPARAMS':'lon:'+evt.coordinate[0]+';lat:'+evt.coordinate[1]},
+            serverType: 'geoserver',
+            crossOrigin: 'anonymous'
+        });
+        var url2 = wms_numPuerta.getGetFeatureInfoUrl(
+                evt.coordinate, viewResolution, SRS,
+                {'INFO_FORMAT': 'application/json',
+                    'propertyName': 'nom_calle,num_puerta'});
+                console.log(url2);
+        if (url2) {
+            var parser = new ol.format.GeoJSON();
+            $.ajax({
+                url: url2,
+                dataType: 'json',
+                jsonpCallback: 'parseResponse'
+            }).then(function (response) {
+                var result = parser.readFeatures(response);
+                if (result.length) {
+                    var calle = result[0].get('nom_calle');
+                    var puerta = result[0].get('num_puerta');
+                    document.getElementById("direccion").value=calle + " " +puerta;
+                }
+            })}
+
+
+
+
+
     });
 }
 
@@ -404,10 +389,10 @@ function registrarOmbu() {
  * Funcion que registrauna zona de ombues y dsps hace el transaction insert
  */
 function registrarZonaOmbu() {
-    var nombre = $("#nombre").val();
-    var descripcion = $("#descripcion").val();
-    var direccion = $("#direccion").val();
-    var ubicacion = $("#ubicacion").val();
+    var nombre = $("#zonanombre").val();
+    var descripcion = $("#zonadescripcion").val();
+    var direccion = $("#zonadireccion").val();
+    var ubicacion = $("#zonaubicacion").val();
     var quees = 'zona';
     $.post("Puntos/InsertPuntoOmbu", {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
