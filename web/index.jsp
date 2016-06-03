@@ -120,19 +120,19 @@ and open the template in the editor.
                             <div class="form-vertical" role="form">
                                 <div class="form-group">
                                     <label  for="text">Nombre:</label>
-                                    <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
+                                    <input type="text" class="form-control" id='zonanombre' placeholder="Ingrese el nombre del ombu">
                                 </div>
                                 <div class="form-group">
                                     <label  for="text">Descripcion:</label>
-                                    <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
+                                    <input type="text" class="form-control" id='zonadescripcion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
                                     <label  for="text">Dirección:</label>
-                                    <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
+                                    <input type="text" class="form-control" id='zonadireccion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <div class="form-group">
                                     <label  for="text">Ubicación:</label>
-                                    <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
+                                    <input type="text" class="form-control" id='zonaubicacion' placeholder="Ingrese una descripcion para el ombu">
                                 </div>
                                 <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
                             </div>

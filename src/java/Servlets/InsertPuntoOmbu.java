@@ -75,21 +75,25 @@ public class InsertPuntoOmbu extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        UsuarioController UC = new UsuarioController();
+        Usuarios user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
+        ControladoresDAO.PuntoOmbuController PuC = new ControladoresDAO.PuntoOmbuController();
         String nombre = request.getParameter("nombre");
         String descripcion = request.getParameter("descripcion");
         String direccion = request.getParameter("direccion");
         String ubicacion = request.getParameter("ubicacion");
-        Integer quees = Integer.parseInt(request.getParameter("quees"));
+        String quees = request.getParameter("quees");
         Ombues ombu = new Ombues();
         ombu.setNombre(nombre);
         ombu.setDescripcion(descripcion);
         ombu.setDireccion(direccion);
         ombu.setUbicacion(ubicacion);
-        UsuarioController UC = new UsuarioController();
-        Usuarios user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
-        ControladoresDAO.PuntoOmbuController PuC = new ControladoresDAO.PuntoOmbuController();
         ombu.setIdUsuario(user);
-        ombu.setIdCategoria(PuC.getCategoriaxId(quees));
+        Integer categoria;
+        if (!quees.equals("zona")) {
+            categoria = Integer.parseInt(quees);
+            ombu.setIdCategoria(PuC.getCategoriaxId(categoria));
+        }
         try (PrintWriter out = response.getWriter()) {
             out.println(PuC.crearPuntoOmbu(ombu));
         }
