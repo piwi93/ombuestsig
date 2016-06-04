@@ -8,6 +8,7 @@ package Entities;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -39,6 +41,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ombues.findByUbicacion", query = "SELECT o FROM Ombues o WHERE o.ubicacion = :ubicacion"),
     @NamedQuery(name = "Ombues.findByExternalRef", query = "SELECT o FROM Ombues o WHERE o.externalRef = :externalRef")})
 public class Ombues implements Serializable {
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "ombues", fetch = FetchType.EAGER)
+    private ReferenciaOmbu referenciaOmbu;
     @OneToMany(mappedBy = "idOmbu", fetch = FetchType.LAZY)
     private List<Comentario> comentarioList;
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
@@ -61,10 +66,6 @@ public class Ombues implements Serializable {
     private String ubicacion;
     @Column(name = "external_ref")
     private String externalRef;
-    @JoinColumn(name = "id_categoria", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Categoria idCategoria;
-
 
     public Ombues() {
     }
@@ -121,14 +122,6 @@ public class Ombues implements Serializable {
         this.externalRef = externalRef;
     }
 
-    public Categoria getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(Categoria idCategoria) {
-        this.idCategoria = idCategoria;
-    }
-
 
 
     @Override
@@ -171,6 +164,14 @@ public class Ombues implements Serializable {
 
     public void setComentarioList(List<Comentario> comentarioList) {
         this.comentarioList = comentarioList;
+    }
+
+    public ReferenciaOmbu getReferenciaOmbu() {
+        return referenciaOmbu;
+    }
+
+    public void setReferenciaOmbu(ReferenciaOmbu referenciaOmbu) {
+        this.referenciaOmbu = referenciaOmbu;
     }
     
 }
