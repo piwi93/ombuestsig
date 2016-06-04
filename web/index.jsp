@@ -73,17 +73,23 @@ and open the template in the editor.
                     </div>
                 </div>
 
-                <div class="col-lg-3">
+                <div class="col-lg-3" id="side-bar">
+                    <div id="expand-button-container">
+                        <button class="btn btn-success" id="expand-button" onclick="expand_bar()">
+                            <span class="glyphicon glyphicon-resize-full" id="expand-button-icon" />
+                        </button>
+                    </div>
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
+                            <li><a href="#pane5" data-toggle="tab" id="regzona">Statics</a></li>
                                 <% if (logeado) { %>
-                            <li><a href="#pane2" data-toggle="tab" id="regpunto">Registrar ombu</a></li>
-                            <li><a href="#pane3" data-toggle="tab" id="regzona">Registrar zona de ombues</a></li>
-                            <li><a href="#pane4" data-toggle="tab" id="regzona">Registrar referencia a un ombu</a></li>
+                            <li><a href="#pane2" data-toggle="tab" id="regpunto">Ombu</a></li>
+                            <li><a href="#pane3" data-toggle="tab" id="regzona">Zona</a></li>
+                            <li><a href="#pane4" data-toggle="tab" id="regzona">Referencia a ombu</a></li>
                                 <% } %>
                         </ul>
-                        <div class="tab-content">
+                        <div class="tab-content" style="min-height: 100% !important;">
                             <!-- Informacion de punto -->
                             <div id="pane1" class="tab-pane active">
                                 <button onclick="getLocation()">Actual Info</button> 
@@ -95,115 +101,100 @@ and open the template in the editor.
                                     <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
                                 </div>
 
-                                <!-- Registrar ombu -->
-                                <div id="pane2" class="tab-pane">
-                                    <div class="form-vertical" role="form">
-                                        <div class="form-group">
-                                            <label  for="text">Nombre:</label>
-                                            <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Descripcion:</label>
-                                            <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Dirección:</label>
-                                            <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Ubicación:</label>
-                                            <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Que es?</label>
-                                            <select class="form-control" id="categoria">
-                                                <%
-                                                    PuntoOmbuController PoC = new PuntoOmbuController();
-                                                    for (Categoria cat : PoC.categoriasList()) {
-                                                %>
-                                                <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
-                                                <% } %>
-                                            </select>
-                                        </div>
-                                        <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
-                                    </div>
-                                    <div id="myResult"></div>
-                                </div>
-                                <!-- Registrar zona ombu -->
-                                <div id="pane3" class="tab-pane">
-                                    <div class="form-vertical" role="form">
-                                        <div class="form-group">
-                                            <label  for="text">Nombre:</label>
-                                            <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Descripcion:</label>
-                                            <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Dirección:</label>
-                                            <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Ubicación:</label>
-                                            <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
-                                        <div id="myResult"></div>
-                                    </div>
-                                </div>
-                                <!-- Registrar referencia -->
-                                <div id="pane4" class="tab-pane">
-                                    <div class="form-vertical" role="form">
-                                        <div class="form-group">
-                                            <label  for="text">Nombre:</label>
-                                            <input type="text" class="form-control" id='refnombre' placeholder="Ingrese el nombre del ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Descripcion:</label>
-                                            <input type="text" class="form-control" id='refdescripcion' placeholder="Ingrese una descripcion para la referencia">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Referencia:</label>
-                                            <input type="text" class="form-control" id='refRef' placeholder="Ingrese un enlace a algo que referencie al ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Que es?</label>
-                                            <select class="form-control" id="refcategoria">
-                                                <%   
-                                                    for (CategoriaReferencias cat : PoC.categoriaRefList()) {
-                                                %>
-                                                <option value="<%=cat.getId()%>"><%=cat.getDetalle()%></option>
-                                                <% } %>
-                                            </select>
-                                        </div>
-                                        <button type="button" class="btn btn-default" onclick="registrarRefOmbu()" >Registrar</button>
-                                    </div>
-                                    <div id="myResult"></div>
-                                </div>
-                                <!-- Registrar zona ombu -->
-                                <div id="pane3" class="tab-pane">
-                                    <div class="form-vertical" role="form">
-                                        <div class="form-group">
-                                            <label  for="text">Nombre:</label>
-                                            <input type="text" class="form-control" id='zonanombre' placeholder="Ingrese el nombre del ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Descripcion:</label>
-                                            <input type="text" class="form-control" id='zonadescripcion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Dirección:</label>
-                                            <input type="text" class="form-control" id='zonadireccion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <div class="form-group">
-                                            <label  for="text">Ubicación:</label>
-                                            <input type="text" class="form-control" id='zonaubicacion' placeholder="Ingrese una descripcion para el ombu">
-                                        </div>
-                                        <div id="myResult"></div>
-                                    </div>
-                                </div>
                             </div>
+                            <!-- Registrar ombu -->
+                            <div id="pane2" class="tab-pane">
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Nombre:</label>
+                                        <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Descripcion:</label>
+                                        <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Dirección:</label>
+                                        <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Ubicación:</label>
+                                        <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Que es?</label>
+                                        <select class="form-control" id="categoria">
+                                            <%
+                                                PuntoOmbuController PoC = new PuntoOmbuController();
+                                                for (Categoria cat : PoC.categoriasList()) {
+                                            %>
+                                            <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
+                                </div>
+                                <div id="myResult"></div>
+                            </div>
+                            <!-- Registrar zona ombu -->
+                            <div id="pane3" class="tab-pane">
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Nombre:</label>
+                                        <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Descripcion:</label>
+                                        <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Dirección:</label>
+                                        <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Ubicación:</label>
+                                        <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
+                                </div>
+                                <div id="myResult"></div>
+                            </div>
+                            
+                            <!-- Registrar referencia -->
+                            <div id="pane4" class="tab-pane">
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Nombre:</label>
+                                        <input type="text" class="form-control" id='refnombre' placeholder="Ingrese el nombre del ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Descripcion:</label>
+                                        <input type="text" class="form-control" id='refdescripcion' placeholder="Ingrese una descripcion para la referencia">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Referencia:</label>
+                                        <input type="text" class="form-control" id='refRef' placeholder="Ingrese un enlace a algo que referencie al ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Que es?</label>
+                                        <select class="form-control" id="refcategoria">
+                                            <%   
+                                                for (CategoriaReferencias cat : PoC.categoriaRefList()) {
+                                            %>
+                                            <option value="<%=cat.getId()%>"><%=cat.getDetalle()%></option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-default" onclick="registrarRefOmbu()" >Registrar</button>
+                                </div>
+                                <div id="myResult"></div>
+                            </div>
+                                        
+                            <!-- Stats -->
+                            <div id="pane5" class="tab-pane">
+                                
+                            </div>
+                            
                         </div>
                     </div>
                 </div>

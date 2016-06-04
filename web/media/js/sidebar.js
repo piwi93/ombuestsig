@@ -7,7 +7,7 @@ function expand_bar() {
         side_bar_flag = false;
     }
     else{
-        document.getElementById("side-bar").style.left = "calc(100% - 290px)";
+        document.getElementById("side-bar").style.left = "calc(100% - 315px)";
         document.getElementById("expand-button-icon").className = "glyphicon glyphicon-resize-small";
         side_bar_flag = true;
     }
