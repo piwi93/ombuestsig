@@ -41,6 +41,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ombues.findByUbicacion", query = "SELECT o FROM Ombues o WHERE o.ubicacion = :ubicacion"),
     @NamedQuery(name = "Ombues.findByExternalRef", query = "SELECT o FROM Ombues o WHERE o.externalRef = :externalRef")})
 public class Ombues implements Serializable {
+    @OneToMany(mappedBy = "idOmbu", fetch = FetchType.LAZY)
+    private List<Comentario> comentarioList;
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Usuarios idUsuario;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idOmbu")
     private Collection<Imagenes> imagenesCollection;
@@ -154,6 +159,23 @@ public class Ombues implements Serializable {
     @Override
     public String toString() {
         return "Entities.Ombues[ id=" + id + " ]";
+    }
+
+    public Usuarios getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Usuarios idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    @XmlTransient
+    public List<Comentario> getComentarioList() {
+        return comentarioList;
+    }
+
+    public void setComentarioList(List<Comentario> comentarioList) {
+        this.comentarioList = comentarioList;
     }
 
     @XmlTransient

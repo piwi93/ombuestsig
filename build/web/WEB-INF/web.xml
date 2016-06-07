@@ -4,9 +4,17 @@
         <servlet-name>UserRegister</servlet-name>
         <servlet-class>Servlets.UserRegister</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Imagenes</servlet-name>
+        <servlet-class>Servlets.Imagenes</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserRegister</servlet-name>
         <url-pattern>/UserRegister</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Imagenes</servlet-name>
+        <url-pattern>/Imagenes</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>

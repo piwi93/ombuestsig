@@ -5,11 +5,14 @@
  */
 package Servlets;
 
+import ControladoresDAO.PuntoOmbuController;
 import ControladoresDAO.UsuarioController;
 import Entities.Ombues;
 import Entities.Usuarios;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,10 +21,10 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Galvadion
+ * @author Diego
  */
-@WebServlet(name = "InsertPuntoOmbu", urlPatterns = {"/Puntos/InsertPuntoOmbu"})
-public class InsertPuntoOmbu extends HttpServlet {
+@WebServlet(name = "ingresarComentario", urlPatterns = {"/ingresarComentario"})
+public class ingresarComentario extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +43,10 @@ public class InsertPuntoOmbu extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet InsertPuntoOmbu</title>");
+            out.println("<title>Servlet ingresarComentario</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet InsertPuntoOmbu at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ingresarComentario at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -75,25 +78,18 @@ public class InsertPuntoOmbu extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String nombre = request.getParameter("nombre");
-        String descripcion = request.getParameter("descripcion");
-        String direccion = request.getParameter("direccion");
-        String ubicacion = request.getParameter("ubicacion");
-        Integer quees = Integer.parseInt(request.getParameter("quees"));
-        Ombues ombu = new Ombues();
-        ombu.setNombre(nombre);
-        ombu.setDescripcion(descripcion);
-        ombu.setDireccion(direccion);
-        ombu.setUbicacion(ubicacion);
-        UsuarioController UC = new UsuarioController();
-        Usuarios user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
-        ControladoresDAO.PuntoOmbuController PuC = new ControladoresDAO.PuntoOmbuController();
-        ombu.setIdUsuario(user);
-        ombu.setIdCategoria(PuC.getCategoriaxId(quees));
-        try (PrintWriter out = response.getWriter()) {
-            out.println(PuC.crearPuntoOmbu(ombu));
+        try {
+            String comentario=request.getParameter("comentario");
+            String ombu_id=request.getParameter("id");
+            Integer id=Integer.parseInt(ombu_id);
+            PuntoOmbuController oDAO = new PuntoOmbuController();
+            Ombues ombu = oDAO.getOmbuxId(id);
+            UsuarioController UC = new UsuarioController();
+            Usuarios user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
+            oDAO.crearComentario(ombu,user,comentario);
+        } catch (Exception ex) {
+            Logger.getLogger(ingresarComentario.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     /**

@@ -5,10 +5,14 @@
  */
 package Servlets;
 
-import DAO.OmbuesJpaController;
+import ControladoresDAO.PuntoOmbuController;
+import DAO.OmbuesJpaController2;
+import Entities.Comentario;
 import Entities.Ombues;
+import Utils.EstadoSesion;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -64,13 +68,31 @@ public class GetOmbu extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        OmbuesJpaController oDAO = new OmbuesJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
-        System.out.println("wtf");
-        Ombues ombu = oDAO.findOmbues(Integer.parseInt(request.getParameter("id")));
+        PuntoOmbuController oDAO = new PuntoOmbuController();
+        Ombues ombu = oDAO.getOmbuxId(Integer.parseInt(request.getParameter("id")));
+        SimpleDateFormat formatoFecha=new SimpleDateFormat("dd/MM/yyyy");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             System.out.println(ombu.getDescripcion());
-            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr><td>Direccion</td><td>" + ombu.getDireccion() + "</td></tr></table>");
+            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr><td>Direccion</td><td>" + ombu.getDireccion() + "</td></tr></table><hr>");
+            for(Comentario coment:ombu.getComentarioList()){
+                StringBuffer textBuffer=new StringBuffer(coment.getComentario());
+                int loc = (new String(textBuffer).indexOf('\n'));
+                while(loc>0){
+                    textBuffer.replace(loc, loc+1, "<br>");
+                    loc = (new String(textBuffer).indexOf('\n'));
+                }
+                out.println("<p>"+formatoFecha.format(coment.getFecha())+" "+coment.getIdUser().getNickname()+ "</p><p>"+textBuffer+"</p><br>");
+            }
+            try {
+                if (request.getSession().getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
+                    out.println("<div class=\"form-horizontal\" role=\"form\">\n" +
+"                <label>Comentario</label>\n" +
+"                <textarea rows=\"10\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n" +
+"            </div><button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");                    
+                }
+            }catch(Exception e){}
+            
 
         }
     }

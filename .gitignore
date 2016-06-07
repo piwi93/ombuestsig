@@ -28,3 +28,9 @@ nbproject/project.xml
 nbproject/private/private.xml
 nbproject/private/private.properties
 src/java/Config.properties
+nbproject/private/private.properties
+nbproject/private/private.properties
+build/web/media/js/mapa.js
+src/conf/persistence.xml
+nbproject/project.properties
+build/web/WEB-INF/classes/META-INF/persistence.xml
