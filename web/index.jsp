@@ -12,8 +12,9 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>OMBUES</title>
+        <title>Ombues</title>
         <meta charset="UTF-8">
+        <link rel="shortcut icon" type="image/x-icon" href="media/images/icon.png" />
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="stylesheet" href="media/css/bootstrap.css">
@@ -46,7 +47,7 @@ and open the template in the editor.
                                     <span class="icon-bar"></span>
                                     <span class="icon-bar"></span>                        
                                 </button>
-                                <a class="navbar-brand" href="">Ombues TSIG</a>
+                                <a class="navbar-brand custom-font" href=""><strong style="margin-left: 5px;">Ombues </strong> TSIG</a>
                             </div>
                             <div class="collapse navbar-collapse" id="myNavbar">
                                 <ul class="nav navbar-nav navbar-right"> 
@@ -54,7 +55,7 @@ and open the template in the editor.
                                     <li><a href="#"><span class="glyphicon glyphicon-user"></span> <%=user.getNickname()%></a></li>
                                     <li><a href="salir"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
                                         <%   } else { %>
-                                    <li><a href="userRegister"><span class="glyphicon glyphicon-user"></span> Sign Up</span></a></li>
+                                    <li><a href="userRegister"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                                     <li><a href="#modalLogIn" data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                                         <% } %>
                                 </ul>
@@ -196,7 +197,7 @@ and open the template in the editor.
 
         <footer id="footer">
             <div class="container">
-                <p class="text-muted credit" style="color: #9d9d9d">Copyright Grupo 13</p>
+                <p class="text-muted credit custom-font" style="color: #9d9d9d"><strong>Copyright</strong> Grupo 13</p>
             </div>
         </footer>
 

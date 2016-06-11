@@ -63,7 +63,13 @@ public class UserRegister extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/user_register.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+        if(session.getAttribute("estado_sesion") == EstadoSesion.NO_LOGIN){
+            request.getRequestDispatcher("/WEB-INF/user_register.jsp").forward(request, response);
+        }
+        else{
+            response.sendRedirect("/TSIG");
+        }
     }
 
     /**

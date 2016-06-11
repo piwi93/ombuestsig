@@ -17811,7 +17811,7 @@ table .delete a, table .delete small{
 
 .tile_user_register{
     padding: 5px;
-    border-radius: 3px;
+    border-radius: 1px;
     padding: 8px;
 }
 
@@ -17852,14 +17852,15 @@ table .delete a, table .delete small{
 #expand-button {
     font-size: 20px;
     margin: auto;
+    border-radius: 4px 0px 0px 4px;
 }
 
 .no-border-radius {
     border-radius: 0 !important;
 }
 
-.hider {
+.tabbable {
     height: 100%;
-    overflow: scroll !important;
+    overflow-y: scroll !important;
     overflow-x: hidden !important;
 }
