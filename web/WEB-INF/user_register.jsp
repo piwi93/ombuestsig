@@ -18,7 +18,7 @@
         <link rel="stylesheet" href="media/css/main.css">
         <link rel="stylesheet" href="media/font-awesome-4.6.3/css/font-awesome.min.css">
     </head>
-    <body  style="background-image: url('media/images/wallpaper.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center; background-attachment: fixed;">
+    <body  style="background-image: url('media/images/wallpaper.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center; background-attachment: fixed; overflow-y: auto !important;">
         <%
             session = request.getSession();
             Usuarios user = null;

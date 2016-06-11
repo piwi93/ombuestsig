@@ -12,3 +12,25 @@ function expand_bar() {
         side_bar_flag = true;
     }
 }
+
+$(document).ready(function(){
+    
+});
+
+function resize() {
+    var map = document.getElementById("map");
+    var sidebar = document.getElementById("side-bar");
+    var valHeight = window.innerHeight - 110;
+    map.style.height = valHeight + 'px';
+    sidebar.style.height = valHeight + 'px';
+}
+
+window.onload = function (event) {
+    resize();
+}
+
+
+//onchange naturalWidth 
+window.onresize = function(event) {
+    resize();
+}

@@ -82,11 +82,10 @@ and open the template in the editor.
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
-                            <li><a href="#pane5" data-toggle="tab" id="regzona">Statics</a></li>
                                 <% if (logeado) { %>
                             <li><a href="#pane2" data-toggle="tab" id="regpunto">Ombu</a></li>
                             <li><a href="#pane3" data-toggle="tab" id="regzona">Zona</a></li>
-                            <li><a href="#pane4" data-toggle="tab" id="regzona">Referencia a ombu</a></li>
+                            <li><a href="#pane4" data-toggle="tab" id="regzona">Ref.Ombu</a></li>
                                 <% } %>
                         </ul>
                         <div class="tab-content" style="min-height: 100% !important;">
@@ -189,12 +188,6 @@ and open the template in the editor.
                                 </div>
                                 <div id="myResult"></div>
                             </div>
-                                        
-                            <!-- Stats -->
-                            <div id="pane5" class="tab-pane">
-                                
-                            </div>
-                            
                         </div>
                     </div>
                 </div>
