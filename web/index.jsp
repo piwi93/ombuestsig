@@ -243,24 +243,31 @@ and open the template in the editor.
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Log In</h4>
+                        <h4 class="modal-title custom-font"><strong>Log </strong> In</h4>
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" role="form"  action="iniciar-sesion" method="POST">
+                            
                             <div class="form-group">
-                                <label class="control-label col-sm-4" for="text">Usuario:</label>
+                                <label for="txtNick" class="col-sm-3 control-label">* Usuario</label>
                                 <div class="col-sm-8">
-                                    <INPUT type="text" class="form-control" id="cuadroTxtLogin" name="txtNick" value="" size="50"/>
+                                    <INPUT type="text" class="form-control" id="txtNick" name="txtNick" value="" size="50" required />
+                                    <span class="help-block">Nombre de usuario es requerido</span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-4" for="text">Contraseña:</label>
+                                <label for="txtPwd" class="col-sm-3 control-label">* Contraseña</label>
                                 <div class="col-sm-8">
-                                    <INPUT type="password" class="form-control" id="cuadroTxtLogin" name="txtPwd" value="" size="50"/>
+                                    <INPUT type="password" class="form-control" id="txtPwd" name="txtPwd" value="" size="50" required />
+                                    <span class="help-block">Contraseña es requerida</span>
                                 </div>
                             </div>
+                            
                             <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10"><INPUT type='submit' id='btnLogin' class='btn btn-primary' name='btnLogIn' Value='Iniciar sesión' onclick='Submit()'/></div>
+                                <div class="col-sm-offset-3 col-sm-12">
+                                    <button type="button" class="btn btn-lightred" data-dismiss="modal">Cancelar</button>
+                                    <INPUT type='submit' id='btnLogin' class="btn btn-default" name='btnLogIn' Value='Iniciar sesión' onclick='Submit()'/>
+                                </div>
                             </div>
 
                             <%
