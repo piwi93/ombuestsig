@@ -72,4 +72,8 @@ public class PuntoOmbuController {
     public CategoriaReferencias getCategoriaRefxId(Integer categoriaRefId) {
         return crJPA.findCategoriaReferencias(categoriaRefId);
     }
+    
+    public List<ReferenciaOmbu> getReferencia(String nombre,int categoria){
+        return roJPA.findReferenciaOmbu(nombre,categoria);
+    }
 }

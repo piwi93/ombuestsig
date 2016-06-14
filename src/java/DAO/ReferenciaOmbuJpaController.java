@@ -199,5 +199,28 @@ public class ReferenciaOmbuJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public List<ReferenciaOmbu> findReferenciaOmbu(String nombre, int categoria) {
+        EntityManager em = getEntityManager();
+        String nomqry = "%", catqry = "%";
+        if (!nombre.isEmpty()) {
+            nomqry = "%" + nombre + "%";
+        }
+        if (categoria != 0) {
+            catqry = "and a.categoriaId.id = :categoria";
+        } else {
+            catqry = "";
+        }
+        try {
+            Query qry = em.createQuery("SELECT a FROM ReferenciaOmbu a WHERE a.ombues.nombre like :nombre " + catqry);
+            qry.setParameter("nombre", nomqry);
+            if (categoria != 0) {
+                qry.setParameter("categoria", categoria);
+            }
+            return (List<ReferenciaOmbu>) qry.getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
 }

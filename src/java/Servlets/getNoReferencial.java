@@ -9,10 +9,12 @@ import ControladoresDAO.PuntoOmbuController;
 import DAO.OmbuesJpaController;
 import Entities.Comentario;
 import Entities.Ombues;
+import Entities.ReferenciaOmbu;
 import Utils.EstadoSesion;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Diego
  */
-@WebServlet(name = "GetOmbu", urlPatterns = {"/getombu"})
-public class GetOmbu extends HttpServlet {
+@WebServlet(name = "GetNoReferencial", urlPatterns = {"/getNoReferencial"})
+public class getNoReferencial extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -68,19 +70,27 @@ public class GetOmbu extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        Integer categoria=Integer.parseInt(request.getParameter("cat"));
+        String nombre=request.getParameter("nombre");
         PuntoOmbuController oDAO = new PuntoOmbuController();
-        Ombues ombu = oDAO.getOmbuxId(Integer.parseInt(request.getParameter("id")));
+        List<ReferenciaOmbu> ListRO=oDAO.getReferencia(nombre, categoria);
         SimpleDateFormat formatoFecha=new SimpleDateFormat("dd/MM/yyyy");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String dato="";
-            if(ombu.getReferenciaOmbu() != null){
-                dato="<td>Referencia</td><td>" + ombu.getExternalRef()+ "</td>";
-            }else{
-                dato="<td>Direccion</td><td>" + ombu.getDireccion() + "</td>";
+            String cat="";
+            if(categoria==0){
+                cat="<th>Categoria</th>";
             }
-            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr>"+dato+"</tr></table><hr>");
-            for(Comentario coment:ombu.getComentarioList()){
+            out.println("<table class=\"table table-bordered\"><tr><th>Nombre</th><th>Descripcion</th>"+cat+"<th>Referencia externa</th></tr>");
+            for(ReferenciaOmbu re:ListRO){
+                String catOmbu="";
+                if(categoria==0){
+                    catOmbu="<td>"+re.getCategoriaReferenciasId().getDetalle()+"</td>";
+                }
+                out.println("<tr><td><a href='#' onclick='getOmbu("+re.getId()+")'>"+re.getOmbues().getNombre()+"</a></td><td>"+re.getOmbues().getDescripcion()+"</td>"+catOmbu+"<td>"+re.getOmbues().getExternalRef()+"</td></tr>");
+            }
+                  
+      /*      for(Comentario coment:ombu.getComentarioList()){
                 StringBuffer textBuffer=new StringBuffer(coment.getComentario());
                 int loc = (new String(textBuffer).indexOf('\n'));
                 while(loc>0){
@@ -95,11 +105,11 @@ public class GetOmbu extends HttpServlet {
 "                <label>Comentario</label>\n" +
 "                <textarea rows=\"10\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n" +
 "            </div><button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");                    
-                }
+                }*/
             }catch(Exception e){}
             
 
-        }
+        
     }
 
     /**

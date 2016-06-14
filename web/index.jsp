@@ -28,6 +28,7 @@ and open the template in the editor.
             session = request.getSession();
             Usuarios user = null;
             boolean logeado = false;
+            PuntoOmbuController PoC = new PuntoOmbuController();
             try {
                 if (session.getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
                     UsuarioController UC = new UsuarioController();
@@ -82,25 +83,39 @@ and open the template in the editor.
                     </div>
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
+                            <li class="active"><a href="#pane1" data-toggle="tab" onclick="busca()">Busqueda</a></li>
                                 <% if (logeado) { %>
-                            <li><a href="#pane2" data-toggle="tab" id="regpunto">Ombu</a></li>
-                            <li><a href="#pane3" data-toggle="tab" id="regzona">Zona</a></li>
-                            <li><a href="#pane4" data-toggle="tab" id="regzona">Ref.Ombu</a></li>
+                            <li><a href="#pane2" data-toggle="tab" onclick="regpunto()">Ombu</a></li>
+                            <li><a href="#pane3" data-toggle="tab" onclick="regzona()">Zona</a></li>
+                            <li><a href="#pane4" data-toggle="tab" onclick="regRef()">Referencia a ombu</a></li>
                                 <% } %>
                         </ul>
-                        <div class="tab-content">
+                        <div class="tab-content" style="min-height: 100% !important;">
                             <!-- Informacion de punto -->
                             <div id="pane1" class="tab-pane active">
-                                <button onclick="getLocation()">Actual Info</button> 
-                                <div>
-                                    <label>Interaction type:  &nbsp;</label>
-                                    <label>draw</label>
-                                    <input type="radio" id="interaction_type_draw" name="interaction_type" value="draw" checked>
-                                    <label>modify</label>
-                                    <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Nombre</label>
+                                        <input type="text" class="form-control" id='nombrebusca' placeholder="Ponga la distancia de ombues">
+                                        <label  for="text">Distancia</label>
+                                        <input type="text" class="form-control" id='distancia' placeholder="Ponga la distancia de ombues">
+                                        <label  for="text">Categoria</label>
+                                        <select class="form-control" id="categoriaBusca" name="categoriaBusca">
+                                            <option value="0">Por todos</option>
+                                            <% for (Categoria cat : PoC.categoriasList()) {%>
+                                            <option value="<%= cat.getId()%>"><%=cat.getNombre()%></option>
+                                            <% } %>
+                                            <%
+                                                for (CategoriaReferencias cat : PoC.categoriaRefList()) {
+                                            %>
+                                            <option value="<%=cat.getId()%>"><%=cat.getDetalle()%></option>
+                                            <% } %>
+                                        </select>
                                 </div>
+                                    <button type="button" class="btn btn-default" onclick="buscarCerca()" >Buscar</button>
 
+                            </div>
+                                <div id="myResult"></div>
                             </div>
                             <!-- Registrar ombu -->
                             <div id="pane2" class="tab-pane">
@@ -125,7 +140,7 @@ and open the template in the editor.
                                         <label  for="text">Que es?</label>
                                         <select class="form-control" id="categoria">
                                             <%
-                                                PuntoOmbuController PoC = new PuntoOmbuController();
+
                                                 for (Categoria cat : PoC.categoriasList()) {
                                             %>
                                             <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
@@ -134,30 +149,30 @@ and open the template in the editor.
                                     </div>
                                     <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
                                 </div>
-                                <div id="myResult"></div>
+
                             </div>
                             <!-- Registrar zona ombu -->
                             <div id="pane3" class="tab-pane">
                                 <div class="form-vertical" role="form">
                                     <div class="form-group">
                                         <label  for="text">Nombre:</label>
-                                        <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
+                                        <input type="text" class="form-control" id='zonanombre' placeholder="Ingrese el nombre del ombu">
                                     </div>
                                     <div class="form-group">
                                         <label  for="text">Descripcion:</label>
-                                        <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
+                                        <input type="text" class="form-control" id='zonadescripcion' placeholder="Ingrese una descripcion para el ombu">
                                     </div>
                                     <div class="form-group">
                                         <label  for="text">Dirección:</label>
-                                        <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
+                                        <input type="text" class="form-control" id='zonadireccion' placeholder="Ingrese una descripcion para el ombu">
                                     </div>
                                     <div class="form-group">
                                         <label  for="text">Ubicación:</label>
-                                        <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
+                                        <input type="text" class="form-control" id='zonaubicacion' placeholder="Ingrese una descripcion para el ombu">
                                     </div>
                                     <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
                                 </div>
-                                <div id="myResult"></div>
+
                             </div>
                             
                             <!-- Registrar referencia -->
@@ -187,7 +202,7 @@ and open the template in the editor.
                                     </div>
                                     <button type="button" class="btn btn-default" onclick="registrarRefOmbu()" >Registrar</button>
                                 </div>
-                                <div id="myResult"></div>
+
                             </div>
                         </div>
                     </div>
@@ -217,6 +232,9 @@ and open the template in the editor.
             <div id="srs">
                 <%=propiedades.getProperty("srs")%>
             </div>
+            <div id="catCant">
+                <%=PoC.categoriasList().size()%>
+        </div>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
@@ -248,7 +266,6 @@ and open the template in the editor.
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" role="form"  action="iniciar-sesion" method="POST">
-                            
                             <div class="form-group">
                                 <label for="txtNick" class="col-sm-3 control-label">* Usuario</label>
                                 <div class="col-sm-8">
@@ -263,7 +280,6 @@ and open the template in the editor.
                                     <span class="help-block">Contraseña es requerida</span>
                                 </div>
                             </div>
-                            
                             <div class="form-group">
                                 <div class="col-sm-offset-3 col-sm-12">
                                     <button type="button" class="btn btn-lightred" data-dismiss="modal">Cancelar</button>
