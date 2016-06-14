@@ -5,6 +5,7 @@
  */
 package Servlets;
 
+import ControladoresDAO.PuntoOmbuController;
 import Utils.ConfigManager;
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +15,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import static javassist.CtMethod.ConstParameter.string;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +37,7 @@ public class Imagenes extends HttpServlet {
    private boolean isMultipart;
    private String filePath, tempPath;
    private int maxFileSize = 5000 * 1024;
-   private int maxMemSize = 4 * 1024;
+   private int maxMemSize = 5000 * 1024;
    private File file ;
    
    public void init( ){
@@ -107,11 +110,14 @@ public class Imagenes extends HttpServlet {
             throws ServletException, IOException {
         //processRequest(request, response);
         // Check that we have a file upload request
+        
+        int ombuId = -1;
+        PuntoOmbuController controlador = new PuntoOmbuController();
         isMultipart = ServletFileUpload.isMultipartContent(request);
         response.setContentType("application/json");
         java.io.PrintWriter out = response.getWriter( );
         if( !isMultipart ){
-           out.println("<p>No file uploaded</p>"); 
+           out.println("error"); 
            return;
         }
         DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -132,11 +138,11 @@ public class Imagenes extends HttpServlet {
           // Process the uploaded file items
           Iterator i = fileItems.iterator();
           
+          
+          
           ConfigManager configuracion = new ConfigManager();
           Properties propiedades = configuracion.getConfigFile("Config.properties");
 
-          String respuesta = "{'files': [";
-          int j = 0;
           while ( i.hasNext () ) 
           {
              FileItem fi = (FileItem)i.next();
@@ -149,26 +155,32 @@ public class Imagenes extends HttpServlet {
                 boolean isInMemory = fi.isInMemory();
                 long sizeInBytes = fi.getSize();
                 // Write the file
+                String nombreArchivo;
                 if( fileName.lastIndexOf("\\") >= 0 ){
-                   file = new File( filePath + System.getProperty("file.separator") +
-                           new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS").format(new Date()) + "_" +
-                           fileName.substring( fileName.lastIndexOf("\\"))) ;
+                    nombreArchivo = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS").format(new Date()) + "_" +
+                           fileName.substring( fileName.lastIndexOf("\\"));
+                   file = new File(filePath + System.getProperty("file.separator") + nombreArchivo) ;
                 }else{
-                   file = new File( filePath + System.getProperty("file.separator") +
-                           new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS").format(new Date()) + "_"+
-                           fileName.substring(fileName.lastIndexOf("\\")+1)) ;
+                    nombreArchivo = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS").format(new Date()) + "_"+
+                           fileName.substring(fileName.lastIndexOf("\\")+1);
+                   file = new File(filePath + System.getProperty("file.separator") + nombreArchivo) ;
                 }
-                fi.write( file ) ;
-                if(j != 0)
-                    respuesta += ",";
-                respuesta += "{'name':" + file.getName() + ", 'size': " + sizeInBytes + ", " +
-                        "'url': " + propiedades.getProperty("http://localhost:8080/" + "TSIG_Imagenes" + ", ") +
-                        "'thumbnailUrl': ,'deleteUrl': , 'deleteType': 'DELETE'}" ;
+                if(ombuId != -1){
+                    fi.write( file ) ;
+                    controlador.OmbuImagenAgregar(ombuId, nombreArchivo);
+                }
+                
              }
-             j++;
+             else{
+                 String value = fi.getString();
+                 StringBuilder sb = new StringBuilder(value);
+                 int size = value.length();
+                 sb.replace(size - 2, size, "");
+                 value = sb.toString();
+                 ombuId = Integer.parseInt(value);
+             }
           }
-          respuesta += "]}";
-          out.println(respuesta);
+          out.println("Ok");
         }catch(Exception ex) {
             System.out.println(ex);
         }

@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Entities;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,69 +17,64 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 
- * @author Nicolás Aquino <nicoaquin@hotmail.com>
+ *
+ * @author Galvadion
  */
 @Entity
-@Table(name = "imagenes")
+@Table(name = "referencia_ombu")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Imagenes.findAll", query = "SELECT i FROM Imagenes i"),
-    @NamedQuery(name = "Imagenes.findById", query = "SELECT i FROM Imagenes i WHERE i.id = :id"),
-    @NamedQuery(name = "Imagenes.findByNombre", query = "SELECT i FROM Imagenes i WHERE i.nombre = :nombre")})
-public class Imagenes implements Serializable {
+    @NamedQuery(name = "ReferenciaOmbu.findAll", query = "SELECT r FROM ReferenciaOmbu r"),
+    @NamedQuery(name = "ReferenciaOmbu.findById", query = "SELECT r FROM ReferenciaOmbu r WHERE r.id = :id")})
+public class ReferenciaOmbu implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
-    private Long id;
-    @Basic(optional = false)
-    @Column(name = "nombre")
-    private String nombre;
-    @JoinColumn(name = "id_ombu", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Ombues ombu;
+    private Integer id;
+    @JoinColumn(name = "categoria_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private CategoriaReferencias categoriaId;
+    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(optional = false, fetch = FetchType.EAGER)
+    private Ombues ombues;
 
-    public Imagenes() {
+    public ReferenciaOmbu() {
     }
 
-    public Imagenes(Long id) {
+    public ReferenciaOmbu(Integer id) {
         this.id = id;
     }
 
-    public Imagenes(Long id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
-    }
-
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public CategoriaReferencias getCategoriaReferenciasId() {
+        return categoriaId;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setCategoriaReferenciasId(CategoriaReferencias categoriaId) {
+        this.categoriaId = categoriaId;
     }
 
-    public Ombues getOmbu() {
-        return ombu;
+    public Ombues getOmbues() {
+        return ombues;
     }
 
-    public void setOmbu(Ombues ombu) {
-        this.ombu = ombu;
+    public void setOmbues(Ombues ombues) {
+        this.ombues = ombues;
     }
 
     @Override
@@ -92,10 +87,10 @@ public class Imagenes implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Imagenes)) {
+        if (!(object instanceof ReferenciaOmbu)) {
             return false;
         }
-        Imagenes other = (Imagenes) object;
+        ReferenciaOmbu other = (ReferenciaOmbu) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -104,7 +99,7 @@ public class Imagenes implements Serializable {
 
     @Override
     public String toString() {
-        return "Entities.Imagenes[ id=" + id + " ]";
+        return "Entities.ReferenciaOmbu[ id=" + id + " ]";
     }
-
+    
 }

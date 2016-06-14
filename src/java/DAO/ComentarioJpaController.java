@@ -20,7 +20,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Diego
+ * @author Galvadion
  */
 public class ComentarioJpaController implements Serializable {
 

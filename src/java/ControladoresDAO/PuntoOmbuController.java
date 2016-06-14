@@ -6,11 +6,18 @@
 package ControladoresDAO;
 
 import DAO.CategoriaJpaController;
+import DAO.CategoriaReferenciasJpaController;
 import DAO.ComentarioJpaController;
+import DAO.ImagenesJpaController;
 import DAO.OmbuesJpaController;
+import DAO.ReferenciaOmbuJpaController;
+import DAO.exceptions.PreexistingEntityException;
 import Entities.Categoria;
+import Entities.CategoriaReferencias;
 import Entities.Comentario;
+import Entities.Imagenes;
 import Entities.Ombues;
+import Entities.ReferenciaOmbu;
 import Entities.Usuarios;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +30,10 @@ import javax.persistence.Persistence;
 public class PuntoOmbuController {
     OmbuesJpaController oJPA=new OmbuesJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
     CategoriaJpaController cJPA=new CategoriaJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
+    CategoriaReferenciasJpaController crJPA=new CategoriaReferenciasJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
     ComentarioJpaController coJPA=new ComentarioJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
+    ReferenciaOmbuJpaController roJPA=new ReferenciaOmbuJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
+    ImagenesJpaController imgJPA = new ImagenesJpaController(Persistence.createEntityManagerFactory("TSIGPU"));
     
     public int crearPuntoOmbu(Ombues ombu){
         return oJPA.saveAndGetId(ombu).getId();
@@ -31,6 +41,10 @@ public class PuntoOmbuController {
     
     public List<Categoria> categoriasList(){
         return cJPA.findCategoriaEntities();
+    }
+    
+    public List<CategoriaReferencias> categoriaRefList(){
+        return crJPA.findCategoriaReferenciasEntities();
     }
     
     public Categoria getCategoriaxId(Integer id){
@@ -51,5 +65,21 @@ public class PuntoOmbuController {
         coJPA.create(coment);
         ombu.getComentarioList().add(coment);
         oJPA.edit(ombu);
+    }
+    
+    public void crearReferenciaOmbu(ReferenciaOmbu ref) throws PreexistingEntityException, Exception{
+        roJPA.create(ref);
+    }
+
+    public CategoriaReferencias getCategoriaRefxId(Integer categoriaRefId) {
+        return crJPA.findCategoriaReferencias(categoriaRefId);
+    }
+    
+    public void OmbuImagenAgregar(int idOmbu, String nombreImagen){
+        Ombues ombu = getOmbuxId(idOmbu);
+        Imagenes img = new Imagenes();
+        img.setNombre(nombreImagen);
+        img.setOmbu(ombu);
+        imgJPA.create(img);
     }
 }

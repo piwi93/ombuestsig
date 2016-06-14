@@ -100,8 +100,9 @@ public class iniciar_sesion extends HttpServlet {
     protected void loginIncorrecto(HttpSession objSesion, 
             HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         objSesion.setAttribute("estado_sesion", EstadoSesion.LOGIN_INCORRECTO);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-        dispatcher.forward(request, response);
+        response.sendRedirect("/TSIG");
+        //RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+        //dispatcher.forward(request, response);
     }
     
     /**
@@ -118,8 +119,8 @@ public class iniciar_sesion extends HttpServlet {
         // setea el usuario logueado
         request.getSession().setAttribute("usuario_logueado", usr.getNickname());
         objSesion.setAttribute("estado_sesion", EstadoSesion.LOGIN_CORRECTO);
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-        dispatcher.forward(request, response);
+        response.sendRedirect("/TSIG");
+        //RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+        //dispatcher.forward(request, response);
     }
 }

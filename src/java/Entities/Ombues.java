@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -41,13 +42,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ombues.findByUbicacion", query = "SELECT o FROM Ombues o WHERE o.ubicacion = :ubicacion"),
     @NamedQuery(name = "Ombues.findByExternalRef", query = "SELECT o FROM Ombues o WHERE o.externalRef = :externalRef")})
 public class Ombues implements Serializable {
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "ombues", fetch = FetchType.EAGER)
+    private ReferenciaOmbu referenciaOmbu;
     @OneToMany(mappedBy = "idOmbu", fetch = FetchType.LAZY)
     private List<Comentario> comentarioList;
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuarios idUsuario;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idOmbu")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ombu")
     private Collection<Imagenes> imagenesCollection;
 
     private static final long serialVersionUID = 1L;
@@ -178,6 +182,14 @@ public class Ombues implements Serializable {
         this.comentarioList = comentarioList;
     }
 
+    public ReferenciaOmbu getReferenciaOmbu() {
+        return referenciaOmbu;
+    }
+    
+    public void setReferenciaOmbu(ReferenciaOmbu referenciaOmbu) {
+        this.referenciaOmbu = referenciaOmbu;
+    }
+    
     @XmlTransient
     public Collection<Imagenes> getImagenesCollection() {
         return imagenesCollection;

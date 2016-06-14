@@ -6,14 +6,15 @@
 package Servlets;
 
 import ControladoresDAO.PuntoOmbuController;
-import DAO.OmbuesJpaController2;
 import Entities.Comentario;
+import Entities.Imagenes;
 import Entities.Ombues;
 import Utils.EstadoSesion;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import javax.persistence.Persistence;
+import java.util.Collection;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -71,10 +72,38 @@ public class GetOmbu extends HttpServlet {
         PuntoOmbuController oDAO = new PuntoOmbuController();
         Ombues ombu = oDAO.getOmbuxId(Integer.parseInt(request.getParameter("id")));
         SimpleDateFormat formatoFecha=new SimpleDateFormat("dd/MM/yyyy");
-        try (PrintWriter out = response.getWriter()) {
+        try
+        {
+            PrintWriter out = response.getWriter();
             /* TODO output your page here. You may use following sample code. */
             System.out.println(ombu.getDescripcion());
-            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr><td>Direccion</td><td>" + ombu.getDireccion() + "</td></tr></table><hr>");
+            out.println(
+                    "<div>" +
+                    "<div> <div class='col-sm-4'>"+
+                        "<div><label>Nombre: </label> " + ombu.getNombre() +"</div>"+
+                        "<div><label>Dirección: </label> " + ombu.getDireccion() + "</div>"+
+                    "</div>"+
+                    "<div class='col-sm-8'><label>Descripción: </label> " + ombu.getDescripcion() + "</div></div>" +
+                    "<div><table class='table text-center'>" //Div para imagenes
+            );
+            int counter = 0;
+            Collection<Entities.Imagenes> imagenes = ombu.getImagenesCollection();
+            for(Imagenes img:imagenes)
+            { 
+                if(counter % 4 == 0){
+                    out.println("<td>");
+                }
+                out.println("<td class='col-sm-3 text-center'><img class='img-responsive' alt='Image not found' src='images/" + img.getNombre() + "'></td>");
+                if(counter % 4 == 3){
+                    out.println("</tr>");
+                }
+                counter++;
+            }
+            if(counter % 4 !=0){
+                out.println("</tr>");
+            }
+            out.println("</table></div>"); //Fin Div para Imagenes
+
             for(Comentario coment:ombu.getComentarioList()){
                 StringBuffer textBuffer=new StringBuffer(coment.getComentario());
                 int loc = (new String(textBuffer).indexOf('\n'));
@@ -84,16 +113,23 @@ public class GetOmbu extends HttpServlet {
                 }
                 out.println("<p>"+formatoFecha.format(coment.getFecha())+" "+coment.getIdUser().getNickname()+ "</p><p>"+textBuffer+"</p><br>");
             }
-            try {
+            out.println("</div>");
                 if (request.getSession().getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
-                    out.println("<div class=\"form-horizontal\" role=\"form\">\n" +
-"                <label>Comentario</label>\n" +
-"                <textarea rows=\"10\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n" +
-"            </div><button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");                    
-                }
-            }catch(Exception e){}
-            
+                    out.println(
+                        "<div>" +
+                        "<div class=\"form-horizontal\" role=\"form\">\n" +
+                        "<label>Comentario</label>\n" +
+                        "<textarea rows=\"4\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n" +
+                        "</div><button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> "
+                        + "</div>"
+                    );                    
 
+            }
+            out.println("</div>");
+        }
+        catch(Exception e)
+        {
+            
         }
     }
 

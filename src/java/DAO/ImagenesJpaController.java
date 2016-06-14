@@ -38,10 +38,10 @@ public class ImagenesJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Ombues idOmbu = imagenes.getIdOmbu();
+            Ombues idOmbu = imagenes.getOmbu();
             if (idOmbu != null) {
                 idOmbu = em.getReference(idOmbu.getClass(), idOmbu.getId());
-                imagenes.setIdOmbu(idOmbu);
+                imagenes.setOmbu(idOmbu);
             }
             em.persist(imagenes);
             if (idOmbu != null) {
@@ -62,11 +62,11 @@ public class ImagenesJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Imagenes persistentImagenes = em.find(Imagenes.class, imagenes.getId());
-            Ombues idOmbuOld = persistentImagenes.getIdOmbu();
-            Ombues idOmbuNew = imagenes.getIdOmbu();
+            Ombues idOmbuOld = persistentImagenes.getOmbu();
+            Ombues idOmbuNew = imagenes.getOmbu();
             if (idOmbuNew != null) {
                 idOmbuNew = em.getReference(idOmbuNew.getClass(), idOmbuNew.getId());
-                imagenes.setIdOmbu(idOmbuNew);
+                imagenes.setOmbu(idOmbuNew);
             }
             imagenes = em.merge(imagenes);
             if (idOmbuOld != null && !idOmbuOld.equals(idOmbuNew)) {
@@ -106,7 +106,7 @@ public class ImagenesJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The imagenes with id " + id + " no longer exists.", enfe);
             }
-            Ombues idOmbu = imagenes.getIdOmbu();
+            Ombues idOmbu = imagenes.getOmbu();
             if (idOmbu != null) {
                 idOmbu.getImagenesCollection().remove(imagenes);
                 idOmbu = em.merge(idOmbu);

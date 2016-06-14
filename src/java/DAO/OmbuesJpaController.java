@@ -16,6 +16,10 @@ import javax.persistence.criteria.Root;
 import Entities.Categoria;
 import Entities.Usuarios;
 import Entities.Comentario;
+import Entities.Usuarios;
+import Entities.ReferenciaOmbu;
+import Entities.Comentario;
+import Entities.Ombues;
 import java.util.ArrayList;
 import java.util.List;
 import Entities.Imagenes;
@@ -25,8 +29,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * 
- * @author Nicolás Aquino <nicoaquin@hotmail.com>
+ *
+ * @author Galvadion
  */
 public class OmbuesJpaController implements Serializable {
 
@@ -60,26 +64,30 @@ public class OmbuesJpaController implements Serializable {
                 idUsuario = em.getReference(idUsuario.getClass(), idUsuario.getId());
                 ombues.setIdUsuario(idUsuario);
             }
+	    ReferenciaOmbu referenciaOmbu = ombues.getReferenciaOmbu();
+            if (referenciaOmbu != null) {
+                referenciaOmbu = em.getReference(referenciaOmbu.getClass(), referenciaOmbu.getId());
+                ombues.setReferenciaOmbu(referenciaOmbu);
+            }
             List<Comentario> attachedComentarioList = new ArrayList<Comentario>();
             for (Comentario comentarioListComentarioToAttach : ombues.getComentarioList()) {
                 comentarioListComentarioToAttach = em.getReference(comentarioListComentarioToAttach.getClass(), comentarioListComentarioToAttach.getId());
                 attachedComentarioList.add(comentarioListComentarioToAttach);
             }
             ombues.setComentarioList(attachedComentarioList);
-            Collection<Imagenes> attachedImagenesCollection = new ArrayList<Imagenes>();
-            for (Imagenes imagenesCollectionImagenesToAttach : ombues.getImagenesCollection()) {
-                imagenesCollectionImagenesToAttach = em.getReference(imagenesCollectionImagenesToAttach.getClass(), imagenesCollectionImagenesToAttach.getId());
-                attachedImagenesCollection.add(imagenesCollectionImagenesToAttach);
-            }
-            ombues.setImagenesCollection(attachedImagenesCollection);
             em.persist(ombues);
-            if (idCategoria != null) {
-                idCategoria.getOmbuesList().add(ombues);
-                idCategoria = em.merge(idCategoria);
-            }
             if (idUsuario != null) {
                 idUsuario.getOmbuesList().add(ombues);
                 idUsuario = em.merge(idUsuario);
+            }
+            if (referenciaOmbu != null) {
+                Ombues oldOmbuesOfReferenciaOmbu = referenciaOmbu.getOmbues();
+                if (oldOmbuesOfReferenciaOmbu != null) {
+                    oldOmbuesOfReferenciaOmbu.setReferenciaOmbu(null);
+                    oldOmbuesOfReferenciaOmbu = em.merge(oldOmbuesOfReferenciaOmbu);
+                }
+                referenciaOmbu.setOmbues(ombues);
+                referenciaOmbu = em.merge(referenciaOmbu);
             }
             for (Comentario comentarioListComentario : ombues.getComentarioList()) {
                 Ombues oldIdOmbuOfComentarioListComentario = comentarioListComentario.getIdOmbu();
@@ -88,15 +96,6 @@ public class OmbuesJpaController implements Serializable {
                 if (oldIdOmbuOfComentarioListComentario != null) {
                     oldIdOmbuOfComentarioListComentario.getComentarioList().remove(comentarioListComentario);
                     oldIdOmbuOfComentarioListComentario = em.merge(oldIdOmbuOfComentarioListComentario);
-                }
-            }
-            for (Imagenes imagenesCollectionImagenes : ombues.getImagenesCollection()) {
-                Ombues oldIdOmbuOfImagenesCollectionImagenes = imagenesCollectionImagenes.getIdOmbu();
-                imagenesCollectionImagenes.setIdOmbu(ombues);
-                imagenesCollectionImagenes = em.merge(imagenesCollectionImagenes);
-                if (oldIdOmbuOfImagenesCollectionImagenes != null) {
-                    oldIdOmbuOfImagenesCollectionImagenes.getImagenesCollection().remove(imagenesCollectionImagenes);
-                    oldIdOmbuOfImagenesCollectionImagenes = em.merge(oldIdOmbuOfImagenesCollectionImagenes);
                 }
             }
             em.getTransaction().commit();
@@ -113,33 +112,29 @@ public class OmbuesJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Ombues persistentOmbues = em.find(Ombues.class, ombues.getId());
-            Categoria idCategoriaOld = persistentOmbues.getIdCategoria();
-            Categoria idCategoriaNew = ombues.getIdCategoria();
             Usuarios idUsuarioOld = persistentOmbues.getIdUsuario();
             Usuarios idUsuarioNew = ombues.getIdUsuario();
+            ReferenciaOmbu referenciaOmbuOld = persistentOmbues.getReferenciaOmbu();
+            ReferenciaOmbu referenciaOmbuNew = ombues.getReferenciaOmbu();
             List<Comentario> comentarioListOld = persistentOmbues.getComentarioList();
             List<Comentario> comentarioListNew = ombues.getComentarioList();
-            Collection<Imagenes> imagenesCollectionOld = persistentOmbues.getImagenesCollection();
-            Collection<Imagenes> imagenesCollectionNew = ombues.getImagenesCollection();
             List<String> illegalOrphanMessages = null;
-            for (Imagenes imagenesCollectionOldImagenes : imagenesCollectionOld) {
-                if (!imagenesCollectionNew.contains(imagenesCollectionOldImagenes)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Imagenes " + imagenesCollectionOldImagenes + " since its idOmbu field is not nullable.");
+            if (referenciaOmbuOld != null && !referenciaOmbuOld.equals(referenciaOmbuNew)) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
                 }
+                illegalOrphanMessages.add("You must retain ReferenciaOmbu " + referenciaOmbuOld + " since its ombues field is not nullable.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (idCategoriaNew != null) {
-                idCategoriaNew = em.getReference(idCategoriaNew.getClass(), idCategoriaNew.getId());
-                ombues.setIdCategoria(idCategoriaNew);
-            }
             if (idUsuarioNew != null) {
                 idUsuarioNew = em.getReference(idUsuarioNew.getClass(), idUsuarioNew.getId());
                 ombues.setIdUsuario(idUsuarioNew);
+            }
+            if (referenciaOmbuNew != null) {
+                referenciaOmbuNew = em.getReference(referenciaOmbuNew.getClass(), referenciaOmbuNew.getId());
+                ombues.setReferenciaOmbu(referenciaOmbuNew);
             }
             List<Comentario> attachedComentarioListNew = new ArrayList<Comentario>();
             for (Comentario comentarioListNewComentarioToAttach : comentarioListNew) {
@@ -148,22 +143,7 @@ public class OmbuesJpaController implements Serializable {
             }
             comentarioListNew = attachedComentarioListNew;
             ombues.setComentarioList(comentarioListNew);
-            Collection<Imagenes> attachedImagenesCollectionNew = new ArrayList<Imagenes>();
-            for (Imagenes imagenesCollectionNewImagenesToAttach : imagenesCollectionNew) {
-                imagenesCollectionNewImagenesToAttach = em.getReference(imagenesCollectionNewImagenesToAttach.getClass(), imagenesCollectionNewImagenesToAttach.getId());
-                attachedImagenesCollectionNew.add(imagenesCollectionNewImagenesToAttach);
-            }
-            imagenesCollectionNew = attachedImagenesCollectionNew;
-            ombues.setImagenesCollection(imagenesCollectionNew);
             ombues = em.merge(ombues);
-            if (idCategoriaOld != null && !idCategoriaOld.equals(idCategoriaNew)) {
-                idCategoriaOld.getOmbuesList().remove(ombues);
-                idCategoriaOld = em.merge(idCategoriaOld);
-            }
-            if (idCategoriaNew != null && !idCategoriaNew.equals(idCategoriaOld)) {
-                idCategoriaNew.getOmbuesList().add(ombues);
-                idCategoriaNew = em.merge(idCategoriaNew);
-            }
             if (idUsuarioOld != null && !idUsuarioOld.equals(idUsuarioNew)) {
                 idUsuarioOld.getOmbuesList().remove(ombues);
                 idUsuarioOld = em.merge(idUsuarioOld);
@@ -171,6 +151,15 @@ public class OmbuesJpaController implements Serializable {
             if (idUsuarioNew != null && !idUsuarioNew.equals(idUsuarioOld)) {
                 idUsuarioNew.getOmbuesList().add(ombues);
                 idUsuarioNew = em.merge(idUsuarioNew);
+            }
+            if (referenciaOmbuNew != null && !referenciaOmbuNew.equals(referenciaOmbuOld)) {
+                Ombues oldOmbuesOfReferenciaOmbu = referenciaOmbuNew.getOmbues();
+                if (oldOmbuesOfReferenciaOmbu != null) {
+                    oldOmbuesOfReferenciaOmbu.setReferenciaOmbu(null);
+                    oldOmbuesOfReferenciaOmbu = em.merge(oldOmbuesOfReferenciaOmbu);
+                }
+                referenciaOmbuNew.setOmbues(ombues);
+                referenciaOmbuNew = em.merge(referenciaOmbuNew);
             }
             for (Comentario comentarioListOldComentario : comentarioListOld) {
                 if (!comentarioListNew.contains(comentarioListOldComentario)) {
@@ -186,17 +175,6 @@ public class OmbuesJpaController implements Serializable {
                     if (oldIdOmbuOfComentarioListNewComentario != null && !oldIdOmbuOfComentarioListNewComentario.equals(ombues)) {
                         oldIdOmbuOfComentarioListNewComentario.getComentarioList().remove(comentarioListNewComentario);
                         oldIdOmbuOfComentarioListNewComentario = em.merge(oldIdOmbuOfComentarioListNewComentario);
-                    }
-                }
-            }
-            for (Imagenes imagenesCollectionNewImagenes : imagenesCollectionNew) {
-                if (!imagenesCollectionOld.contains(imagenesCollectionNewImagenes)) {
-                    Ombues oldIdOmbuOfImagenesCollectionNewImagenes = imagenesCollectionNewImagenes.getIdOmbu();
-                    imagenesCollectionNewImagenes.setIdOmbu(ombues);
-                    imagenesCollectionNewImagenes = em.merge(imagenesCollectionNewImagenes);
-                    if (oldIdOmbuOfImagenesCollectionNewImagenes != null && !oldIdOmbuOfImagenesCollectionNewImagenes.equals(ombues)) {
-                        oldIdOmbuOfImagenesCollectionNewImagenes.getImagenesCollection().remove(imagenesCollectionNewImagenes);
-                        oldIdOmbuOfImagenesCollectionNewImagenes = em.merge(oldIdOmbuOfImagenesCollectionNewImagenes);
                     }
                 }
             }
@@ -230,20 +208,15 @@ public class OmbuesJpaController implements Serializable {
                 throw new NonexistentEntityException("The ombues with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<Imagenes> imagenesCollectionOrphanCheck = ombues.getImagenesCollection();
-            for (Imagenes imagenesCollectionOrphanCheckImagenes : imagenesCollectionOrphanCheck) {
+            ReferenciaOmbu referenciaOmbuOrphanCheck = ombues.getReferenciaOmbu();
+            if (referenciaOmbuOrphanCheck != null) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Ombues (" + ombues + ") cannot be destroyed since the Imagenes " + imagenesCollectionOrphanCheckImagenes + " in its imagenesCollection field has a non-nullable idOmbu field.");
+                illegalOrphanMessages.add("This Ombues (" + ombues + ") cannot be destroyed since the ReferenciaOmbu " + referenciaOmbuOrphanCheck + " in its referenciaOmbu field has a non-nullable ombues field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Categoria idCategoria = ombues.getIdCategoria();
-            if (idCategoria != null) {
-                idCategoria.getOmbuesList().remove(ombues);
-                idCategoria = em.merge(idCategoria);
             }
             Usuarios idUsuario = ombues.getIdUsuario();
             if (idUsuario != null) {
@@ -311,13 +284,13 @@ public class OmbuesJpaController implements Serializable {
     }
 
     public Ombues saveAndGetId(Ombues ombu) {
-        EntityManager em=getEntityManager();
-         em.getTransaction().begin();
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
         em.persist(ombu);
         em.flush();
         em.getTransaction().commit();
         em.close();
         return ombu;
     }
-    
+
 }

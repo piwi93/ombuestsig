@@ -1,3 +1,4 @@
+<%@page import="Entities.CategoriaReferencias"%>
 <%@page import="Entities.Usuarios"%>
 <%@page import="ControladoresDAO.UsuarioController"%>
 <%@page import="Utils.EstadoSesion"%>
@@ -13,17 +14,16 @@ and open the template in the editor.
     <head>
         <title>OMBUES</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="stylesheet" href="media/css/bootstrap.css">
         <link rel="stylesheet" href="media/OpenLayers-3.15.1/ol.css" type="text/css">
         <link rel="stylesheet" href="media/css/main.css">
         <link rel="stylesheet" href="media/font-awesome-4.6.3/css/font-awesome.min.css">
-        <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-        <link rel="stylesheet" href="media/css/jquery.fileupload.css">
-        <link rel="stylesheet" href="media/css/jquery.fileupload-ui.css">
-        <!-- CSS adjustments for browsers with JavaScript disabled -->
-        <noscript><link rel="stylesheet" href="media/css/jquery.fileupload-noscript.css"></noscript>
-        <noscript><link rel="stylesheet" href="media/css/jquery.fileupload-ui-noscript.css"></noscript>
+        
+        <link rel="stylesheet" href="media/js/dropzone/basic.css">
+        <link rel="stylesheet" href="media/js/dropzone/dropzone.css">
+        
     </head>
     <body>
         <!-- Wrap all page content here -->
@@ -40,131 +40,178 @@ and open the template in the editor.
             } catch (Exception e) {
             }%>
         <div id="wrap">
-            <header>
-                <nav class="navbar navbar-inverse custom_bar">
-                    <div class="container-fluid">
-                        <div class="navbar-header">
-                            <a class="navbar-brand" href="#">Ombues TSIG</a>
-                        </div>
-                        <ul class="nav navbar-nav navbar-right"> 
-                            <% if (logeado) {%>
-                            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"><%=user.getNickname()%> </span></a></li>
-                            <li><a href="salir"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide">Salir</span></a></li>
+            <div class="row">
+                <header>
+                    <nav class="navbar navbar-inverse no-border-radius">
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>                        
+                                </button>
+                                <a class="navbar-brand" href="">Ombues TSIG</a>
+                            </div>
+                            <div class="collapse navbar-collapse" id="myNavbar">
+                                <ul class="nav navbar-nav navbar-right"> 
+                                    <% if (logeado) {%>
+                                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> <%=user.getNickname()%></a></li>
+                                    <li><a href="salir"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
                                         <%   } else { %>
-                            <li><a href="userRegister"><span class="glyphicon glyphicon-user"></span><span class="nav_hide"> Sign Up</span></a></li>
-                            <li><a href="#modalLogIn" data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span><span class="nav_hide"> Login</span></a></li>
-                                        <% }%>
-                        </ul>
-                    </div>
-                </nav>
-            </header>
-            <div class="col-lg-3">
-                <div class="tabbable">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
-                            <% if (logeado) { %>
-                        <li><a href="#pane2" data-toggle="tab" id="regpunto">Registrar ombu</a></li>
-                        <li><a href="#pane3" data-toggle="tab" id="regzona">Registrar zona de ombues</a></li>
-                            <% } %>
-                    </ul>
-                    <div class="tab-content">
-                        <!-- Informacion de punto -->
-                        <div id="pane1" class="tab-pane active">
-                            <button onclick="getLocation()">Actual Info</button> 
-                            <div>
-                                <label>Interaction type:  &nbsp;</label>
-                                <label>draw</label>
-                                <input type="radio" id="interaction_type_draw" name="interaction_type" value="draw" checked>
-                                <label>modify</label>
-                                <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
-                            </div>
-
-                        </div>
-                        <!-- Registrar ombu -->
-                        <div id="pane2" class="tab-pane">
-                            <div class="form-vertical" role="form">
-                                <div class="form-group">
-                                    <label  for="text">Nombre:</label>
-                                    <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Descripcion:</label>
-                                    <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Dirección:</label>
-                                    <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Ubicación:</label>
-                                    <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Que es?</label>
-                                    <select class="form-control" id="categoria">
-                                        <%
-                                            PuntoOmbuController PoC = new PuntoOmbuController();
-                                            for (Categoria cat : PoC.categoriasList()) {
-                                        %>
-                                        <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
+                                    <li><a href="userRegister"><span class="glyphicon glyphicon-user"></span> Sign Up</span></a></li>
+                                    <li><a href="#modalLogIn" data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                                         <% } %>
-                                    </select>
-                                </div>
-                                <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
+                                </ul>
                             </div>
-                            <div id="myResult"></div>
                         </div>
-                        <!-- Registrar zona ombu -->
-                        <div id="pane3" class="tab-pane">
-                            <div class="form-vertical" role="form">
-                                <div class="form-group">
-                                    <label  for="text">Nombre:</label>
-                                    <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Descripcion:</label>
-                                    <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Dirección:</label>
-                                    <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <div class="form-group">
-                                    <label  for="text">Ubicación:</label>
-                                    <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
-                                </div>
-                                <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
-                            </div>
-                            <div id="myResult"></div>
-                        </div>
-                    </div>
-                </div>
-                                    
-                <!-- Upload Image TEST -->
-                <div id="imagesForm">
-                    <input id="fileupload" type="file" name="files[]" method="POST" enctype="multipart/form-data" multiple>
-                    <div id="progress">
-                        <div class="bar" style="width: 0%;"></div>
-                    </div>
-                </div>
-                
-                <!-- FIN Upload Image TEST -->
-                    
+                    </nav>
+                </header>
             </div>
-
-            <div class="col-lg-9">
-                <div style="width: 100%; height: 150%" id="map">
+            
+            <div class="row">
+                
+                <div class="col-lg-12" id="map">
                     <div id="popup" class="ol-popup">
                         <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                         <div id="popup"></div>
                     </div>
                 </div>
-            </div>
 
+                <div class="col-lg-3" id="side-bar">
+                    <div id="expand-button-container">
+                        <button class="btn btn-success" id="expand-button" onclick="expand_bar()">
+                            <span class="glyphicon glyphicon-resize-full" id="expand-button-icon" />
+                        </button>
+                    </div>
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
+                            <li><a href="#pane5" data-toggle="tab" id="regzona">Statics</a></li>
+                                <% if (logeado) { %>
+                            <li><a href="#pane2" data-toggle="tab" id="regpunto">Ombu</a></li>
+                            <li><a href="#pane3" data-toggle="tab" id="regzona">Zona</a></li>
+                            <li><a href="#pane4" data-toggle="tab" id="regzona">Referencia a ombu</a></li>
+                                <% } %>
+                        </ul>
+                        <div class="tab-content" style="min-height: 100% !important;">
+                            <!-- Informacion de punto -->
+                            <div id="pane1" class="tab-pane active">
+                                <button onclick="getLocation()">Actual Info</button> 
+                                <div>
+                                    <label>Interaction type:  &nbsp;</label>
+                                    <label>draw</label>
+                                    <input type="radio" id="interaction_type_draw" name="interaction_type" value="draw" checked>
+                                    <label>modify</label>
+                                    <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
+                                </div>
+
+                            </div>
+                            <!-- Registrar ombu -->
+                            <div id="pane2" class="tab-pane">
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Nombre:</label>
+                                        <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Descripcion:</label>
+                                        <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Dirección:</label>
+                                        <input type="text" class="form-control" id='direccion' placeholder="Ingrese una dirección para el ombu">
+                                    </div>
+                                    <div class="form-group" style="display:none">
+                                        <label  for="text">Ubicación:</label>
+                                        <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Que es?</label>
+                                        <select class="form-control" id="categoria">
+                                            <%
+                                                PuntoOmbuController PoC = new PuntoOmbuController();
+                                                for (Categoria cat : PoC.categoriasList()) {
+                                            %>
+                                            <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                            <div id="picDropzone" style="height: 150px; width: 100%;
+                                              border:dashed; color:blue; border-color: skyblue"></div>
+                                    </div>
+                                    <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
+                                </div>
+                                <div id="myResult"></div>
+                            </div>
+                            <!-- Registrar zona ombu -->
+                            <div id="pane3" class="tab-pane">
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Nombre:</label>
+                                        <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Descripcion:</label>
+                                        <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Dirección:</label>
+                                        <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Ubicación:</label>
+                                        <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
+                                    </div>
+                                    <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
+                                </div>
+                                <div id="myResult"></div>
+                            </div>
+                            
+                            <!-- Registrar referencia -->
+                            <div id="pane4" class="tab-pane">
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Nombre:</label>
+                                        <input type="text" class="form-control" id='refnombre' placeholder="Ingrese el nombre del ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Descripcion:</label>
+                                        <input type="text" class="form-control" id='refdescripcion' placeholder="Ingrese una descripcion para la referencia">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Referencia:</label>
+                                        <input type="text" class="form-control" id='refRef' placeholder="Ingrese un enlace a algo que referencie al ombu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label  for="text">Que es?</label>
+                                        <select class="form-control" id="refcategoria">
+                                            <%   
+                                                for (CategoriaReferencias cat : PoC.categoriaRefList()) {
+                                            %>
+                                            <option value="<%=cat.getId()%>"><%=cat.getDetalle()%></option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-default" onclick="registrarRefOmbu()" >Registrar</button>
+                                </div>
+                                <div id="myResult"></div>
+                            </div>
+                                        
+                            <!-- Stats -->
+                            <div id="pane5" class="tab-pane">
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div><!-- Wrap Div end -->
+
         <footer id="footer">
             <div class="container">
-                <p class="text-muted credit">Copyright Grupo 13</p>
+                <p class="text-muted credit" style="color: #9d9d9d">Copyright Grupo 13</p>
             </div>
         </footer>
 
@@ -186,13 +233,11 @@ and open the template in the editor.
             </div>
         </div>
 
-
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="media/OpenLayers-3.15.1/ol.js" type="text/javascript"></script>
-        <script src="media/js/mapa.js" type="text/javascript"></script>
         
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="media/js/sidebar.js" type="text/javascript"></script>
         <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
         <script src="media/js/jQuery-File-Uploader/vendor/jquery.ui.widget.js"></script>
         <!-- The Templates plugin is included to render the upload/download listings -->
@@ -220,7 +265,10 @@ and open the template in the editor.
         <!-- The File Upload user interface plugin -->
         <script src="media/js/jQuery-File-Uploader/jquery.fileupload-ui.js"></script>
         <!-- The main application script -->
-        <script src="media/js/jQuery-File-Uploader/main.js"></script>
+        <script src="media/js/dropzone/dropzone.js"></script>
+        <script src="media/js/imagenes.js"></script>
+        
+        <script src="media/js/mapa.js" type="text/javascript"></script>
         
         <div class="modal fade" id="modalInfo" role="dialog">
             <div class="modal-dialog">
@@ -233,11 +281,11 @@ and open the template in the editor.
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                     </div>
-                </div>  
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->    
-            <div class="modal fade" id="modalLogIn" role="dialog">
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->    
+    
+        <div class="modal fade" id="modalLogIn" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -245,36 +293,51 @@ and open the template in the editor.
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" role="form"  action="iniciar-sesion" method="POST">
-                    <div class="form-group">
-                        <label class="control-label col-sm-4" for="text">Usuario:</label>
-                        <div class="col-sm-8">
-                            <INPUT type="text" class="form-control" id="cuadroTxtLogin" name="txtNick" value="" size="50"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-4" for="text">Contraseña:</label>
-                        <div class="col-sm-8">
-                            <INPUT type="password" class="form-control" id="cuadroTxtLogin" name="txtPwd" value="" size="50"/>
-                        </div>
-                    </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10"><INPUT type='submit' id='btnLogin' class='btn btn-primary' name='btnLogIn' Value='Iniciar sesión' onclick='Submit()'/></div>
-                        </div>
-                    
-                    <%
-                        session =request.getSession();
-                        if(session.getAttribute("estado_sesion") == EstadoSesion.LOGIN_INCORRECTO){
-                            session.setAttribute("estado_sesion",EstadoSesion.NO_LOGIN);
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="text">Usuario:</label>
+                                <div class="col-sm-8">
+                                    <INPUT type="text" class="form-control" id="cuadroTxtLogin" name="txtNick" value="" size="50"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="text">Contraseña:</label>
+                                <div class="col-sm-8">
+                                    <INPUT type="password" class="form-control" id="cuadroTxtLogin" name="txtPwd" value="" size="50"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10"><INPUT type='submit' id='btnLogin' class='btn btn-primary' name='btnLogIn' Value='Iniciar sesión' onclick='Submit()'/></div>
+                            </div>
+
+                            <%
+                                session = request.getSession();
+                                if (session.getAttribute("estado_sesion") == EstadoSesion.LOGIN_INCORRECTO) {
+                                    session.setAttribute("estado_sesion", EstadoSesion.NO_LOGIN);
                             %><p style='font-size:11px; display:inline-block'>Usuario o contraseña incorrecta.</p>
-                           <%  
-                        }%>
-                </form>
+                            <%
+                                   }%>
+                        </form>
                     </div>
                     <div class="modal-footer">
                     </div>
-                </div>  
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-</body>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        
+        <!-- DropZone preview Template -->
+        <div id="preview-template" style="display: none;">
+            <div class="dz-preview dz-file-preview col-xs-3" style="height: 75px">
+                <div class="dz-details">
+                  <!--<div class="dz-filename"><span data-dz-name></span></div>-->
+                  <!--<div class="dz-size" data-dz-size></div>-->
+                  <img data-dz-thumbnail style="max-height: 70px; max-width: 100%" />
+                </div>
+                <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                <div class="dz-success-mark"><span></span></div>
+                <div class="dz-error-mark"><span></span></div>
+                <div class="dz-error-message"><span data-dz-errormessage></span></div>
+            </div>
+        </div>
+        <!-- END DropZone preview Template -->
+    </body>
 </html>

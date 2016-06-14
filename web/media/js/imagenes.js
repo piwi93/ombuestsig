@@ -1,5 +1,18 @@
+var dropZone;
+$(document).ready(function (){
+    dropZone = new Dropzone(
+            "div#picDropzone",
+            {       
+                url: "Imagenes",
+                uploadMultiple: true,
+                acceptedFiles: "image/*",
+                autoProcessQueue: false,
+                previewTemplate: document.getElementById('preview-template').innerHTML,
+            }
+        );
+})
 
-$(document).ready(function () {
+/*$(document).ready(function () {
     $('#fileupload').fileupload({
         url: 'Imagenes',
         sequentailUploads: true,
@@ -26,4 +39,4 @@ $(document).ready(function () {
         },
         
     });
-});
+});*/
