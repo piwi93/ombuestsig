@@ -17824,7 +17824,7 @@ table .delete a, table .delete small{
 #map {
     position: relative;
     width: 100%;
-    margin-top: -20px;
+    margin-top: 52px;
 }
 
 #side-bar {
@@ -17861,6 +17861,27 @@ table .delete a, table .delete small{
 
 .tabbable {
     height: 100%;
-    overflow-y: scroll !important;
     overflow-x: hidden !important;
+}
+
+.scrolleable {
+    overflow-y: scroll;
+}
+
+#info-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.main-row {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+}
+
+body {
+    min-width: 320px !important;
+    min-height: 500px !important;
 }

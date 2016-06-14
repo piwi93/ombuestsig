@@ -37,7 +37,7 @@ and open the template in the editor.
             } catch (Exception e) {
             }%>
         <div id="wrap">
-            <div class="row">
+            <div class="main-row">
                 <header>
                     <nav class="navbar navbar-inverse no-border-radius">
                         <div class="container-fluid">
@@ -89,7 +89,7 @@ and open the template in the editor.
                             <li><a href="#pane4" data-toggle="tab" id="regzona">Ref.Ombu</a></li>
                                 <% } %>
                         </ul>
-                        <div class="tab-content" style="min-height: 100% !important;">
+                        <div class="tab-content">
                             <!-- Informacion de punto -->
                             <div id="pane1" class="tab-pane active">
                                 <button onclick="getLocation()">Actual Info</button> 
@@ -229,12 +229,12 @@ and open the template in the editor.
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Informacion del ombu</h4>
+                        <h4 class="modal-title custom-font"><strong>Informacion</strong> del ombu</h4>
                     </div>
                     <div class="modal-body" id="info-body">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-lightred" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
