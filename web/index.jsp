@@ -12,8 +12,9 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>OMBUES</title>
+        <title>Ombues</title>
         <meta charset="UTF-8">
+        <link rel="shortcut icon" type="image/x-icon" href="media/images/icon.png" />
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="stylesheet" href="media/css/bootstrap.css">
@@ -40,7 +41,7 @@ and open the template in the editor.
             } catch (Exception e) {
             }%>
         <div id="wrap">
-            <div class="row">
+            <div class="main-row">
                 <header>
                     <nav class="navbar navbar-inverse no-border-radius">
                         <div class="container-fluid">
@@ -50,7 +51,7 @@ and open the template in the editor.
                                     <span class="icon-bar"></span>
                                     <span class="icon-bar"></span>                        
                                 </button>
-                                <a class="navbar-brand" href="">Ombues TSIG</a>
+                                <a class="navbar-brand custom-font" href=""><strong style="margin-left: 5px;">Ombues </strong> TSIG</a>
                             </div>
                             <div class="collapse navbar-collapse" id="myNavbar">
                                 <ul class="nav navbar-nav navbar-right"> 
@@ -58,7 +59,7 @@ and open the template in the editor.
                                     <li><a href="#"><span class="glyphicon glyphicon-user"></span> <%=user.getNickname()%></a></li>
                                     <li><a href="salir"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
                                         <%   } else { %>
-                                    <li><a href="userRegister"><span class="glyphicon glyphicon-user"></span> Sign Up</span></a></li>
+                                    <li><a href="userRegister"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                                     <li><a href="#modalLogIn" data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                                         <% } %>
                                 </ul>
@@ -86,14 +87,13 @@ and open the template in the editor.
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
-                            <li><a href="#pane5" data-toggle="tab" id="regzona">Statics</a></li>
                                 <% if (logeado) { %>
                             <li><a href="#pane2" data-toggle="tab" id="regpunto">Ombu</a></li>
                             <li><a href="#pane3" data-toggle="tab" id="regzona">Zona</a></li>
-                            <li><a href="#pane4" data-toggle="tab" id="regzona">Referencia a ombu</a></li>
+                            <li><a href="#pane4" data-toggle="tab" id="regzona">Ref.Ombu</a></li>
                                 <% } %>
                         </ul>
-                        <div class="tab-content" style="min-height: 100% !important;">
+                        <div class="tab-content">
                             <!-- Informacion de punto -->
                             <div id="pane1" class="tab-pane active">
                                 <button onclick="getLocation()">Actual Info</button> 
@@ -197,12 +197,6 @@ and open the template in the editor.
                                 </div>
                                 <div id="myResult"></div>
                             </div>
-                                        
-                            <!-- Stats -->
-                            <div id="pane5" class="tab-pane">
-                                
-                            </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -211,7 +205,7 @@ and open the template in the editor.
 
         <footer id="footer">
             <div class="container">
-                <p class="text-muted credit" style="color: #9d9d9d">Copyright Grupo 13</p>
+                <p class="text-muted credit custom-font" style="color: #9d9d9d"><strong>Copyright</strong> Grupo 13</p>
             </div>
         </footer>
 
@@ -274,12 +268,12 @@ and open the template in the editor.
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Informacion del ombu</h4>
+                        <h4 class="modal-title custom-font"><strong>Informacion</strong> del ombu</h4>
                     </div>
                     <div class="modal-body" id="info-body">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-lightred" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -289,24 +283,31 @@ and open the template in the editor.
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Log In</h4>
+                        <h4 class="modal-title custom-font"><strong>Log </strong> In</h4>
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" role="form"  action="iniciar-sesion" method="POST">
+                            
                             <div class="form-group">
-                                <label class="control-label col-sm-4" for="text">Usuario:</label>
+                                <label for="txtNick" class="col-sm-3 control-label">* Usuario</label>
                                 <div class="col-sm-8">
-                                    <INPUT type="text" class="form-control" id="cuadroTxtLogin" name="txtNick" value="" size="50"/>
+                                    <INPUT type="text" class="form-control" id="txtNick" name="txtNick" value="" size="50" required />
+                                    <span class="help-block">Nombre de usuario es requerido</span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-4" for="text">Contraseña:</label>
+                                <label for="txtPwd" class="col-sm-3 control-label">* Contraseña</label>
                                 <div class="col-sm-8">
-                                    <INPUT type="password" class="form-control" id="cuadroTxtLogin" name="txtPwd" value="" size="50"/>
+                                    <INPUT type="password" class="form-control" id="txtPwd" name="txtPwd" value="" size="50" required />
+                                    <span class="help-block">Contraseña es requerida</span>
                                 </div>
                             </div>
+                            
                             <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10"><INPUT type='submit' id='btnLogin' class='btn btn-primary' name='btnLogIn' Value='Iniciar sesión' onclick='Submit()'/></div>
+                                <div class="col-sm-offset-3 col-sm-12">
+                                    <button type="button" class="btn btn-lightred" data-dismiss="modal">Cancelar</button>
+                                    <INPUT type='submit' id='btnLogin' class="btn btn-default" name='btnLogIn' Value='Iniciar sesión' onclick='Submit()'/>
+                                </div>
                             </div>
 
                             <%

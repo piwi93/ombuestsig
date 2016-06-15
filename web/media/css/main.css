@@ -10,6 +10,8 @@ and open the template in the editor.
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
   /* The html and body elements cannot have any padding or margin. */
 }
 /* Wrapper for page content to push down footer */
@@ -27,6 +29,9 @@ body {
 #footer {
   height: 60px;
   background-color: #101010;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
 }
 
 #footer .container {
@@ -17805,7 +17810,7 @@ table .delete a, table .delete small{
 
 .tile_user_register{
     padding: 5px;
-    border-radius: 3px;
+    border-radius: 1px;
     padding: 8px;
 }
 
@@ -17815,15 +17820,10 @@ table .delete a, table .delete small{
     }
 }
 
-body {
-    overflow-x: hidden;
-}
-
 #map {
     position: relative;
     width: 100%;
-    height: 80% !important;
-    margin-top: -20px;
+    margin-top: 52px;
 }
 
 #side-bar {
@@ -17851,14 +17851,36 @@ body {
 #expand-button {
     font-size: 20px;
     margin: auto;
+    border-radius: 4px 0px 0px 4px;
 }
 
 .no-border-radius {
     border-radius: 0 !important;
 }
 
-.hider {
+.tabbable {
     height: 100%;
-    overflow: scroll !important;
     overflow-x: hidden !important;
+}
+
+.scrolleable {
+    overflow-y: scroll;
+}
+
+#info-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.main-row {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+}
+
+body {
+    min-width: 320px !important;
+    min-height: 500px !important;
 }
