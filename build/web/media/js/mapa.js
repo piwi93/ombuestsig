@@ -502,6 +502,110 @@ function getOmbu(ombu_id) {
     });
 }
 
+function getReport(repo_id) {
+    var id = repo_id;
+    $.post("getreport", {
+        id: id
+    }, function (responseText) {
+
+        document.getElementById('repo-body').innerHTML =
+                responseText;
+        $("#modalReport").modal('show');
+    });
+}
+
+function passpercentage(json) {
+ var title="";
+ var kind=document.getElementById("select-report").value;
+    if (kind==="1"){
+        title='Categoria'
+    }else if (kind==="2"){
+        title='Barrios';
+    }
+ 
+    $(function () {
+ 
+        var len = json.passpercentage.length
+        i = 0;
+ 
+        var options = {
+             chart: { 
+				type: 'column',
+				options3d: {
+					enabled: true,
+					alpha: 10,
+					beta: 25,
+					depth: 70
+				}
+ 
+                },
+             credits: {
+                 enabled: false
+                },
+                title: {
+                    text: 'Ranking de ombues por '+title
+                 },
+//                subtitle: {
+//                    text: 'Source: Test Data',
+//                    x: -20
+//                },
+              yAxis: {
+                min: 0,
+                title: {
+                    text: 'Cantidad'
+                }
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            xAxis: {
+                categories: []
+            },
+            series: []
+        }
+ 
+            for (i; i < len; i++) {
+                if (i === 0) {
+                    var dat = json.passpercentage[i].category,
+                        lenJ = dat.length,
+                        j = 0,
+                        tmp;
+ 
+                    for (j; j < lenJ; j++) {
+                        options.xAxis.categories.push(dat[j]);
+                    }
+                } else {
+                    options.series.push(json.passpercentage[i]);
+                }
+            }
+ 
+        $('#container').highcharts(options);
+ 
+    });
+ 
+    }
+ 
+function generateChart()
+{
+var kind=document.getElementById("select-report").value;
+chartType="passpercentage";
+$("#container").text("");
+ 
+     $.ajax({
+            type: "GET",
+            url:"http://localhost:8084/TSIG/getreport?jsonp="+chartType+"&kindreport="+kind,
+            dataType: 'jsonp',
+            jsonpCallback: chartType, // the function to call
+            error: function () {
+                   alert("Ha ocurrido un error");
+                    }
+            }); 
+  $("#modalReport").modal('show');
+}
+
 function realizarComentario(ombu_id) {
     var id = ombu_id;
     var comentario = document.getElementById("comentario").value;
