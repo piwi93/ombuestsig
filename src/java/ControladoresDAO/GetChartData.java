@@ -118,9 +118,16 @@ public class GetChartData implements Serializable{
               Class.forName(driver).newInstance();
               con = DriverManager.getConnection(cc);
               s = con.createStatement();
-              String query="SELECT c.nombre, count(o.id) as cantidad "
-                      + "FROM categoria c, ombues o "
-                      + "WHERE c.id=o.id_categoria GROUP BY c.nombre ORDER BY cantidad desc  LIMIT 10";
+              String query="select u.nombre , count(u.id) as cantidad from ( " +
+                            "SELECT c.nombre as nombre, po.id as id  " +
+                            "  FROM categoria c ,punto_ombu po  " +
+                            "  WHERE c.id=po.id_categoria " +
+                            "UNION " +
+                            "SELECT c2.nombre as nombre, ro.id as id  " +
+                            " FROM categoria c2 ,referencia_ombu ro  " +
+                            " WHERE c2.id=ro.categoria_id " +
+                            ") as u " +
+                            "GROUP BY u.nombre ORDER BY cantidad desc  LIMIT 10";
               rs = s.executeQuery(query);
               while (rs.next()){
                   String category=rs.getString(1);
