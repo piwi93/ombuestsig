@@ -13,6 +13,7 @@ import Utils.EstadoSesion;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -70,34 +71,51 @@ public class GetOmbu extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PuntoOmbuController oDAO = new PuntoOmbuController();
         Ombues ombu = oDAO.getOmbuxId(Integer.parseInt(request.getParameter("id")));
-        SimpleDateFormat formatoFecha=new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String dato="";
-            if(ombu.getReferenciaOmbu() != null){
-                dato="<td>Referencia</td><td>" + ombu.getExternalRef()+ "</td>";
-            }else{
-                dato="<td>Direccion</td><td>" + ombu.getDireccion() + "</td>";
+            String dato = "";
+            if (ombu.getReferenciaOmbu() != null) {
+                dato = "<td>Referencia</td><td>" + ombu.getExternalRef() + "</td>";
+            } else {
+                dato = "<td>Direccion</td><td>" + ombu.getDireccion() + "</td>";
             }
-            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr>"+dato+"</tr></table><hr>");
-            for(Comentario coment:ombu.getComentarioList()){
-                StringBuffer textBuffer=new StringBuffer(coment.getComentario());
+            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr>" + dato + "</tr></table><hr>");
+            int counter = 0;
+            Collection<Entities.Imagenes> imagenes = ombu.getImagenesCollection();
+            for (Entities.Imagenes img : imagenes) {
+                if (counter % 4 == 0) {
+                    out.println("<td>");
+                }
+                out.println("<td class='col-sm-3 text-center'><img class='img-responsive' alt='Image not found' src='images/" + img.getNombre() + "'></td>");
+                if (counter % 4 == 3) {
+                    out.println("</tr>");
+                }
+                counter++;
+            }
+            if (counter % 4 != 0) {
+                out.println("</tr>");
+            }
+            out.println("</table></div>"); //Fin Div para Imagenes
+            for (Comentario coment : ombu.getComentarioList()) {
+                StringBuffer textBuffer = new StringBuffer(coment.getComentario());
                 int loc = (new String(textBuffer).indexOf('\n'));
-                while(loc>0){
-                    textBuffer.replace(loc, loc+1, "<br>");
+                while (loc > 0) {
+                    textBuffer.replace(loc, loc + 1, "<br>");
                     loc = (new String(textBuffer).indexOf('\n'));
                 }
-                out.println("<p>"+formatoFecha.format(coment.getFecha())+" "+coment.getIdUser().getNickname()+ "</p><p>"+textBuffer+"</p><br>");
+                out.println("<p>" + formatoFecha.format(coment.getFecha()) + " " + coment.getIdUser().getNickname() + "</p><p>" + textBuffer + "</p><br>");
             }
+
             try {
                 if (request.getSession().getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
-                    out.println("<div class=\"form-horizontal\" role=\"form\">\n" +
-"                <label>Comentario</label>\n" +
-"                <textarea rows=\"10\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n" +
-"            </div><button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");                    
+                    out.println("<div class=\"form-horizontal\" role=\"form\">\n"
+                            + "                <label>Comentario</label>\n"
+                            + "                <textarea rows=\"10\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n"
+                            + "            </div><button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");
                 }
-            }catch(Exception e){}
-            
+            } catch (Exception e) {
+            }
 
         }
     }

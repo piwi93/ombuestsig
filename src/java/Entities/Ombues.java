@@ -70,9 +70,7 @@ public class Ombues implements Serializable {
     private String ubicacion;
     @Column(name = "external_ref")
     private String externalRef;
-    @JoinColumn(name = "id_categoria", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Categoria idCategoria;
+
 
 
     public Ombues() {
@@ -128,14 +126,6 @@ public class Ombues implements Serializable {
 
     public void setExternalRef(String externalRef) {
         this.externalRef = externalRef;
-    }
-
-    public Categoria getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(Categoria idCategoria) {
-        this.idCategoria = idCategoria;
     }
 
 

@@ -109,6 +109,7 @@ and open the template in the editor.
                                             <% for (Categoria cat : PoC.categoriasList()) {%>
                                             <option value="<%= cat.getId()%>"><%=cat.getNombre()%></option>
                                             <% } %>
+                                            <option value="99">Zona</option>
                                             <%
                                                 for (CategoriaReferencias cat : PoC.categoriaRefList()) {
                                             %>

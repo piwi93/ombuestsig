@@ -622,3 +622,10 @@ function buscarCerca() {
     vectorGetPuntoRest.clear();
 
 }
+function loadDropZoneListeners(){
+    dropZone.on("sending", function(file, xhr, formData){
+        
+        formData.append("ombuId", ombuId);
+        console.log("FormatData ombuID: " + formData.get("ombuId"));
+    });
+}
