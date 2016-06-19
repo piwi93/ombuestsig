@@ -91,6 +91,7 @@ and open the template in the editor.
                             <li><a href="#pane2" data-toggle="tab" id="regpunto">Ombu</a></li>
                             <li><a href="#pane3" data-toggle="tab" id="regzona">Zona</a></li>
                             <li><a href="#pane4" data-toggle="tab" id="regzona">Ref.Ombu</a></li>
+                            <li><a href="#pane5" data-toggle="tab" id="report">Reportes</a></li>
                                 <% } %>
                         </ul>
                         <div class="tab-content">
@@ -197,6 +198,20 @@ and open the template in the editor.
                                 </div>
                                 <div id="myResult"></div>
                             </div>
+                              <div id="pane5" class="tab-pane">
+                            <div class="form-vertical" role="form">
+                                <div class="form-group">
+                                    <label  for="text">Reporte:</label>
+                                    <select class="form-control" id="select-report" placeholder="Seleccione un reporte">                                        
+                                         <option value="2">Barrios con mas ombues</option>
+                                         <option value="1">Ranking de categor&iacute;as</option>
+                                    </select>
+                                     <button type="button" class="btn btn-default" onclick="generateChart()" >Generar Reporte</button>
+                                </div>
+                                
+                            </div>
+                            <div id="myResult"></div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -230,7 +245,9 @@ and open the template in the editor.
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="media/OpenLayers-3.15.1/ol.js" type="text/javascript"></script>
-        
+        <script src="media/js/highcharts.js" type="text/javascript"></script>
+        <script src="media/js/highcharts-3d.js" type="text/javascript"></script>
+        <script src="media/js/exporting.js" type="text/javascript"></script>
         <script src="media/js/sidebar.js" type="text/javascript"></script>
         <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
         <script src="media/js/jQuery-File-Uploader/vendor/jquery.ui.widget.js"></script>
@@ -279,6 +296,22 @@ and open the template in the editor.
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->    
     
+        <div class="modal fade" id="modalReport" role="dialog">
+            <div class="modal-dialog" style="width:650px">
+                <div class="modal-content"style="width:650px">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Reporte</h4>
+                    </div>
+                    <div class="modal-body" id="repo-body">
+                        <div id="container" style="height: 400px"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal --> 
+        
         <div class="modal fade" id="modalLogIn" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
