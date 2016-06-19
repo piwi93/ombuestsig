@@ -38,7 +38,7 @@ var vectorGetPuntoOmb = new ol.source.Vector({
     format: new ol.format.GeoJSON(),
     url: function (extent) {
         return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
-                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:1;var:" + dife +
+                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:1;" + dife +
                 '&outputFormat=application/json&srsname=EPSG:3857&' +
                 'bbox=' + extent.join(',') + ',EPSG:3857';
     },
@@ -49,7 +49,7 @@ var vectorGetPuntoRest = new ol.source.Vector({
     format: new ol.format.GeoJSON(),
     url: function (extent) {
         return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
-                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:2;var:" + dife +
+                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:2;" + dife +
                 '&outputFormat=application/json&srsname=EPSG:3857&' +
                 'bbox=' + extent.join(',') + ',EPSG:3857';
     },
@@ -677,7 +677,7 @@ function buscarCerca() {
     var categoria = document.getElementById("categoriaBusca").value;
     var index = $("#categoriaBusca option:selected").index();
     if (nombre.length != 0) {
-        dife = nombre;
+        dife = "comp:"+nombre;
     } else {
         dife = "";
     }
