@@ -54,11 +54,7 @@ public class OmbuesJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Categoria idCategoria = ombues.getIdCategoria();
-            if (idCategoria != null) {
-                idCategoria = em.getReference(idCategoria.getClass(), idCategoria.getId());
-                ombues.setIdCategoria(idCategoria);
-            }
+
             Usuarios idUsuario = ombues.getIdUsuario();
             if (idUsuario != null) {
                 idUsuario = em.getReference(idUsuario.getClass(), idUsuario.getId());

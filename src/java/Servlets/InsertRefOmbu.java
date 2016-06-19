@@ -94,7 +94,7 @@ public class InsertRefOmbu extends HttpServlet {
             Integer categoriaRefId=Integer.parseInt(quees);
             Integer ombuId=PuC.crearPuntoOmbu(ombu);
             ReferenciaOmbu ref=new ReferenciaOmbu();
-            ref.setOmbues(PuC.getOmbuxId(ombuId));
+            ref.setOmbues(PuC.getOmbuxId(ombuId));ref.setId(ombuId);
             ref.setCategoriaReferenciasId(PuC.getCategoriaRefxId(categoriaRefId));
             PuC.crearReferenciaOmbu(ref);
             System.out.println("Falla algo aca");

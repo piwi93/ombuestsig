@@ -21,10 +21,10 @@ and open the template in the editor.
         <link rel="stylesheet" href="media/OpenLayers-3.15.1/ol.css" type="text/css">
         <link rel="stylesheet" href="media/css/main.css">
         <link rel="stylesheet" href="media/font-awesome-4.6.3/css/font-awesome.min.css">
-        
+
         <link rel="stylesheet" href="media/js/dropzone/basic.css">
         <link rel="stylesheet" href="media/js/dropzone/dropzone.css">
-        
+
     </head>
     <body>
         <!-- Wrap all page content here -->
@@ -32,6 +32,7 @@ and open the template in the editor.
             session = request.getSession();
             Usuarios user = null;
             boolean logeado = false;
+            PuntoOmbuController PoC = new PuntoOmbuController();
             try {
                 if (session.getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
                     UsuarioController UC = new UsuarioController();
@@ -68,9 +69,9 @@ and open the template in the editor.
                     </nav>
                 </header>
             </div>
-            
+
             <div class="row">
-                
+
                 <div class="col-lg-12" id="map">
                     <div id="popup" class="ol-popup">
                         <a href="#" id="popup-closer" class="ol-popup-closer"></a>
@@ -86,26 +87,41 @@ and open the template in the editor.
                     </div>
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#pane1" data-toggle="tab">Busqueda</a></li>
+                            <li class="active"><a href="#pane1" data-toggle="tab" onclick="busca()">Busqueda</a></li>
                                 <% if (logeado) { %>
-                            <li><a href="#pane2" data-toggle="tab" id="regpunto">Ombu</a></li>
-                            <li><a href="#pane3" data-toggle="tab" id="regzona">Zona</a></li>
-                            <li><a href="#pane4" data-toggle="tab" id="regzona">Ref.Ombu</a></li>
+                            <li><a href="#pane2" data-toggle="tab" onclick="regpunto()">Ombu</a></li>
+                            <li><a href="#pane3" data-toggle="tab" onclick="regzona()">Zona</a></li>
+                            <li><a href="#pane4" data-toggle="tab" onclick="regRef()">Referencia a ombu</a></li>
                             <li><a href="#pane5" data-toggle="tab" id="report">Reportes</a></li>
                                 <% } %>
                         </ul>
-                        <div class="tab-content">
+                        <div class="tab-content" style="min-height: 100% !important;">
                             <!-- Informacion de punto -->
                             <div id="pane1" class="tab-pane active">
-                                <button onclick="getLocation()">Actual Info</button> 
-                                <div>
-                                    <label>Interaction type:  &nbsp;</label>
-                                    <label>draw</label>
-                                    <input type="radio" id="interaction_type_draw" name="interaction_type" value="draw" checked>
-                                    <label>modify</label>
-                                    <input type="radio" id="interaction_type_modify" name="interaction_type" value="modify">
-                                </div>
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Nombre</label>
+                                        <input type="text" class="form-control" id='nombrebusca' placeholder="Ponga la distancia de ombues">
+                                        <label  for="text">Distancia</label>
+                                        <input type="text" class="form-control" id='distancia' placeholder="Ponga la distancia de ombues">
+                                        <label  for="text">Categoria</label>
+                                        <select class="form-control" id="categoriaBusca" name="categoriaBusca">
+                                            <option value="0">Por todos</option>
+                                            <% for (Categoria cat : PoC.categoriasList()) {%>
+                                            <option value="<%= cat.getId()%>"><%=cat.getNombre()%></option>
+                                            <% } %>
+                                            <option value="99">Zona</option>
+                                            <%
+                                                for (CategoriaReferencias cat : PoC.categoriaRefList()) {
+                                            %>
+                                            <option value="<%=cat.getId()%>"><%=cat.getDetalle()%></option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-default" onclick="buscarCerca()" >Buscar</button>
 
+                                </div>
+                                <div id="myResult"></div>
                             </div>
                             <!-- Registrar ombu -->
                             <div id="pane2" class="tab-pane">
@@ -130,7 +146,7 @@ and open the template in the editor.
                                         <label  for="text">Que es?</label>
                                         <select class="form-control" id="categoria">
                                             <%
-                                                PuntoOmbuController PoC = new PuntoOmbuController();
+
                                                 for (Categoria cat : PoC.categoriasList()) {
                                             %>
                                             <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
@@ -138,37 +154,37 @@ and open the template in the editor.
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                            <div id="picDropzone" style="height: 150px; width: 100%;
-                                              border:dashed; color:blue; border-color: skyblue"></div>
+                                        <div id="picDropzone" style="height: 150px; width: 100%;
+                                             border:dashed; color:blue; border-color: skyblue"></div>
                                     </div>
                                     <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
                                 </div>
-                                <div id="myResult"></div>
+
                             </div>
                             <!-- Registrar zona ombu -->
                             <div id="pane3" class="tab-pane">
                                 <div class="form-vertical" role="form">
                                     <div class="form-group">
                                         <label  for="text">Nombre:</label>
-                                        <input type="text" class="form-control" id='nombre' placeholder="Ingrese el nombre del ombu">
+                                        <input type="text" class="form-control" id='zonanombre' placeholder="Ingrese el nombre del ombu">
                                     </div>
                                     <div class="form-group">
                                         <label  for="text">Descripcion:</label>
-                                        <input type="text" class="form-control" id='descripcion' placeholder="Ingrese una descripcion para el ombu">
+                                        <input type="text" class="form-control" id='zonadescripcion' placeholder="Ingrese una descripcion para el ombu">
                                     </div>
                                     <div class="form-group">
                                         <label  for="text">Dirección:</label>
-                                        <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
+                                        <input type="text" class="form-control" id='zonadireccion' placeholder="Ingrese una descripcion para el ombu">
                                     </div>
                                     <div class="form-group">
                                         <label  for="text">Ubicación:</label>
-                                        <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
+                                        <input type="text" class="form-control" id='zonaubicacion' placeholder="Ingrese una descripcion para el ombu">
                                     </div>
                                     <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
                                 </div>
-                                <div id="myResult"></div>
+
                             </div>
-                            
+
                             <!-- Registrar referencia -->
                             <div id="pane4" class="tab-pane">
                                 <div class="form-vertical" role="form">
@@ -187,7 +203,7 @@ and open the template in the editor.
                                     <div class="form-group">
                                         <label  for="text">Que es?</label>
                                         <select class="form-control" id="refcategoria">
-                                            <%   
+                                            <%
                                                 for (CategoriaReferencias cat : PoC.categoriaRefList()) {
                                             %>
                                             <option value="<%=cat.getId()%>"><%=cat.getDetalle()%></option>
@@ -196,22 +212,22 @@ and open the template in the editor.
                                     </div>
                                     <button type="button" class="btn btn-default" onclick="registrarRefOmbu()" >Registrar</button>
                                 </div>
+
+                            </div>
+                            <div id="pane5" class="tab-pane">
+                                <div class="form-vertical" role="form">
+                                    <div class="form-group">
+                                        <label  for="text">Reporte:</label>
+                                        <select class="form-control" id="select-report" placeholder="Seleccione un reporte">                                        
+                                            <option value="2">Barrios con mas ombues</option>
+                                            <option value="1">Ranking de categor&iacute;as</option>
+                                        </select>
+                                        <button type="button" class="btn btn-default" onclick="generateChart()" >Generar Reporte</button>
+                                    </div>
+
+                                </div>
                                 <div id="myResult"></div>
                             </div>
-                              <div id="pane5" class="tab-pane">
-                            <div class="form-vertical" role="form">
-                                <div class="form-group">
-                                    <label  for="text">Reporte:</label>
-                                    <select class="form-control" id="select-report" placeholder="Seleccione un reporte">                                        
-                                         <option value="2">Barrios con mas ombues</option>
-                                         <option value="1">Ranking de categor&iacute;as</option>
-                                    </select>
-                                     <button type="button" class="btn btn-default" onclick="generateChart()" >Generar Reporte</button>
-                                </div>
-                                
-                            </div>
-                            <div id="myResult"></div>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -239,6 +255,9 @@ and open the template in the editor.
             </div>
             <div id="srs">
                 <%=propiedades.getProperty("srs")%>
+            </div>
+            <div id="catCant">
+                <%=PoC.categoriasList().size()%>
             </div>
         </div>
 
@@ -278,9 +297,9 @@ and open the template in the editor.
         <!-- The main application script -->
         <script src="media/js/dropzone/dropzone.js"></script>
         <script src="media/js/imagenes.js"></script>
-        
+
         <script src="media/js/mapa.js" type="text/javascript"></script>
-        
+
         <div class="modal fade" id="modalInfo" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -295,7 +314,7 @@ and open the template in the editor.
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->    
-    
+        
         <div class="modal fade" id="modalReport" role="dialog">
             <div class="modal-dialog" style="width:650px">
                 <div class="modal-content"style="width:650px">
@@ -311,7 +330,7 @@ and open the template in the editor.
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal --> 
-        
+
         <div class="modal fade" id="modalLogIn" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -320,7 +339,6 @@ and open the template in the editor.
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" role="form"  action="iniciar-sesion" method="POST">
-                            
                             <div class="form-group">
                                 <label for="txtNick" class="col-sm-3 control-label">* Usuario</label>
                                 <div class="col-sm-8">
@@ -335,7 +353,6 @@ and open the template in the editor.
                                     <span class="help-block">Contraseña es requerida</span>
                                 </div>
                             </div>
-                            
                             <div class="form-group">
                                 <div class="col-sm-offset-3 col-sm-12">
                                     <button type="button" class="btn btn-lightred" data-dismiss="modal">Cancelar</button>
@@ -349,7 +366,7 @@ and open the template in the editor.
                                     session.setAttribute("estado_sesion", EstadoSesion.NO_LOGIN);
                             %><p style='font-size:11px; display:inline-block'>Usuario o contraseña incorrecta.</p>
                             <%
-                                   }%>
+                                }%>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -357,14 +374,14 @@ and open the template in the editor.
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        
+
         <!-- DropZone preview Template -->
         <div id="preview-template" style="display: none;">
             <div class="dz-preview dz-file-preview col-xs-3" style="height: 75px">
                 <div class="dz-details">
-                  <!--<div class="dz-filename"><span data-dz-name></span></div>-->
-                  <!--<div class="dz-size" data-dz-size></div>-->
-                  <img data-dz-thumbnail style="max-height: 70px; max-width: 100%" />
+                    <!--<div class="dz-filename"><span data-dz-name></span></div>-->
+                    <!--<div class="dz-size" data-dz-size></div>-->
+                    <img data-dz-thumbnail style="max-height: 70px; max-width: 100%" />
                 </div>
                 <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                 <div class="dz-success-mark"><span></span></div>

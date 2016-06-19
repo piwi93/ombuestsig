@@ -13,17 +13,17 @@ var bounds,
         view,
         latitud,
         longitud,
-        ombuId,
+        ombuId, lonlat, lon, lat, lon3857, lat3857, dist, dife,
         // make interactions global so they can later be removed
         select_interaction,
         draw_interaction,
         modify_interaction,
         urlGeoserverWFS,
         urlGeoserverWMS,
-        SRS,
+        SRS, cantCat,
         wms_punto,
-        vector_layer,
-        content = document.getElementById('popup-content');
+        vector_layer, formatWFS, formatGMLPunto, formatGMLZona
+content = document.getElementById('popup-content');
 
 /*
  * 
@@ -31,10 +31,98 @@ var bounds,
  */
 $(document).ready(function () {
     loadVariables();
-    loadDropZoneListeners();
+
 });
 
+var vectorGetPuntoOmb = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: function (extent) {
+        return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
+                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:1;var:" + dife +
+                '&outputFormat=application/json&srsname=EPSG:3857&' +
+                'bbox=' + extent.join(',') + ',EPSG:3857';
+    },
+    strategy: ol.loadingstrategy.bbox
+});
+
+var vectorGetPuntoRest = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: function (extent) {
+        return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
+                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:2;var:" + dife +
+                '&outputFormat=application/json&srsname=EPSG:3857&' +
+                'bbox=' + extent.join(',') + ',EPSG:3857';
+    },
+    strategy: ol.loadingstrategy.bbox
+});
+
+var vectorGetZonaOmb = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: function (extent) {
+        return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
+                'version=1.1.0&request=GetFeature&typename=ombues:zonacerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 +
+                '&outputFormat=application/json&srsname=EPSG:3857&' +
+                'bbox=' + extent.join(',') + ',EPSG:3857';
+    },
+    strategy: ol.loadingstrategy.bbox
+});
+//&VIEWPARAMS=lon:' + lon3857+ ';lat:' + lat3857
+
+var vectorPuntoOmbu = new ol.layer.Vector({
+    source: vectorGetPuntoOmb,
+    name: 'Puntos ombu',
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'rgba(0, 0, 255, 1.0)',
+            width: 2
+        }), image: new ol.style.Icon(({
+            scale: 0.2,
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            src: 'media/images/ombu.png'
+        }))
+    })
+});
+
+var vectorPuntoRestaurant = new ol.layer.Vector({
+    source: vectorGetPuntoRest,
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'rgba(0, 0, 255, 1.0)',
+            width: 2
+        }), image: new ol.style.Icon(({
+            scale: 0.2,
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            src: 'media/images/restaurant.png'
+        }))
+    })
+});
+
+var vectorZonaOmbu = new ol.layer.Vector({
+    source: vectorGetZonaOmb,
+    name: 'Zona ombu',
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: 'rgba(0, 0, 0, 0.8)'
+        }),
+    })
+})
+
+
 function loadVariables() {
+    formatWFS = new ol.format.WFS();
+    formatGMLPunto = new ol.format.GML({
+        featureNS: 'ombues',
+        featureType: 'punto_ombu',
+        srsName: SRS
+    });
+
+    formatGMLZona = new ol.format.GML({
+        featureNS: 'ombues',
+        featureType: 'zona_ombu',
+        srsName: SRS
+    })
     if (navigator.geolocation)
     {
         navigator.geolocation.getCurrentPosition(posicion, errorGPS);
@@ -46,6 +134,7 @@ function loadVariables() {
     urlGeoserverWFS = $("#url_wfs").text().trim();
     SRS = $("#srs").text().trim();
     urlGeoserverWMS = $("#url_wms").text().trim();
+    cantCat = $("#catCant").text().trim();
     wms_punto = new ol.source.TileWMS({
         url: urlGeoserverWMS, // + '/wms',
         params: {'LAYERS': 'ombues:punto_ombu,ombues:zona_ombu'},
@@ -55,7 +144,6 @@ function loadVariables() {
 
     // Crea una capa vectorial donde se modificaran los datos
     vector_layer = new ol.layer.Vector({
-        name: 'Puntos ombu',
         source: new ol.source.Vector({
             params: {srs: SRS}
 
@@ -85,7 +173,10 @@ function loadVariables() {
 
 }
 function posicion(posicion) {
-    loadMap(ol.proj.fromLonLat([posicion.coords.longitude, posicion.coords.latitude]));
+    var point = ol.proj.fromLonLat([posicion.coords.longitude, posicion.coords.latitude]);
+    lat3857 = point[1];
+    lon3857 = point[0];
+    loadMap(point);
 }
 function errorGPS(error) {
 
@@ -106,22 +197,23 @@ function loadMap(point) {
             zoom: 15
         });
     } else {
+        dist = 50000;
         view = new ol.View({
             center: point,
             zoom: 15
         });
     }
-    
+
     bounds = new ol.extent.boundingExtent(-6282053.606645496, -4160620.3236187138, -6236191.389674391, -4114758.106647608);
     map = new ol.Map({
         layers: [
             new ol.layer.Tile({
                 source: new ol.source.OSM()
-            }), new ol.layer.Tile({
-                source: wms_punto
-            })
-                    ,
-            vector_layer,
+            }), /* new ol.layer.Tile({
+             source: wms_punto
+             })
+             ,*/
+            vector_layer, vectorPuntoOmbu, vectorZonaOmbu, vectorPuntoRestaurant
                     /*,
                      new ol.layer.Tile({ 
                      source: new ol.source.TileWMS({
@@ -140,7 +232,7 @@ function loadMap(point) {
     });
 
     // add the draw interaction when the page is first shown
-    addDrawInteraction('Point');
+
     var feature;
     map.addControl(new ol.control.ZoomSlider());
     /*
@@ -161,70 +253,79 @@ function loadMap(point) {
      map.addOverlay(popup);
      */
     map.on('singleclick', function (evt) {
-        document.getElementById('popup').innerHTML = '';
-        var viewResolution = /** @type {number} */ (view.getResolution());
-        var url = wms_punto.getGetFeatureInfoUrl(
-                evt.coordinate, viewResolution, SRS,
-                {'INFO_FORMAT': 'application/json',
-                    'propertyName': 'ombu_id'});
-        if (url) {
-            var parser = new ol.format.GeoJSON();
-            $.ajax({
-                url: url,
-                dataType: 'json',
-                jsonpCallback: 'parseResponse'
-            }).then(function (response) {
-                var result = parser.readFeatures(response);
-                if (result.length) {
-                    var info = result[0].get('ombu_id');
-                    getOmbu(info);
-                }
-            })
+        map.getInteractions().forEach(function (interaction) {
 
+            if (interaction instanceof ol.interaction.Draw) {
+                console.log(interaction + "Draw");
+                var viewResolution = view.getResolution();
+                var wms_numPuerta = new ol.source.TileWMS({
+                    url: urlGeoserverWMS, // + '/wms',
+                    params: {'LAYERS': 'ombues:getNumPuerta',
+                        'VIEWPARAMS': 'lon:' + evt.coordinate[0] + ';lat:' + evt.coordinate[1]},
+                    serverType: 'geoserver',
+                    crossOrigin: 'anonymous'
+                });
+                var url2 = wms_numPuerta.getGetFeatureInfoUrl(
+                        evt.coordinate, viewResolution, SRS,
+                        {'INFO_FORMAT': 'application/json',
+                            'propertyName': 'nom_calle,num_puerta'});
+                if (url2) {
+                    var parser = new ol.format.GeoJSON();
+                    $.ajax({
+                        url: url2,
+                        dataType: 'json',
+                        jsonpCallback: 'parseResponse'
+                    }).then(function (response) {
+                        var result = parser.readFeatures(response);
+                        if (result.length) {
+                            var calle = result[0].get('nom_calle');
+                            var puerta = result[0].get('num_puerta');
+                            document.getElementById("direccion").value = calle + " " + puerta;
+                        }
+                    })
+                }
+            } else {
+                console.log(interaction + "Select");
+                var feature = map.forEachFeatureAtPixel(evt.pixel,
+                        function (feature) {
+                            return feature;
+                        });
+                if (feature) {
+                    getOmbu(feature.get('ombu_id'));
+
+
+                }
+            }
         }
- 
-        var wms_numPuerta = new ol.source.TileWMS({
-            url: urlGeoserverWMS, // + '/wms',
-            params: {'LAYERS': 'ombues:getNumPuerta',
-                'VIEWPARAMS':'lon:'+evt.coordinate[0]+';lat:'+evt.coordinate[1]},
-            serverType: 'geoserver',
-            crossOrigin: 'anonymous'
-        });
-        var url2 = wms_numPuerta.getGetFeatureInfoUrl(
-                evt.coordinate, viewResolution, SRS,
-                {'INFO_FORMAT': 'application/json',
-                    'propertyName': 'nom_calle,num_puerta'});
-                console.log(url2);
-        if (url2) {
-            var parser = new ol.format.GeoJSON();
-            $.ajax({
-                url: url2,
-                dataType: 'json',
-                jsonpCallback: 'parseResponse'
-            }).then(function (response) {
-                var result = parser.readFeatures(response);
-                if (result.length) {
-                    var calle = result[0].get('nom_calle');
-                    var puerta = result[0].get('num_puerta');
-                    document.getElementById("direccion").value=calle + " " +puerta;
-                }
-            })}
+        )
+    }
+    )
+
+    /*  var url = wms_punto.getGetFeatureInfoUrl(
+     evt.coordinate, viewResolution, SRS,
+     {'INFO_FORMAT': 'application/json',
+     'propertyName': 'ombu_id'});
+     if (url) {
+     var parser = new ol.format.GeoJSON();
+     $.ajax({
+     url: url,
+     dataType: 'json',
+     jsonpCallback: 'parseResponse'
+     }).then(function (response) {
+     var result = parser.readFeatures(response);
+     if (result.length) {
+     var info = result[0].get('ombu_id');
+     getOmbu(info);
+     }
+     })
+     
+     }*/
 
 
-
-    });
 }
+;
 
-/*
- * 
- * @returns los datos de centro y borde del mapa mostrado
- */
-function actualInfo() {
-    var extent = map.getView().calculateExtent(map.getSize());
-    console.log("extent actual: " + extent);
-    var center = map.getView().getCenter();
-    console.log("center actual: " + center);
-}
+
 
 /*
  * Empiezan las funciones de dibujar, modificar y eliminar features,
@@ -243,77 +344,40 @@ $('[name="interaction_type"]').on('click', function (e) {
 
 
 // rebuild interaction when the geometry type is changed
-$('#regzona').on('click', function (e) {
+function regzona() {
     map.removeInteraction(draw_interaction);
+    map.removeInteraction(select_interaction);
+    console.log("Tengo solo add polygon");
     addDrawInteraction('Polygon');
-});
+}
+;
 // rebuild interaction when the geometry type is changed
-$('#regpunto').on('click', function (e) {
+function regpunto() {
     map.removeInteraction(draw_interaction);
+    map.removeInteraction(select_interaction);
     addDrawInteraction('Point');
-});
-
-
-
-// build up modify interaction
-// needs a select and a modify interaction working together
-function addModifyInteraction() {
-    // remove draw interaction
+}
+;
+function regRef() {
     map.removeInteraction(draw_interaction);
-    // create select interaction
+    addSelectInteraction();
+}
+;
+function busca() {
+    console.log("Tengo solo select");
+    map.removeInteraction(draw_interaction);
+    addSelectInteraction();
+}
+;
+
+function addSelectInteraction() {
     select_interaction = new ol.interaction.Select({
         // make sure only the desired layer can be selected
-        layers: function (vector_layer) {
-            return vector_layer.get('name') === 'Puntos ombu';
-        }
+
     });
     map.addInteraction(select_interaction);
-
-    // grab the features from the select interaction to use in the modify interaction
-    var selected_features = select_interaction.getFeatures();
-    // when a feature is selected...
-    selected_features.on('add', function (event) {
-        // grab the feature
-        var feature = event.element;
-        // ...listen for changes and save them
-        feature.on('change', saveData);
-        // listen to pressing of delete key, then delete selected features
-        $(document).on('keyup', function (event) {
-            if (event.keyCode == 46) {
-                // remove all selected features from select_interaction and my_vectorlayer
-                selected_features.forEach(function (selected_feature) {
-                    var selected_feature_id = selected_feature.getId();
-                    // remove from select_interaction
-                    selected_features.remove(selected_feature);
-                    // features aus vectorlayer entfernen
-                    var vectorlayer_features = vector_layer.getSource().getFeatures();
-                    vectorlayer_features.forEach(function (source_feature) {
-                        var source_feature_id = source_feature.getId();
-                        if (source_feature_id === selected_feature_id) {
-                            // remove from my_vectorlayer
-                            vector_layer.getSource().removeFeature(source_feature);
-                            // save the changed data
-                            saveData();
-                        }
-                    });
-                });
-                // remove listener
-                $(document).off('keyup');
-            }
-        });
-    });
-    // create the modify interaction
-    modify_interaction = new ol.interaction.Modify({
-        features: selected_features,
-        // delete vertices by pressing the SHIFT key
-        deleteCondition: function (event) {
-            return ol.events.condition.shiftKeyOnly(event) &&
-                    ol.events.condition.singleClick(event);
-        }
-    });
-    // add it to the map
-    map.addInteraction(modify_interaction);
 }
+
 
 // creates a draw interaction
 
@@ -328,13 +392,13 @@ function addDrawInteraction(geom) {
         source: vector_layer.getSource(),
         type: /** @type {ol.geom.GeometryType} */ (geom)
     });
+
     // add it to the map
     map.addInteraction(draw_interaction);
 
     // when a new feature has been drawn...
     draw_interaction.on('drawend', function (event) {
-        // create a unique id
-        // it is later needed to delete features
+
         /*
          * Se agrega el clearMap para que solo quede un punto extra agregado en el mapa
          */
@@ -344,7 +408,12 @@ function addDrawInteraction(geom) {
          */
         event.feature.set("geom", event.feature.getGeometry());
         feature = event.feature;
-        $('#ubicacion').val(event.feature.getGeometry().getCoordinates());
+        lon3857 = event.feature.getGeometry().getCoordinates()[0];
+        lat3857 = event.feature.getGeometry().getCoordinates()[1];
+        lonlat = ol.proj.transform(event.feature.getGeometry().getCoordinates(), 'EPSG:3857', 'EPSG:4326');
+        lon = lonlat[0];
+        lat = lonlat[1];
+        $('#ubicacion').val(lon + "; " + lat);
     });
 }
 
@@ -379,10 +448,8 @@ function registrarOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
-        ombuId = responseText;
-        feature.set("id_categoria",quees);
+        feature.set("id_categoria", quees);
         transactWFS('insert', feature, formatGMLPunto);
-        dropZone.processQueue();
         alert("Realizado correctamente");
         location.reload();
     });
@@ -435,6 +502,110 @@ function getOmbu(ombu_id) {
     });
 }
 
+function getReport(repo_id) {
+    var id = repo_id;
+    $.post("getreport", {
+        id: id
+    }, function (responseText) {
+
+        document.getElementById('repo-body').innerHTML =
+                responseText;
+        $("#modalReport").modal('show');
+    });
+}
+
+function passpercentage(json) {
+ var title="";
+ var kind=document.getElementById("select-report").value;
+    if (kind==="1"){
+        title='Categoria'
+    }else if (kind==="2"){
+        title='Barrios';
+    }
+ 
+    $(function () {
+ 
+        var len = json.passpercentage.length
+        i = 0;
+ 
+        var options = {
+             chart: { 
+				type: 'column',
+				options3d: {
+					enabled: true,
+					alpha: 10,
+					beta: 25,
+					depth: 70
+				}
+ 
+                },
+             credits: {
+                 enabled: false
+                },
+                title: {
+                    text: 'Ranking de ombues por '+title
+                 },
+//                subtitle: {
+//                    text: 'Source: Test Data',
+//                    x: -20
+//                },
+              yAxis: {
+                min: 0,
+                title: {
+                    text: 'Cantidad'
+                }
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            xAxis: {
+                categories: []
+            },
+            series: []
+        }
+ 
+            for (i; i < len; i++) {
+                if (i === 0) {
+                    var dat = json.passpercentage[i].category,
+                        lenJ = dat.length,
+                        j = 0,
+                        tmp;
+ 
+                    for (j; j < lenJ; j++) {
+                        options.xAxis.categories.push(dat[j]);
+                    }
+                } else {
+                    options.series.push(json.passpercentage[i]);
+                }
+            }
+ 
+        $('#container').highcharts(options);
+ 
+    });
+ 
+    }
+ 
+function generateChart()
+{
+var kind=document.getElementById("select-report").value;
+chartType="passpercentage";
+$("#container").text("");
+ 
+     $.ajax({
+            type: "GET",
+            url:"http://localhost:8084/TSIG/getreport?jsonp="+chartType+"&kindreport="+kind,
+            dataType: 'jsonp',
+            jsonpCallback: chartType, // the function to call
+            error: function () {
+                   alert("Ha ocurrido un error");
+                    }
+            }); 
+  $("#modalReport").modal('show');
+}
+
 function realizarComentario(ombu_id) {
     var id = ombu_id;
     var comentario = document.getElementById("comentario").value;
@@ -445,19 +616,9 @@ function realizarComentario(ombu_id) {
     });
 }
 
-var formatWFS = new ol.format.WFS();
-var formatGMLPunto = new ol.format.GML({
-    featureNS: 'ombues',
-    featureType: 'punto_ombu',
-    srsName: SRS
-});
 
-var formatGMLZona = new ol.format.GML({
-    featureNS: 'ombues',
-    featureType: 'zona_ombu',
-    srsName: SRS
-})
-var transactWFS = function (p, f, feature) {
+
+function transactWFS(p, f, feature) {
     switch (p) {
         case 'insert':
             node = formatWFS.writeTransaction([f], null, null, feature);
@@ -472,7 +633,6 @@ var transactWFS = function (p, f, feature) {
     }
     s = new XMLSerializer();
     str = s.serializeToString(node);
-    console.log(str);
     $.ajax(urlGeoserverWFS, {// + '/wfs', {
         type: 'POST',
         dataType: 'xml',
@@ -504,6 +664,68 @@ function showPosition(position) {
 
 }
 
+
+
+
+function buscarCerca() {
+    dist = 0;
+    vectorPuntoOmbu.setSource();
+    vectorZonaOmbu.setSource();
+    vectorPuntoRestaurant.setSource();
+
+    var nombre = document.getElementById("nombrebusca").value;
+    var categoria = document.getElementById("categoriaBusca").value;
+    var index = $("#categoriaBusca option:selected").index();
+    if (nombre.length != 0) {
+        dife = nombre;
+    } else {
+        dife = "";
+    }
+    if (categoria == 0) {
+        dist = document.getElementById("distancia").value;
+        vectorPuntoRestaurant.setSource(vectorGetPuntoRest);
+        vectorPuntoOmbu.setSource(vectorGetPuntoOmb);
+        vectorZonaOmbu.setSource(vectorGetZonaOmb);
+        $.post("getNoReferencial", {
+            cat: categoria, nombre: nombre
+        }, function (responseText) {
+
+            document.getElementById('myResult').innerHTML =
+                    responseText;
+
+        });
+    } else {
+        if (index > cantCat) {
+            $.post("getNoReferencial", {
+                cat: categoria, nombre: nombre
+            }, function (responseText) {
+
+                document.getElementById('myResult').innerHTML =
+                        responseText;
+
+            });
+        } else {
+            dist = document.getElementById("distancia").value;
+            if (categoria == 1) {
+                vectorPuntoOmbu.setSource(vectorGetPuntoOmb);
+            }
+            if (categoria == 2) {
+                vectorPuntoRestaurant.setSource(vectorGetPuntoRest);
+
+            }
+            if (categoria == 99) {
+                vectorZonaOmbu.setSource(vectorGetZonaOmb);
+
+            }
+            document.getElementById('myResult').innerHTML = "";
+        }
+
+    }
+    vectorGetPuntoOmb.clear();
+    vectorGetZonaOmb.clear();
+    vectorGetPuntoRest.clear();
+
+}
 function loadDropZoneListeners(){
     dropZone.on("sending", function(file, xhr, formData){
         
