@@ -3,12 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/src/java/Entities/PuntoOmbu.java</file>
+            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/src/java/Entities/Ombues.java</file>
+            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/web/media/js/imagenes.js</file>
             <file>file:/home/nico/Proyectos/TSIG/ombuestsig/web/media/js/mapa.js</file>
-            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/src/java/Config.properties</file>
-            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/src/java/Utils/ConfigManager.java</file>
+            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/src/java/Servlets/Imagenes.java</file>
+            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/src/java/Entities/Imagenes.java</file>
+            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/src/java/Servlets/GetOmbu.java</file>
             <file>file:/home/nico/Proyectos/TSIG/ombuestsig/web/index.jsp</file>
-            <file>file:/home/nico/Proyectos/TSIG/ombuestsig/web/META-INF/context.xml</file>
         </group>
     </open-files>
 </project-private>

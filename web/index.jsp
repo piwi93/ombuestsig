@@ -21,6 +21,10 @@ and open the template in the editor.
         <link rel="stylesheet" href="media/OpenLayers-3.15.1/ol.css" type="text/css">
         <link rel="stylesheet" href="media/css/main.css">
         <link rel="stylesheet" href="media/font-awesome-4.6.3/css/font-awesome.min.css">
+        
+        <link rel="stylesheet" href="media/js/dropzone/basic.css">
+        <link rel="stylesheet" href="media/js/dropzone/dropzone.css">
+        
     </head>
     <body>
         <!-- Wrap all page content here -->
@@ -130,9 +134,9 @@ and open the template in the editor.
                                     </div>
                                     <div class="form-group">
                                         <label  for="text">Dirección:</label>
-                                        <input type="text" class="form-control" id='direccion' placeholder="Ingrese una descripcion para el ombu">
+                                        <input type="text" class="form-control" id='direccion' placeholder="Ingrese una dirección para el ombu">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="display:none">
                                         <label  for="text">Ubicación:</label>
                                         <input type="text" class="form-control" id='ubicacion' placeholder="Ingrese una descripcion para el ombu">
                                     </div>
@@ -146,6 +150,10 @@ and open the template in the editor.
                                             <option value="<%=cat.getId()%>"><%=cat.getNombre()%></option>
                                             <% } %>
                                         </select>
+                                    </div>
+                                    <div class="form-group">
+                                            <div id="picDropzone" style="height: 150px; width: 100%;
+                                              border:dashed; color:blue; border-color: skyblue"></div>
                                     </div>
                                     <button type="button" class="btn btn-default" onclick="registrarOmbu()" >Registrar</button>
                                 </div>
@@ -240,8 +248,39 @@ and open the template in the editor.
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="media/OpenLayers-3.15.1/ol.js" type="text/javascript"></script>
-        <script src="media/js/mapa.js" type="text/javascript"></script>
+        
         <script src="media/js/sidebar.js" type="text/javascript"></script>
+        <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+        <script src="media/js/jQuery-File-Uploader/vendor/jquery.ui.widget.js"></script>
+        <!-- The Templates plugin is included to render the upload/download listings -->
+        <!--<script src="//blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>-->
+        <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+        <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+        <!-- The Canvas to Blob plugin is included for image resizing functionality -->
+        <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+        <!-- blueimp Gallery script -->
+        <script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+        <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+        <script src="media/js/jQuery-File-Uploader/jquery.iframe-transport.js"></script>
+        <!-- The basic File Upload plugin -->
+        <script src="media/js/jQuery-File-Uploader/jquery.fileupload.js"></script>
+        <!-- The File Upload processing plugin -->
+        <script src="media/js/jQuery-File-Uploader/jquery.fileupload-process.js"></script>
+        <!-- The File Upload image preview & resize plugin -->
+        <script src="media/js/jQuery-File-Uploader/jquery.fileupload-image.js"></script>
+        <!-- The File Upload audio preview plugin -->
+        <script src="media/js/jQuery-File-Uploader/jquery.fileupload-audio.js"></script>
+        <!-- The File Upload video preview plugin -->
+        <script src="media/js/jQuery-File-Uploader/jquery.fileupload-video.js"></script>
+        <!-- The File Upload validation plugin -->
+        <script src="media/js/jQuery-File-Uploader/jquery.fileupload-validate.js"></script>
+        <!-- The File Upload user interface plugin -->
+        <script src="media/js/jQuery-File-Uploader/jquery.fileupload-ui.js"></script>
+        <!-- The main application script -->
+        <script src="media/js/dropzone/dropzone.js"></script>
+        <script src="media/js/imagenes.js"></script>
+        
+        <script src="media/js/mapa.js" type="text/javascript"></script>
         
         <div class="modal fade" id="modalInfo" role="dialog">
             <div class="modal-dialog">
@@ -301,5 +340,21 @@ and open the template in the editor.
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+        
+        <!-- DropZone preview Template -->
+        <div id="preview-template" style="display: none;">
+            <div class="dz-preview dz-file-preview col-xs-3" style="height: 75px">
+                <div class="dz-details">
+                  <!--<div class="dz-filename"><span data-dz-name></span></div>-->
+                  <!--<div class="dz-size" data-dz-size></div>-->
+                  <img data-dz-thumbnail style="max-height: 70px; max-width: 100%" />
+                </div>
+                <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                <div class="dz-success-mark"><span></span></div>
+                <div class="dz-error-mark"><span></span></div>
+                <div class="dz-error-message"><span data-dz-errormessage></span></div>
+            </div>
+        </div>
+        <!-- END DropZone preview Template -->
     </body>
 </html>

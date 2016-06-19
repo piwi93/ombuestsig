@@ -6,6 +6,7 @@
 package Entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -50,6 +51,9 @@ public class Ombues implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuarios idUsuario;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ombu")
+    private Collection<Imagenes> imagenesCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,6 +70,10 @@ public class Ombues implements Serializable {
     private String ubicacion;
     @Column(name = "external_ref")
     private String externalRef;
+    @JoinColumn(name = "id_categoria", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Categoria idCategoria;
+
 
     public Ombues() {
     }
@@ -122,6 +130,14 @@ public class Ombues implements Serializable {
         this.externalRef = externalRef;
     }
 
+    public Categoria getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(Categoria idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
 
 
     @Override
@@ -169,9 +185,18 @@ public class Ombues implements Serializable {
     public ReferenciaOmbu getReferenciaOmbu() {
         return referenciaOmbu;
     }
-
+    
     public void setReferenciaOmbu(ReferenciaOmbu referenciaOmbu) {
         this.referenciaOmbu = referenciaOmbu;
+    }
+    
+    @XmlTransient
+    public Collection<Imagenes> getImagenesCollection() {
+        return imagenesCollection;
+    }
+
+    public void setImagenesCollection(Collection<Imagenes> imagenesCollection) {
+        this.imagenesCollection = imagenesCollection;
     }
     
 }

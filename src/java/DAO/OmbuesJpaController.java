@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package DAO;
 
 import DAO.exceptions.IllegalOrphanException;
@@ -12,12 +13,18 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import Entities.Categoria;
+import Entities.Usuarios;
+import Entities.Comentario;
 import Entities.Usuarios;
 import Entities.ReferenciaOmbu;
 import Entities.Comentario;
 import Entities.Ombues;
 import java.util.ArrayList;
 import java.util.List;
+import Entities.Imagenes;
+import Entities.Ombues;
+import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -40,16 +47,24 @@ public class OmbuesJpaController implements Serializable {
         if (ombues.getComentarioList() == null) {
             ombues.setComentarioList(new ArrayList<Comentario>());
         }
+        if (ombues.getImagenesCollection() == null) {
+            ombues.setImagenesCollection(new ArrayList<Imagenes>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Categoria idCategoria = ombues.getIdCategoria();
+            if (idCategoria != null) {
+                idCategoria = em.getReference(idCategoria.getClass(), idCategoria.getId());
+                ombues.setIdCategoria(idCategoria);
+            }
             Usuarios idUsuario = ombues.getIdUsuario();
             if (idUsuario != null) {
                 idUsuario = em.getReference(idUsuario.getClass(), idUsuario.getId());
                 ombues.setIdUsuario(idUsuario);
             }
-            ReferenciaOmbu referenciaOmbu = ombues.getReferenciaOmbu();
+	    ReferenciaOmbu referenciaOmbu = ombues.getReferenciaOmbu();
             if (referenciaOmbu != null) {
                 referenciaOmbu = em.getReference(referenciaOmbu.getClass(), referenciaOmbu.getId());
                 ombues.setReferenciaOmbu(referenciaOmbu);
