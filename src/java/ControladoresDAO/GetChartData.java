@@ -33,12 +33,16 @@ public class GetChartData implements Serializable {
 
         String chartType = jsonp;
         List<String> result = new ArrayList();
-        String kindOfReport = "Barios";
+        String kindOfReport = "";
         if (kind.equals("1")) {
             kindOfReport = "Categorias";
             result = top10CatRanking();
-        } else {
+        } else  if (kind.equals("2")) {
+            kindOfReport = "Barrios";
             result = top10BarrioRanking();
+        }else  if (kind.equals("3")) {
+            kindOfReport = "Departamentos";
+            result = OmbuDeptoRanking();
         }
 
         JSONObject finalJSonObj = new JSONObject();
@@ -185,6 +189,60 @@ public class GetChartData implements Serializable {
                 String barrio = rs.getString(1);
                 String count = rs.getString(2);
                 String toAdd = barrio + ";" + count;
+                result.add(toAdd);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error en ReportsSQLController;top10CatRanking " + e.toString());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (s != null) {
+                    s.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+
+            } catch (Exception e2) {
+                System.out.println("Error en ReportsSQLController;top10CatRanking;closeConnection " + e2.toString());
+            }
+        }
+
+        return result;
+    }
+    
+      List OmbuDeptoRanking() throws SQLException {
+        List result = new ArrayList();
+        Connection con = null;
+        Statement s = null;
+        ResultSet rs = null;
+
+        try {
+
+            ConfigManager configuracion = new ConfigManager();
+            Properties propiedades = configuracion.getConfigFile("Config.properties");
+            driver = propiedades.getProperty("postgress-driver");
+            protocol = propiedades.getProperty("jdbc-url");
+            usrname = propiedades.getProperty("tsig-usr");
+            password = propiedades.getProperty("tsig-pwd");
+//              String cc=protocol+"?" +
+//                 "user="+usrname+"&password="+password;
+            Class.forName(driver).newInstance();
+            con = DriverManager.getConnection(protocol, usrname, password);
+            s = con.createStatement();
+            String query = "select res.nombre, count(res.ombu_id) as cantidad from " +
+                            "(select distinct d.nombre as nombre ,po.ombu_id as ombu_id " +
+                            "from  " +
+                            "\"00departamento\" d, punto_ombu po where st_contains(st_transform(st_setsrid(d.geom,32721),3857), po.geom) ) as res " +
+                            "group by res.nombre order by cantidad desc";
+            rs = s.executeQuery(query);
+            while (rs.next()) {
+                String depto = rs.getString(1);
+                String count = rs.getString(2);
+                String toAdd = depto + ";" + count;
                 result.add(toAdd);
             }
 

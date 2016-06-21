@@ -521,6 +521,8 @@ function passpercentage(json) {
         title='Categoria'
     }else if (kind==="2"){
         title='Barrios';
+    }else if (kind==="3"){
+        title='Departamentos'
     }
  
     $(function () {

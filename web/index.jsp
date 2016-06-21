@@ -219,6 +219,7 @@ and open the template in the editor.
                                     <div class="form-group">
                                         <label  for="text">Reporte:</label>
                                         <select class="form-control" id="select-report" placeholder="Seleccione un reporte">                                        
+                                            <option value="3">Ombues por departamentos</option>
                                             <option value="2">Barrios con mas ombues</option>
                                             <option value="1">Ranking de categor&iacute;as</option>
                                         </select>
