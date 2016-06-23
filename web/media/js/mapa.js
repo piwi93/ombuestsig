@@ -31,7 +31,7 @@ content = document.getElementById('popup-content');
  */
 $(document).ready(function () {
     loadVariables();
-
+    loadDropZoneListeners();
 });
 
 var vectorGetPuntoOmb = new ol.source.Vector({
@@ -448,8 +448,10 @@ function registrarOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
+        ombuId=responseText;
         feature.set("id_categoria", quees);
         transactWFS('insert', feature, formatGMLPunto);
+        dropZone.processQueue();
         alert("Realizado correctamente");
         location.reload();
     });
@@ -614,7 +616,9 @@ function realizarComentario(ombu_id) {
     $.post("ingresarComentario", {
         id: id, comentario: comentario
     }, function (responseText) {
-        alert("Ingresado");
+        document.getElementById('myComments').innerHTML =
+                responseText;
+       document.getElementById("comentario").value="";
     });
 }
 
@@ -735,3 +739,4 @@ function loadDropZoneListeners(){
         console.log("FormatData ombuID: " + formData.get("ombuId"));
     });
 }
+

@@ -43,6 +43,7 @@ public class Imagenes extends HttpServlet {
    public void init( ){
       // Get the file location where it would be stored.
       filePath = System.getProperty("user.home")+System.getProperty("file.separator")+"TSIG_Imagenes"; 
+       System.out.println(filePath);
       File directorio = new File(filePath);
       if(!directorio.exists())
       {

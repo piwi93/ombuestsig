@@ -96,7 +96,7 @@ public class GetOmbu extends HttpServlet {
             if (counter % 4 != 0) {
                 out.println("</tr>");
             }
-            out.println("</table></div>"); //Fin Div para Imagenes
+            out.println("</table></div><div id=\"myComments\">"); //Fin Div para Imagenes
             for (Comentario coment : ombu.getComentarioList()) {
                 StringBuffer textBuffer = new StringBuffer(coment.getComentario());
                 int loc = (new String(textBuffer).indexOf('\n'));
@@ -106,13 +106,13 @@ public class GetOmbu extends HttpServlet {
                 }
                 out.println("<p>" + formatoFecha.format(coment.getFecha()) + " " + coment.getIdUser().getNickname() + "</p><p>" + textBuffer + "</p><br>");
             }
-
+            out.println("</div>");
             try {
                 if (request.getSession().getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
                     out.println("<div class=\"form-horizontal\" role=\"form\">\n"
                             + "                <label>Comentario</label>\n"
                             + "                <textarea rows=\"10\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n"
-                            + "            </div><button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");
+                            + "            </div><button type=\"button\" class=\"btn btn-primary\"  onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");
                 }
             } catch (Exception e) {
             }

@@ -33,7 +33,7 @@
             } catch (Exception e) {
             }
         %>
-        
+
         <div id="wrap">
             <div class="row">
                 <nav class="navbar navbar-inverse no-border-radius">
@@ -57,140 +57,147 @@
 
             <section id="content" class="section_user_register">
 
-                    <div class="page page-forms-common">
+                <div class="page page-forms-common">
 
-                        <!--div class="pageheader">
+                    <!--div class="pageheader">
 
-                            <h2>Ombues <span> Tsig</span></h2>
+                        <h2>Ombues <span> Tsig</span></h2>
 
-                            <a href="#" class="btn btn-orange btn-rounded mb-10 right">Ombues</a>
+                        <a href="#" class="btn btn-orange btn-rounded mb-10 right">Ombues</a>
 
-                        </div-->
-                         <!-- row -->
-                        <div class="row">
-                            <!-- col -->
-                            <div class="col-md-12">
+                    </div-->
+                    <!-- row -->
+                    <div class="row">
+                        <!-- col -->
+                        <div class="col-md-12">
                             <!-- tile -->
-                                <section class="tile tile_user_register">
-                                  <!-- tile header -->
-                                    <div class="tile-header dvd dvd-btm">
-                                        <h1 class="custom-font"><strong>Nuevo </strong> Usuario</h1>
-                                    </div>
-                                    <!-- /tile header -->
-                                    <!-- tile body -->
-                                    <div class="tile-body">
+                            <section class="tile tile_user_register">
+                                <!-- tile header -->
+                                <div class="tile-header dvd dvd-btm">
+                                    <h1 class="custom-font"><strong>Nuevo </strong> Usuario</h1>
+                                </div>
+                                <!-- /tile header -->
+                                <!-- tile body -->
+                                <div class="tile-body">
 
-                                        <form name='form' class="form-horizontal" role="form" action="UserRegister" method="post">
+                                    <form name='form' class="form-horizontal" role="form" id="UserRegister" action="UserRegister" method="post">
 
-                                            <div class="form-group col-md-12 legend"> <h4><strong>Informacion</strong> Basica</h4> <p></p> </div><br><br><br>
+                                        <div class="form-group col-md-12 legend"> <h4><strong>Informacion</strong> Basica</h4> <p></p> </div><br><br><br>
 
-                                            <div class="form-group">
-                                                <label for="userName" class="col-sm-2 control-label">* Nombre</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" name="userName" class="form-control" id="userName" required>
-                                                    <span class="help-block">Nombre de usuario es requerido</span>
-                                                </div>
+                                        <div class="form-group"id="nickName">
+                                            <label for="userName" class="col-sm-2 control-label">* Nombre</label>
+                                            <div class="col-sm-10" >
+                                                <input type="text" name="userName" class="form-control" id="userName" required>
+                                                <span class="help-block" id="nickNameSpan">Nombre de usuario es requerido</span>
                                             </div>
+                                        </div>
 
-                                            <hr class="line-dashed line-full"/>
+                                        <hr class="line-dashed line-full"/>
 
-                                            <div class="form-group">
-                                                <label for="contactName" class="col-sm-2 control-label">* Contacto</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" name="contactName" id="contactName" required>
-                                                    <span class="help-block">Nombre de Contacto es requerido</span>
-                                                </div>
+
+                                        <div class="form-group">
+
+                                            <label for="emailAddress" class="col-sm-2 control-label">* Email</label>
+                                            <div class="col-sm-10">
+                                                <input type="email" class="form-control" name="emailAddress" id="emailAddress" required>
+                                                <span class="help-block">Email es requerido</span>
+                                                <!--<span class="help-block">Not valid Email</span>-->
                                             </div>
+                                        </div>
 
-                                            <hr class="line-dashed line-full"/>
 
-                                            <div class="form-group">
+                                        <div class="form-group col-md-12 legend"> <h4><strong>Seguridad </strong> Contraseña</h4> <p></p> </div><br><br><br>
 
-                                              <label for="emailAddress" class="col-sm-2 control-label">* Email</label>
-                                                <div class="col-sm-10">
-                                                    <input type="email" class="form-control" name="emailAddress" id="emailAddress" required>
-                                                    <span class="help-block">Email es requerido</span>
-                                                    <!--<span class="help-block">Not valid Email</span>-->
-                                                </div>
+                                        <div class="form-group" id="pass">
+                                            <label for="password" class="col-sm-2 control-label">* Contraseña</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" name="password" id="password" required>
+                                                <span class="help-block">Contraseña es requerida</span>
                                             </div>
+                                        </div>
 
-
-                                            <div class="form-group col-md-12 legend"> <h4><strong>Seguridad </strong> Contraseña</h4> <p></p> </div><br><br><br>
-
-                                            <div class="form-group">
-                                                <label for="password" class="col-sm-2 control-label">* Contraseña</label>
-                                                <div class="col-sm-10">
-                                                    <input type="password" class="form-control" name="password" id="password" required>
-                                                    <span class="help-block">Contraseña es requerida</span>
-                                                </div>
+                                        <div class="form-group" id="pass2">
+                                            <label for="passwordConfirm" class="col-sm-2 control-label">* Confirmacion</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" name="passwordConfirm" id="passwordConfirm" required>
+                                                <span class="help-block" id="contrasenia">Requerido</span>
                                             </div>
+                                        </div>
 
-                                            <div class="form-group">
-                                                <label for="passwordConfirm" class="col-sm-2 control-label">* Confirmacion</label>
-                                                <div class="col-sm-10">
-                                                    <input type="password" class="form-control" name="passwordConfirm" id="passwordConfirm" required>
-                                                    <span class="help-block">Requerido</span>
-                                                </div>
+
+                                        <!--<hr class="line-dashed line-full"/>
+
+
+                                        <div class="form-group">
+                                            <label for="message" class="col-sm-2 control-label"> Comments </label>
+                                            <div class="col-sm-10">
+                                                <textarea class="form-control" rows="5" name="message" id="message" placeholder="Write your comments..."></textarea>
                                             </div>
+                                        </div>
 
+                                        <hr class="line-dashed line-full"/>
 
-                                            <div class="form-group col-md-12 legend"> <h4><strong>Extra</strong></h4> <p></p> </div><br><br><br>
-
-                                            <div class="form-group">
-                                                <label class="col-sm-2 control-label"></label>
-                                                <div class="col-sm-10">
-
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox" value="" name="allowLocation" id="allowLocation" >
-                                                            Permitir conocer mi ubicacion
-                                                        </label>
-                                                    </div>
-                                                </div>
+                                        <div class="form-group">
+                                            <label for="input04" class="col-sm-2 control-label">External Reference</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="input04" ng-model="vm.adv.externalref">
                                             </div>
+                                        </div>-->
 
-                                            <!--<hr class="line-dashed line-full"/>
+                                        <hr class="line-dashed line-full"/>
 
-
-                                            <div class="form-group">
-                                                <label for="message" class="col-sm-2 control-label"> Comments </label>
-                                                <div class="col-sm-10">
-                                                    <textarea class="form-control" rows="5" name="message" id="message" placeholder="Write your comments..."></textarea>
-                                                </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <a href="/TSIG" class="btn btn-lightred">Cancelar</a>
+                                                <input type="submit" class="btn btn-default" id="UserRegister" value="Alla Vamos!" />
                                             </div>
-
-                                            <hr class="line-dashed line-full"/>
-
-                                            <div class="form-group">
-                                                <label for="input04" class="col-sm-2 control-label">External Reference</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="input04" ng-model="vm.adv.externalref">
-                                                </div>
-                                            </div>-->
-
-                                            <hr class="line-dashed line-full"/>
-
-                                            <div class="form-group">
-                                                <div class="col-sm-4 col-sm-offset-2">
-                                                    <a href="/TSIG" class="btn btn-lightred">Cancelar</a>
-                                                    <input type="submit" class="btn btn-default" value="Alla Vamos!" />
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <!-- /tile body -->
-                                </section>
-                                <!-- /tile -->
-                            </div>
-                            <!-- /col -->
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /tile body -->
+                            </section>
+                            <!-- /tile -->
                         </div>
-                        <!-- /row -->
+                        <!-- /col -->
                     </div>
+                    <!-- /row -->
+                </div>
             </section>
         </div>
 
-<!--/ CONTENT -->
+        <!--/ CONTENT -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script src="media/js/bootstrap.min.js" type="text/javascript"></script>
+        <script>
+            $(document).on("submit", "#UserRegister", function (event) {
+                event.preventDefault();
+                var nombre = document.getElementById("userName").value;
+                var mail = document.getElementById("emailAddress").value;
+                var contraseña = document.getElementById("password").value;
+                var confirmacion = document.getElementById("passwordConfirm").value;
+                if (contraseña == confirmacion) {
+                    $("#pass").removeClass("alert alert-danger");
+                    $("#pass2").removeClass("alert alert-danger");
+                    $("#contrasenia").removeClass("alert alert-danger");
+                    $.post("userRegister", {
+                        userName: nombre, emailAddress: mail, password: contraseña
+                    }, function (responseText) {
+
+                    }).fail(function (responseText) {
+
+                        document.getElementById("nickNameSpan").innerHTML = "Ya hay un usuario con ese nombre";
+                        $("#nickName").addClass("alert alert-danger");
+                        $("#nickNameSpan").addClass("alert alert-danger");
+                    });
+                } else {
+                    document.getElementById("contrasenia").innerHTML = "La contraseña no coincide";
+                    $("#pass").addClass("alert alert-danger");
+                    $("#pass2").addClass("alert alert-danger");
+                    $("#contrasenia").addClass("alert alert-danger");
+                }
+
+
+            })
+        </script>
     </body>
 </html>

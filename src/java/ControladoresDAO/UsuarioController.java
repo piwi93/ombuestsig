@@ -6,6 +6,7 @@
 package ControladoresDAO;
 
 import DAO.UsuariosJpaController;
+import DAO.exceptions.PreexistingEntityException;
 import Entities.Usuarios;
 import Utils.Crypto;
 import java.util.logging.Level;
@@ -35,6 +36,14 @@ public class UsuarioController {
 
     }
 
+    public Usuarios findUsuariosxNick(String user) {
+        try {
+            return uJPA.findUsuariosxNick(user);
+        } catch (NullPointerException e) {
+            throw new Error("El usuario no existe");
+        }
+    }
+
     public void CambiarPassword(Usuarios tec, String password) {
         tec.setPassword(encript.generatePwd(password));
         try {
@@ -43,12 +52,15 @@ public class UsuarioController {
             Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void createUser(Usuarios user){
+
+    public void createUser(Usuarios user) throws PreexistingEntityException {
+        if(uJPA.findUsuariosxNick(user.getNickname())!=null){
+            throw new PreexistingEntityException("Ya existe un usuario con ese nombre ");
+        }
         uJPA.create(user);
     }
-    
-    public Usuarios getUserXNick(String nick){
-         return uJPA.findUsuariosxNick(nick);
+
+    public Usuarios getUserXNick(String nick) {
+        return uJPA.findUsuariosxNick(nick);
     }
 }
