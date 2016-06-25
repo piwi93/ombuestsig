@@ -45,6 +45,17 @@ var vectorGetPuntoOmb = new ol.source.Vector({
     strategy: ol.loadingstrategy.bbox
 });
 
+var vectorGetPuntoCal = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: function (extent) {
+        return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
+                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:3;" + dife +
+                '&outputFormat=application/json&srsname=EPSG:3857&' +
+                'bbox=' + extent.join(',') + ',EPSG:3857';
+    },
+    strategy: ol.loadingstrategy.bbox
+});
+
 var vectorGetPuntoRest = new ol.source.Vector({
     format: new ol.format.GeoJSON(),
     url: function (extent) {
@@ -95,6 +106,21 @@ var vectorPuntoRestaurant = new ol.layer.Vector({
             anchor: [0.5, 0.5],
             anchorXUnits: 'fraction',
             src: 'media/images/restaurant.png'
+        }))
+    })
+});
+
+var vectorPuntoCalle = new ol.layer.Vector({
+    source: vectorGetPuntoCal,
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'rgba(0, 0, 255, 1.0)',
+            width: 2
+        }), image: new ol.style.Icon(({
+            scale: 0.2,
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            src: 'media/images/carretera.png'
         }))
     })
 });
@@ -213,7 +239,7 @@ function loadMap(point) {
              source: wms_punto
              })
              ,*/
-            vector_layer, vectorPuntoOmbu, vectorZonaOmbu, vectorPuntoRestaurant
+            vector_layer, vectorPuntoOmbu, vectorZonaOmbu, vectorPuntoRestaurant,vectorPuntoCalle
                     /*,
                      new ol.layer.Tile({ 
                      source: new ol.source.TileWMS({
@@ -448,7 +474,7 @@ function registrarOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
-        ombuId=responseText;
+        ombuId = responseText;
         feature.set("id_categoria", quees);
         transactWFS('insert', feature, formatGMLPunto);
         dropZone.processQueue();
@@ -517,43 +543,43 @@ function getReport(repo_id) {
 }
 
 function passpercentage(json) {
- var title="";
- var kind=document.getElementById("select-report").value;
-    if (kind==="1"){
-        title='Categoria'
-    }else if (kind==="2"){
-        title='Barrios';
-    }else if (kind==="3"){
-        title='Departamentos'
+    var title = "";
+    var kind = document.getElementById("select-report").value;
+    if (kind === "1") {
+        title = 'Categoria'
+    } else if (kind === "2") {
+        title = 'Barrios';
+    } else if (kind === "3") {
+        title = 'Departamentos'
     }
- 
+
     $(function () {
- 
+
         var len = json.passpercentage.length
         i = 0;
- 
+
         var options = {
-             chart: { 
-				type: 'column',
-				options3d: {
-					enabled: true,
-					alpha: 10,
-					beta: 25,
-					depth: 70
-				}
- 
-                },
-             credits: {
-                 enabled: false
-                },
-                title: {
-                    text: 'Ranking de ombues por '+title
-                 },
+            chart: {
+                type: 'column',
+                options3d: {
+                    enabled: true,
+                    alpha: 10,
+                    beta: 25,
+                    depth: 70
+                }
+
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: 'Ranking de ombues por ' + title
+            },
 //                subtitle: {
 //                    text: 'Source: Test Data',
 //                    x: -20
 //                },
-              yAxis: {
+            yAxis: {
                 min: 0,
                 title: {
                     text: 'Cantidad'
@@ -570,44 +596,44 @@ function passpercentage(json) {
             },
             series: []
         }
- 
-            for (i; i < len; i++) {
-                if (i === 0) {
-                    var dat = json.passpercentage[i].category,
+
+        for (i; i < len; i++) {
+            if (i === 0) {
+                var dat = json.passpercentage[i].category,
                         lenJ = dat.length,
                         j = 0,
                         tmp;
- 
-                    for (j; j < lenJ; j++) {
-                        options.xAxis.categories.push(dat[j]);
-                    }
-                } else {
-                    options.series.push(json.passpercentage[i]);
+
+                for (j; j < lenJ; j++) {
+                    options.xAxis.categories.push(dat[j]);
                 }
+            } else {
+                options.series.push(json.passpercentage[i]);
             }
- 
+        }
+
         $('#container').highcharts(options);
- 
+
     });
- 
-    }
- 
+
+}
+
 function generateChart()
 {
-var kind=document.getElementById("select-report").value;
-chartType="passpercentage";
-$("#container").text("");
- 
-     $.ajax({
-            type: "GET",
-            url:"http://localhost:8084/TSIG/getreport?jsonp="+chartType+"&kindreport="+kind,
-            dataType: 'jsonp',
-            jsonpCallback: chartType, // the function to call
-            error: function () {
-                   alert("Ha ocurrido un error");
-                    }
-            }); 
-  $("#modalReport").modal('show');
+    var kind = document.getElementById("select-report").value;
+    chartType = "passpercentage";
+    $("#container").text("");
+
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:8084/TSIG/getreport?jsonp=" + chartType + "&kindreport=" + kind,
+        dataType: 'jsonp',
+        jsonpCallback: chartType, // the function to call
+        error: function () {
+            alert("Ha ocurrido un error");
+        }
+    });
+    $("#modalReport").modal('show');
 }
 
 function realizarComentario(ombu_id) {
@@ -618,7 +644,7 @@ function realizarComentario(ombu_id) {
     }, function (responseText) {
         document.getElementById('myComments').innerHTML =
                 responseText;
-       document.getElementById("comentario").value="";
+        document.getElementById("comentario").value = "";
     });
 }
 
@@ -678,12 +704,12 @@ function buscarCerca() {
     vectorPuntoOmbu.setSource();
     vectorZonaOmbu.setSource();
     vectorPuntoRestaurant.setSource();
-
+    vectorPuntoCalle.setSource();
     var nombre = document.getElementById("nombrebusca").value;
     var categoria = document.getElementById("categoriaBusca").value;
     var index = $("#categoriaBusca option:selected").index();
     if (nombre.length != 0) {
-        dife = "comp:"+nombre;
+        dife = "comp:" + nombre;
     } else {
         dife = "";
     }
@@ -692,6 +718,7 @@ function buscarCerca() {
         vectorPuntoRestaurant.setSource(vectorGetPuntoRest);
         vectorPuntoOmbu.setSource(vectorGetPuntoOmb);
         vectorZonaOmbu.setSource(vectorGetZonaOmb);
+        vectorPuntoCalle.setSource(vectorGetPuntoCal);
         $.post("getNoReferencial", {
             cat: categoria, nombre: nombre
         }, function (responseText) {
@@ -714,12 +741,15 @@ function buscarCerca() {
             dist = document.getElementById("distancia").value;
             if (categoria == 1) {
                 vectorPuntoOmbu.setSource(vectorGetPuntoOmb);
-            }
+            } else
             if (categoria == 2) {
                 vectorPuntoRestaurant.setSource(vectorGetPuntoRest);
 
-            }
-            if (categoria == 99) {
+            } else
+            if (categoria == 3) {
+                vectorPuntoCalle.setSource(vectorGetPuntoCal);
+
+            }else if (categoria == 99) {
                 vectorZonaOmbu.setSource(vectorGetZonaOmb);
 
             }
@@ -732,11 +762,27 @@ function buscarCerca() {
     vectorGetPuntoRest.clear();
 
 }
-function loadDropZoneListeners(){
-    dropZone.on("sending", function(file, xhr, formData){
-        
+function loadDropZoneListeners() {
+    dropZone.on("sending", function (file, xhr, formData) {
+
         formData.append("ombuId", ombuId);
-        console.log("FormatData ombuID: " + formData.get("ombuId"));
     });
 }
 
+$(document).on("submit", "#logIn", function (event) {
+    event.preventDefault();
+    var nombre = document.getElementById("txtNick").value;
+    var mail = document.getElementById("txtPwd").value;
+
+    $.post("iniciar-sesion", {
+        txtNick: nombre, txtPwd: mail
+    }, function (responseText) {
+        location.reload();
+    }).fail(function (responseText) {
+
+        document.getElementById("errorMessage").innerHTML = "No existe usuario con ese nick y esa contrasena";
+    });
+
+
+
+})
