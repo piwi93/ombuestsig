@@ -145,7 +145,8 @@ and open the template in the editor.
                             <div id="pane2" class="tab-pane">
                                 <div class="form-vertical" role="form">
                                     <div class="form-group">
-                                        <label  for="text">Que desea registrar?</label>
+                                        <label custom-font>Que desea <strong>registrar?</strong></label>
+                                        <br /><br />
                                         <div class="panel-group" id="accordion" style="width: 100%">
 
                                             <!-- Registrar ombu -->
@@ -168,7 +169,7 @@ and open the template in the editor.
                                                         </div>
                                                         <div class="form-group">
                                                             <label  for="text">Dirección:</label>
-                                                            <input type="text" class="form-control" id='direccion' placeholder="Ingrese una dirección para el ombu">
+                                                            <input type="text" class="form-control" id='direccion' placeholder="Haga click en el mapa" readonly="readonly">
                                                         </div>
                                                         <div class="form-group" style="display:none">
                                                             <label  for="text">Ubicación:</label>
