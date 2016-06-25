@@ -269,7 +269,7 @@ and open the template in the editor.
                                             </div>
                                           </div>
                                     </div>
-                                    <button type="button" class="btn btn-default" onclick="generateChart()" >Generar</button>
+
                                 </div>
                                 <div id="myResult"></div>
                             </div>
