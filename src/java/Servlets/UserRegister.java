@@ -6,11 +6,14 @@
 package Servlets;
 
 import ControladoresDAO.UsuarioController;
+import DAO.exceptions.PreexistingEntityException;
 import Entities.Usuarios;
 import Utils.Crypto;
 import Utils.EstadoSesion;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -64,12 +67,11 @@ public class UserRegister extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        if(session.getAttribute("estado_sesion") == EstadoSesion.NO_LOGIN){
-            request.getRequestDispatcher("/WEB-INF/user_register.jsp").forward(request, response);
-        }
-        else{
-            response.sendRedirect("/TSIG");
-        }
+
+        request.getRequestDispatcher("/WEB-INF/user_register.jsp").forward(request, response);
+
+        response.sendRedirect("/TSIG");
+
     }
 
     /**
@@ -83,19 +85,24 @@ public class UserRegister extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //processRequest(request, response);
-        String userName = request.getParameter("userName");
-        String userPassword = request.getParameter("password");
-        Crypto encript = new Crypto();
-        Usuarios user = new Usuarios();
-        user.setNickname(userName);
-        user.setPassword(encript.generatePwd(userPassword));
-        UsuarioController UC = new UsuarioController();
-        UC.createUser(user);
-        HttpSession objSesion = request.getSession();
-        objSesion.setAttribute("usuario_logueado", user.getNickname());
-        objSesion.setAttribute("estado_sesion", EstadoSesion.LOGIN_CORRECTO);
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
+        try {
+            //processRequest(request, response);
+            String userName = request.getParameter("userName");
+            String userPassword = request.getParameter("password");
+            UsuarioController UC = new UsuarioController();
+            Crypto encript = new Crypto();
+            Usuarios user = new Usuarios();
+            user.setNickname(userName);
+            user.setPassword(encript.generatePwd(userPassword));
+            UC.createUser(user);
+            HttpSession objSesion = request.getSession();
+            objSesion.setAttribute("usuario_logueado", user.getNickname());
+            objSesion.setAttribute("estado_sesion", EstadoSesion.LOGIN_CORRECTO);
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        } catch (PreexistingEntityException ex) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write(ex.getMessage());
+        }
     }
 
     /**

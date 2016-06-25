@@ -7,10 +7,12 @@ package Servlets;
 
 import ControladoresDAO.PuntoOmbuController;
 import ControladoresDAO.UsuarioController;
+import Entities.Comentario;
 import Entities.Ombues;
 import Entities.Usuarios;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -43,7 +45,7 @@ public class ingresarComentario extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ingresarComentario</title>");            
+            out.println("<title>Servlet ingresarComentario</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ingresarComentario at " + request.getContextPath() + "</h1>");
@@ -79,14 +81,26 @@ public class ingresarComentario extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String comentario=request.getParameter("comentario");
-            String ombu_id=request.getParameter("id");
-            Integer id=Integer.parseInt(ombu_id);
+            String comentario = request.getParameter("comentario");
+            String ombu_id = request.getParameter("id");
+            Integer id = Integer.parseInt(ombu_id);
             PuntoOmbuController oDAO = new PuntoOmbuController();
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
             Ombues ombu = oDAO.getOmbuxId(id);
             UsuarioController UC = new UsuarioController();
             Usuarios user = UC.getUserXNick(request.getSession().getAttribute("usuario_logueado").toString());
-            oDAO.crearComentario(ombu,user,comentario);
+            oDAO.crearComentario(ombu, user, comentario);
+            try (PrintWriter out = response.getWriter()) {
+                for (Comentario coment : ombu.getComentarioList()) {
+                    StringBuffer textBuffer = new StringBuffer(coment.getComentario());
+                    int loc = (new String(textBuffer).indexOf('\n'));
+                    while (loc > 0) {
+                        textBuffer.replace(loc, loc + 1, "<br>");
+                        loc = (new String(textBuffer).indexOf('\n'));
+                    }
+                    out.println("<p>" + formatoFecha.format(coment.getFecha()) + " " + coment.getIdUser().getNickname() + "</p><p>" + textBuffer + "</p><br>");
+                }
+            }
         } catch (Exception ex) {
             Logger.getLogger(ingresarComentario.class.getName()).log(Level.SEVERE, null, ex);
         }

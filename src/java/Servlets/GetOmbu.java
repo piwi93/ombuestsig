@@ -96,7 +96,7 @@ public class GetOmbu extends HttpServlet {
             if (counter % 4 != 0) {
                 out.println("</tr>");
             }
-            out.println("</table></div>"); //Fin Div para Imagenes
+            out.println("</table></div><div id=\"myComments\">"); //Fin Div para Imagenes
             for (Comentario coment : ombu.getComentarioList()) {
                 StringBuffer textBuffer = new StringBuffer(coment.getComentario());
                 int loc = (new String(textBuffer).indexOf('\n'));
@@ -106,7 +106,7 @@ public class GetOmbu extends HttpServlet {
                 }
                 out.println("<div style=\"background-color: #F8F8F8; padding: 4px; border-radious: 2px;\"><p>" + formatoFecha.format(coment.getFecha()) + " <strong>" + coment.getIdUser().getNickname() + "</strong> dijo: </p><p>" + textBuffer + "</p></div><br>");
             }
-
+            out.println("</div>");
             try {
                 if (request.getSession().getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
                     out.println("<div class=\"form-horizontal\" role=\"form\">\n"

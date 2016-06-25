@@ -219,6 +219,7 @@ and open the template in the editor.
                                     <div class="form-group">
                                         <label  for="text">Reporte:</label>
                                         <select class="form-control" id="select-report" placeholder="Seleccione un reporte">                                        
+                                            <option value="3">Ombues por departamentos</option>
                                             <option value="2">Barrios con mas ombues</option>
                                             <option value="1">Ranking de categor&iacute;as</option>
                                         </select>
@@ -335,7 +336,7 @@ and open the template in the editor.
                         <h4 class="modal-title custom-font"><strong>Log </strong> In</h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal" role="form"  action="iniciar-sesion" method="POST">
+                        <form class="form-horizontal" role="form"  action="iniciar-sesion" id="logIn" method="POST">
                             <div class="form-group">
                                 <label for="txtNick" class="col-sm-3 control-label">* Usuario</label>
                                 <div class="col-sm-8">
@@ -350,10 +351,11 @@ and open the template in the editor.
                                     <span class="help-block">Contraseña es requerida</span>
                                 </div>
                             </div>
+                            <div id="errorMessage"></div>
                             <div class="form-group">
                                 <div class="col-sm-offset-3 col-sm-12">
                                     <button type="button" class="btn btn-lightred" data-dismiss="modal">Cancelar</button>
-                                    <INPUT type='submit' id='btnLogin' class="btn btn-default" name='btnLogIn' Value='Iniciar sesión' onclick='Submit()'/>
+                                    <INPUT type='submit' id='btnLogin' class="btn btn-default" name='btnLogIn' Value='Iniciar sesión' />
                                 </div>
                             </div>
 
