@@ -28,7 +28,6 @@ body {
 /* Set the fixed height of the footer here */
 #footer {
   height: 60px;
-  //background-color: #f5f5f5;
   background-color: #101010;
   position: absolute;
   z-index: 2;
@@ -17884,4 +17883,9 @@ table .delete a, table .delete small{
 body {
     min-width: 320px !important;
     min-height: 500px !important;
+}
+
+.highcharts-container {
+    width:100% !important;
+    height:100% !important;
 }

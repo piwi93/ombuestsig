@@ -17884,3 +17884,8 @@ body {
     min-width: 320px !important;
     min-height: 500px !important;
 }
+
+.highcharts-container {
+    width:100% !important;
+    height:100% !important;
+}

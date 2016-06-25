@@ -306,8 +306,7 @@ and open the template in the editor.
                     <div class="modal-header">
                         <h4 class="modal-title custom-font"><strong>Informacion</strong> del ombu</h4>
                     </div>
-                    <div class="modal-body" id="info-body">
-                    </div>
+                    <div class="modal-body" id="info-body"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-lightred" data-dismiss="modal">Cerrar</button>
                     </div>
@@ -316,16 +315,14 @@ and open the template in the editor.
         </div><!-- /.modal -->    
         
         <div class="modal fade" id="modalReport" role="dialog">
-            <div class="modal-dialog" style="width:650px">
-                <div class="modal-content"style="width:650px">
+            <div class="modal-dialog">
+                <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Reporte</h4>
+                        <h4 class="modal-title custom-font">Reporte</h4>
                     </div>
-                    <div class="modal-body" id="repo-body">
-                        <div id="container" style="height: 400px"></div>
-                    </div>
+                    <div class="modal-body" id="container"></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-lightred" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
