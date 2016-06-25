@@ -218,7 +218,7 @@ and open the template in the editor.
                                                         </div>
                                                         <div class="form-group">
                                                             <label  for="text">Dirección:</label>
-                                                            <input type="text" class="form-control" id='zonadireccion' placeholder="Ingrese una descripcion para el ombu">
+                                                            <input type="text" class="form-control" id='zonadireccion' placeholder="Haga click en el mapa" readonly="readonly">
                                                         </div>
                                                         <div class="form-group">
                                                             <label  for="text">Ubicación:</label>
