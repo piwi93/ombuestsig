@@ -67,10 +67,15 @@ public class UserRegister extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-
+        try{
+        if(session.getAttribute("estado_sesion").equals(EstadoSesion.LOGIN_CORRECTO)){
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }}catch(Exception e){
+            
+        }
         request.getRequestDispatcher("/WEB-INF/user_register.jsp").forward(request, response);
 
-        response.sendRedirect("/TSIG");
+     
 
     }
 
@@ -98,7 +103,7 @@ public class UserRegister extends HttpServlet {
             HttpSession objSesion = request.getSession();
             objSesion.setAttribute("usuario_logueado", user.getNickname());
             objSesion.setAttribute("estado_sesion", EstadoSesion.LOGIN_CORRECTO);
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+           request.getRequestDispatcher("/index.jsp").forward(request, response);
         } catch (PreexistingEntityException ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write(ex.getMessage());

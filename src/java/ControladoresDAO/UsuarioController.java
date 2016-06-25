@@ -11,6 +11,7 @@ import Entities.Usuarios;
 import Utils.Crypto;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 
 /**
@@ -54,10 +55,14 @@ public class UsuarioController {
     }
 
     public void createUser(Usuarios user) throws PreexistingEntityException {
-        if(uJPA.findUsuariosxNick(user.getNickname())!=null){
-            throw new PreexistingEntityException("Ya existe un usuario con ese nombre ");
+        try {
+            if (uJPA.findUsuariosxNick(user.getNickname()) != null) {
+                throw new PreexistingEntityException("Ya existe un usuario con ese nombre ");
+            }
+        } catch (NoResultException e) {
+            uJPA.create(user);
         }
-        uJPA.create(user);
+
     }
 
     public Usuarios getUserXNick(String nick) {
