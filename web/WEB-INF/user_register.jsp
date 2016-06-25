@@ -182,7 +182,7 @@
                     $.post("userRegister", {
                         userName: nombre, emailAddress: mail, password: contraseña
                     }, function (responseText) {
-
+                        location.reload();
                     }).fail(function (responseText) {
 
                         document.getElementById("nickNameSpan").innerHTML = "Ya hay un usuario con ese nombre";
