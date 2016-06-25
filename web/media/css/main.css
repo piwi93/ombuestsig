@@ -17889,3 +17889,11 @@ body {
     width:100% !important;
     height:100% !important;
 }
+
+.panel-title {
+    background-color: #fff;
+}
+
+.panel-title:hover {
+    background-color: #f2f3f4;
+}

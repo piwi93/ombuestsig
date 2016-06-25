@@ -41,3 +41,47 @@ window.onload = function (event) {
 window.onresize = function(event) {
     resize();
 }
+
+var flagOmbu = false;
+var flagZona = false;
+var flagReferencia = false;
+
+function registro(type) {
+    var registroOmbu = document.getElementById("registroOmbu");
+    var registroZona = document.getElementById("registroZona");
+    var registroReferencia = document.getElementById("registroReferencia");
+    registroOmbu.style.backgroundColor = "#fff";
+    registroZona.style.backgroundColor = "#fff";
+    registroReferencia.style.backgroundColor = "#fff";
+    
+    if(type === "registroOmbu"){
+        if(!flagOmbu){
+            registroOmbu.style.backgroundColor = "#f2f3f4";
+            flagOmbu = true;
+        }
+        else{
+            registroOmbu.style.backgroundColor = "#fff";
+            flagOmbu = false;
+        }
+    }
+    if(type === "registroZona"){
+        if(!flagZona){
+            registroZona.style.backgroundColor = "#f2f3f4";
+            flagZona = true;
+        }
+        else{
+            registroZona.style.backgroundColor = "#fff";
+            flagZona = false;
+        }
+    }
+    if(type === "registroReferencia"){
+        if(!flagReferencia){
+            registroReferencia.style.backgroundColor = "#f2f3f4";
+            flagReferencia = true;
+        }
+        else{
+            registroReferencia.style.backgroundColor = "#fff";
+            flagReferencia = false;
+        }
+    }
+}
