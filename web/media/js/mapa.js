@@ -559,22 +559,23 @@ function passpercentage(json) {
         i = 0;
 
         var options = {
-            chart: {
-                type: 'column',
-                options3d: {
-                    enabled: true,
-                    alpha: 10,
-                    beta: 25,
-                    depth: 70
-                }
-
-            },
-            credits: {
-                enabled: false
-            },
-            title: {
-                text: 'Ranking de ombues por ' + title
-            },
+             chart: { 
+                    type: 'column',
+                    options3d: {
+                            enabled: true,
+                            alpha: 10,
+                            beta: 25,
+                            depth: 70
+                    },
+                    spacingLeft: 0,
+                    marginLeft: 0
+                },
+             credits: {
+                 enabled: false
+                },
+                title: {
+                    text: '<span class="custom-font">Reporte de ombues por <strong>'+title+'</strong></span>'
+                 },
 //                subtitle: {
 //                    text: 'Source: Test Data',
 //                    x: -20
@@ -613,7 +614,6 @@ function passpercentage(json) {
         }
 
         $('#container').highcharts(options);
-
     });
 
 }

@@ -76,11 +76,11 @@ public class GetOmbu extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             String dato = "";
             if (ombu.getReferenciaOmbu() != null) {
-                dato = "<td>Referencia</td><td>" + ombu.getExternalRef() + "</td>";
+                dato = "<td>Referencia: </td><td>" + ombu.getExternalRef() + "</td>";
             } else {
-                dato = "<td>Direccion</td><td>" + ombu.getDireccion() + "</td>";
+                dato = "<td>Direccion: </td><td>" + ombu.getDireccion() + "</td>";
             }
-            out.println("<table><tr><td>Nombre</td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion</td><td>" + ombu.getDescripcion() + "</td></tr><tr>" + dato + "</tr></table><hr>");
+            out.println("<table><tr><td>Nombre: </td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion:&nbsp;&nbsp;</td><td>" + ombu.getDescripcion() + "</td></tr><tr>" + dato + "</tr></table><hr>");
             int counter = 0;
             Collection<Entities.Imagenes> imagenes = ombu.getImagenesCollection();
             for (Entities.Imagenes img : imagenes) {
@@ -104,15 +104,15 @@ public class GetOmbu extends HttpServlet {
                     textBuffer.replace(loc, loc + 1, "<br>");
                     loc = (new String(textBuffer).indexOf('\n'));
                 }
-                out.println("<p>" + formatoFecha.format(coment.getFecha()) + " " + coment.getIdUser().getNickname() + "</p><p>" + textBuffer + "</p><br>");
+                out.println("<div style=\"background-color: #F8F8F8; padding: 4px; border-radious: 2px;\"><p>" + formatoFecha.format(coment.getFecha()) + " <strong>" + coment.getIdUser().getNickname() + "</strong> dijo: </p><p>" + textBuffer + "</p></div><br>");
             }
             out.println("</div>");
             try {
                 if (request.getSession().getAttribute("estado_sesion") == EstadoSesion.LOGIN_CORRECTO) {
                     out.println("<div class=\"form-horizontal\" role=\"form\">\n"
-                            + "                <label>Comentario</label>\n"
-                            + "                <textarea rows=\"10\" class=\"form-control col-sm-10\" form=\"comentario\" id=\"comentario\" ></textarea>\n"
-                            + "            </div><button type=\"button\" class=\"btn btn-primary\"  onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");
+                            + "<div class=\"row\"><label class=\"col-sm-12\">Nuevo comentario</label>\n"
+                            + "<div class=\"col-sm-12\"><textarea rows=\"3\" class=\"form-control\" form=\"comentario\" id=\"comentario\" style=\"max-width: 400px; margin-bottom: 5px;\"></textarea></div></div></div>\n"
+                            + "<button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" onclick=\"realizarComentario(ombuId)\" >Enviar</button> ");
                 }
             } catch (Exception e) {
             }

@@ -38,7 +38,7 @@ var vectorGetPuntoOmb = new ol.source.Vector({
     format: new ol.format.GeoJSON(),
     url: function (extent) {
         return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
-                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:1;var:" + dife +
+                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:1;" + dife +
                 '&outputFormat=application/json&srsname=EPSG:3857&' +
                 'bbox=' + extent.join(',') + ',EPSG:3857';
     },
@@ -49,7 +49,7 @@ var vectorGetPuntoRest = new ol.source.Vector({
     format: new ol.format.GeoJSON(),
     url: function (extent) {
         return 'http://localhost:8084/geoserver/wfs?service=WFS&' +
-                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:2;var:" + dife +
+                'version=1.1.0&request=GetFeature&typename=ombues:puntocerca&VIEWPARAMS=dist:' + dist + ';lon:' + lon3857 + ';lat:' + lat3857 + ";cat:2;" + dife +
                 '&outputFormat=application/json&srsname=EPSG:3857&' +
                 'bbox=' + extent.join(',') + ',EPSG:3857';
     },
@@ -527,23 +527,24 @@ function passpercentage(json) {
  
         var len = json.passpercentage.length
         i = 0;
- 
+
         var options = {
              chart: { 
-				type: 'column',
-				options3d: {
-					enabled: true,
-					alpha: 10,
-					beta: 25,
-					depth: 70
-				}
- 
+                    type: 'column',
+                    options3d: {
+                            enabled: true,
+                            alpha: 10,
+                            beta: 25,
+                            depth: 70
+                    },
+                    spacingLeft: 0,
+                    marginLeft: 0
                 },
              credits: {
                  enabled: false
                 },
                 title: {
-                    text: 'Ranking de ombues por '+title
+                    text: '<span class="custom-font">Reporte de ombues por <strong>'+title+'</strong></span>'
                  },
 //                subtitle: {
 //                    text: 'Source: Test Data',
@@ -583,7 +584,6 @@ function passpercentage(json) {
             }
  
         $('#container').highcharts(options);
- 
     });
  
     }
@@ -677,7 +677,7 @@ function buscarCerca() {
     var categoria = document.getElementById("categoriaBusca").value;
     var index = $("#categoriaBusca option:selected").index();
     if (nombre.length != 0) {
-        dife = nombre;
+        dife = "comp:"+nombre;
     } else {
         dife = "";
     }
