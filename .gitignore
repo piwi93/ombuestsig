@@ -38,3 +38,8 @@ src/conf/persistence.xml
 src/java/Config.properties
 nbproject/project.properties
 build/web/WEB-INF/classes/META-INF/persistence.xml
+build/web/media/js/mapa.js
+build/web/media/js/mapa.js
+nbproject/private/private.xml
+nbproject/project.xml
+nbproject/project.properties
