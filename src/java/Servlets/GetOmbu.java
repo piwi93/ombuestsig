@@ -82,21 +82,26 @@ public class GetOmbu extends HttpServlet {
             }
             out.println("<table><tr><td>Nombre: </td><td>" + ombu.getNombre() + "</td></tr><tr><td>Descripcion:&nbsp;&nbsp;</td><td>" + ombu.getDescripcion() + "</td></tr><tr>" + dato + "</tr></table><hr>");
             int counter = 0;
+            String activo="active";
             Collection<Entities.Imagenes> imagenes = ombu.getImagenesCollection();
-            for (Entities.Imagenes img : imagenes) {
-                if (counter % 4 == 0) {
-                    out.println("<td>");
-                }
-                out.println("<td class='col-sm-3 text-center'><img class='img-responsive' alt='Image not found' src='images/" + img.getNombre() + "'></td>");
-                if (counter % 4 == 3) {
-                    out.println("</tr>");
-                }
-                counter++;
+            out.println("<div id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\"><div class=\"carousel-inner\" role=\"listbox\">");
+            for (Entities.Imagenes img : imagenes) {   
+
+                out.println("<div class=\"item "+ activo +"\"><img class='' alt='Image not found' width=\"380\" height=\"380\" src='images/" + img.getNombre() + "'></div>");
+                activo="";
+                counter ++;
             }
-            if (counter % 4 != 0) {
-                out.println("</tr>");
+            if(counter != 0){
+            out.println("</div>  <a class=\"left carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\">\n" +
+"    <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\n" +
+"    <span class=\"sr-only\">Previous</span>\n" +
+"  </a>\n" +
+"  <a class=\"right carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\">\n" +
+"    <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\n" +
+"    <span class=\"sr-only\">Next</span>\n" +
+"  </a></div>"); //Fin Div para Imagenes}
             }
-            out.println("</table></div><div id=\"myComments\">"); //Fin Div para Imagenes
+            out.println("<div id=\"myComments\">");
             for (Comentario coment : ombu.getComentarioList()) {
                 StringBuffer textBuffer = new StringBuffer(coment.getComentario());
                 int loc = (new String(textBuffer).indexOf('\n'));

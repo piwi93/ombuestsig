@@ -120,7 +120,7 @@ var vectorPuntoCalle = new ol.layer.Vector({
             scale: 0.2,
             anchor: [0.5, 0.5],
             anchorXUnits: 'fraction',
-            src: 'media/images/carretera.png'
+            src: 'media/images/carretera4.png'
         }))
     })
 });
@@ -131,7 +131,12 @@ var vectorZonaOmbu = new ol.layer.Vector({
     style: new ol.style.Style({
         fill: new ol.style.Fill({
             color: 'rgba(0, 0, 0, 0.8)'
-        }),
+        }), image: new ol.style.Icon(({
+            scale: 0.2,
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            src: 'media/images/zonaOmbu.png'
+        }))
     })
 })
 
@@ -508,6 +513,8 @@ function registrarZonaOmbu() {
         nombre: nombre, descripcion: descripcion, direccion: direccion, ubicacion: ubicacion, quees: quees
     }, function (responseText) {
         feature.set("ombu_id", responseText);
+        ombuId=responseText;
+        dropZone2.processQueue();
         transactWFS('insert', feature, formatGMLZona);
         alert("Realizado correctamente");
         location.reload();
@@ -728,7 +735,7 @@ function buscarCerca() {
 
         });
     } else {
-        if (index > cantCat) {
+        if (index > cantCat+1) {
             $.post("getNoReferencial", {
                 cat: categoria, nombre: nombre
             }, function (responseText) {
@@ -764,6 +771,10 @@ function buscarCerca() {
 }
 function loadDropZoneListeners() {
     dropZone.on("sending", function (file, xhr, formData) {
+
+        formData.append("ombuId", ombuId);
+    });
+    dropZone2.on("sending", function (file, xhr, formData) {
 
         formData.append("ombuId", ombuId);
     });

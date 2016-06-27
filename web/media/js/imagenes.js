@@ -12,6 +12,20 @@ $(document).ready(function (){
         );
 })
 
+var dropZone2;
+$(document).ready(function (){
+    dropZone2 = new Dropzone(
+            "div#picDropzone2",
+            {       
+                url: "Imagenes",
+                uploadMultiple: true,
+                acceptedFiles: "image/*",
+                autoProcessQueue: false,
+                previewTemplate: document.getElementById('preview-template').innerHTML,
+            }
+        );
+})
+
 /*$(document).ready(function () {
     $('#fileupload').fileupload({
         url: 'Imagenes',

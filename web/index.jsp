@@ -169,7 +169,7 @@ and open the template in the editor.
                                                         </div>
                                                         <div class="form-group">
                                                             <label  for="text">Dirección:</label>
-                                                            <input type="text" class="form-control" id='direccion' placeholder="Haga click en el mapa" readonly="readonly">
+                                                            <input type="text" class="form-control" id='direccion' placeholder="Haga click en el mapa">
                                                         </div>
                                                         <div class="form-group" style="display:none">
                                                             <label  for="text">Ubicación:</label>
@@ -222,10 +222,12 @@ and open the template in the editor.
                                                             <label  for="text">Dirección:</label>
                                                             <input type="text" class="form-control" id='zonadireccion' placeholder="Ingrese una direccion para el ombu">
                                                         </div>
-                                                        <!--div class="form-group">
-                                                            <label  for="text">Ubicación:</label>
-                                                            <input type="text" class="form-control" id='zonaubicacion' placeholder="Haga click en el mapa" readonly="readonly"">
-                                                        </div-->
+                                                        <div class="form-group">
+                                                            <div id="picDropzone2" style="height: 150px; width: 100%;
+                                                                 border:dashed; color:blue; border-color: skyblue">
+                                                                     <div class="dz-message" data-dz-message><h4 class="modal-title custom-font" style="color: #9d9d9d;">Subir <strong> Imagen</strong></h4></div>
+                                                            </div>
+                                                        </div>
                                                         <span class="help-block">*Necesario marcar una zona de puntos en el mapa.</span>
                                                         <br />
                                                         <button type="button" class="btn btn-default" onclick="registrarZonaOmbu()" >Registrar</button>
@@ -267,8 +269,6 @@ and open the template in the editor.
                                                                 <% } %>
                                                             </select>
                                                         </div>
-                                                        <span class="help-block">*Necesario marcar un punto en el mapa.</span>
-                                                        <br />
                                                         <button type="button" class="btn btn-default" onclick="registrarRefOmbu()" >Registrar</button>
                                                     </div>
                                                 </div>
